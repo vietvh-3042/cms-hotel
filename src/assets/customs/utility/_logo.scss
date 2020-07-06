@@ -1,0 +1,36 @@
+.isoLogoWrapper {
+  .logo {
+    height: 32px;
+  }
+
+  h3 {
+    margin: 0 0 0 12px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 20px;
+    vertical-align: middle;
+  }
+
+  a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .isIconHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 64px;
+    padding: 0 24px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .isoLogoWrapper {
+    .isIconHeader {
+      padding: 0 16px;
+      justify-content: flex-start;
+    }
+  }
+}

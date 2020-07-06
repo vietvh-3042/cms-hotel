@@ -1,0 +1,46 @@
+.grid-content {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 12px 24px 16px 24px;
+  color: rgba(0, 0, 0, 0.45);
+
+  .page-header-heading {
+    margin-top: 8px;
+    width: 100%;
+
+    .page-header-heading-title {
+      display: block;
+      color: rgba(0, 0, 0, 0.85);
+      margin-bottom: 0;
+      padding-right: 12px;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 32px;
+      text-transform: capitalize;
+    }
+  }
+}
+
+.hasTable {
+  .page-header-wrap-children-content {
+    margin: 12px 24px 0;
+    background: #fff;
+  }
+
+  .ant-pagination {
+    padding: 0 24px;
+  }
+}
+
+// .footerForm {
+//   position: absolute;
+//   right: 0;
+//   bottom: 0;
+//   width: 100%;
+//   border-top: 1px solid #e9e9e9;
+//   padding: 10px 16px;
+//   background: #fff;
+//   text-align: right;
+// }

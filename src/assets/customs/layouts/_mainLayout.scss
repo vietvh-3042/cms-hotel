@@ -1,0 +1,68 @@
+body {
+  background-color: #f7f7f7;
+}
+
+.ant-layout-header {
+  background: #fff;
+  color: #000;
+}
+
+.ant-layout-content {
+  color: #f000;
+  height: 100vh;
+}
+
+.isomorphicLayout {
+  margin-left: 260px;
+  transition-duration: 0.1s;
+  transition-property: all;
+  transition-timing-function: linear;
+}
+
+.isomorphicLayoutCol {
+  margin-left: 80px;
+  transition-duration: 0.09s;
+  transition-property: all;
+  transition-timing-function: linear;
+  transition-delay: 0.1s;
+}
+
+@media only screen and (max-width: 767px) {
+  .isomorphicLayoutCol {
+    margin-left: 0;
+  }
+}
+.hasTable {
+  .page-header-wrap-children-content {
+    margin: 12px 24px 0;
+    background: #fff;
+  }
+
+  .ant-pagination {
+    padding: 0 24px;
+  }
+}
+.grid-content {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 12px 24px 16px 24px;
+  color: rgba(0, 0, 0, 0.45);
+
+  .page-header-heading {
+    margin-top: 8px;
+    width: 100%;
+
+    .page-header-heading-title {
+      display: block;
+      color: rgba(0, 0, 0, 0.85);
+      margin-bottom: 0;
+      padding-right: 12px;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 32px;
+      text-transform: capitalize;
+    }
+  }
+}

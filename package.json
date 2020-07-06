@@ -1,0 +1,60 @@
+{
+  "name": "cms",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "watch:css": "tailwindcss build src/tailwind/base.css -o src/assets/core/_tailwind.scss -w",
+    "build:css": "tailwindcss build src/tailwind/base.css -o src/assets/core/_tailwind.scss",
+    "start": "npm run watch:css & react-app-rewired start",
+    "build": "npm run build:css && react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "antd": "^4.4.0",
+    "autoprefixer": "^9.8.4",
+    "axios": "^0.19.2",
+    "classnames": "^2.2.6",
+    "connected-react-router": "^6.8.0",
+    "customize-cra": "^1.0.0",
+    "history": "^5.0.0",
+    "lodash": "^4.17.15",
+    "node-sass": "^4.14.1",
+    "nprogress": "^0.2.0",
+    "query-string": "^6.13.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-placeholder": "^4.0.3",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "react-window-size-listener": "^1.5.4",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-persist": "^6.0.0",
+    "redux-saga": "^1.1.3"
+  },
+  "devDependencies": {
+    "babel-plugin-module-resolver": "^4.0.0",
+    "react-app-rewired": "^2.1.6",
+    "tailwindcss": "^1.4.6"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

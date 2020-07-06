@@ -1,0 +1,21 @@
+.add-button {
+  padding: 12px 24px 0 24px;
+  display: flex;
+  justify-content: flex-end;
+  .ant-btn-primary {
+    background-color: #eba63f;
+    border: none;
+  }
+  .ant-btn-primary:hover {
+    background-color: #eba63f !important ;
+  }
+  .ant-btn-primary:hover,
+  .ant-btn-primary:focus {
+    border-color: #eba63f;
+    background-color: #eba63f !important ;
+  }
+  .ant-btn-primary:hover {
+    background-color: #f38a0a;
+    transform: translate(-10px);
+  }
+}

@@ -1,0 +1,22 @@
+.isomorphicTopbar {
+  padding: 0;
+
+  .ant-pro-global-header {
+    position: relative;
+    height: 64px;
+    background: url("/images/bg_header.png") repeat-x;
+    background-size: contain;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+  }
+
+  .trigger {
+    font-size: 22px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+}

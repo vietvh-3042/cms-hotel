@@ -1,0 +1,18 @@
+{
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": ["./"],
+        "alias": {
+          "@Actions": "./src/redux/actions",
+          "@Components": "./src/components",
+          "@Containers": "./src/containers",
+          "@Reducer": "./src/redux/reducers",
+          "@Layout": "./src/layout"
+        },
+        "extensions": [".js", ".jsx", ".json"]
+      }
+    ]
+  ]
+}

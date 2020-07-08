@@ -1,11 +1,12 @@
+import ManagerHotel from "@Containers/ManagerHotel";
+import ManagerMapHotel from "@Containers/ManagerMapHotel";
 import { ConnectedRouter } from "connected-react-router";
 import React from "react";
+import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
-import ManagerHotel from "@Containers/ManagerHotel";
 import NotFound from "../containers/pages/NotFound";
 import Sigin from "../containers/pages/Signin";
-import RestrictedRoute from "./RestrictedRoute";
-import { useSelector } from "react-redux";
+import PrivateRoute from "./PrivateRoute";
 
 function PublicRoutes(props) {
   const { history } = props;
@@ -15,18 +16,24 @@ function PublicRoutes(props) {
     <ConnectedRouter history={history}>
       <Switch>
         {isLoggedIn ? (
-          <RestrictedRoute
+          <PrivateRoute
             path={"/"}
             exact={true}
-            component={ManagerHotel}
+            component={ManagerMapHotel}
             isLoggedIn={isLoggedIn}
           />
         ) : (
           <Route exact={true} path={"/"} component={Sigin} />
         )}
         <Route exact={true} path={"/signin"} component={Sigin} />
-        <RestrictedRoute
+        <PrivateRoute
           path={"/dashboard"}
+          exact={true}
+          component={ManagerMapHotel}
+          isLoggedIn={isLoggedIn}
+        />
+        <PrivateRoute
+          path={"/dashboard/list-hotel"}
           exact={true}
           component={ManagerHotel}
           isLoggedIn={isLoggedIn}

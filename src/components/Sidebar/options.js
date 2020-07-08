@@ -1,6 +1,6 @@
 const options = [
   {
-    key: "map-hotel",
+    key: "",
     label: "Sơ đồ khách sạn",
     icon: "/images/Sidebar/Map/map.png",
   },
@@ -225,7 +225,6 @@ const options = [
       },
     ],
   },
-
   {
     key: "9",
     label: "Hỗ trợ",

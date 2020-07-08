@@ -40,7 +40,7 @@ function Sidebar(props) {
           key={key}
           title={
             <span className="isMenuHoder inline-flex items-center w-full">
-              <img src={icon} className="w-33px h-18px" />
+              <img src={icon} />
               <span className="textMenu ml-8">{label}</span>
             </span>
           }
@@ -48,7 +48,7 @@ function Sidebar(props) {
         >
           {children.map((child) => {
             return (
-              <Menu.Item key={child.key} className="bg-gray-200">
+              <Menu.Item key={child.key}>
                 <Link to={`${url}/${child.key}`}>
                   <MyIcon type={icon} className="isMenuIcon" />
                   <span className="textMenu">{child.label}</span>
@@ -61,7 +61,7 @@ function Sidebar(props) {
     } else {
       return (
         <Menu.Item key={key}>
-          <Link to={`${url}/${key}`}>
+          <Link to={`${key === "" ? url : `${url}/${key}`}`}>
             <span className="inline-flex items-center">
               <img src={icon} className="pr-8" />
               <span className="textMenu">{label}</span>

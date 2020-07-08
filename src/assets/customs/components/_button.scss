@@ -2,20 +2,35 @@
   padding: 12px 24px 0 24px;
   display: flex;
   justify-content: flex-end;
+
   .ant-btn-primary {
-    background-color: #eba63f;
-    border: none;
+    background: #0c5fa5 url("/images/Button/button-element-bg.png") repeat-x
+      left top;
+    background: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      from(white),
+      to(#0c5fa5),
+      color-stop(0.03, #72c6e4)
+    );
+    border: 1px solid;
+    border-color: #50a3c8 #297cb4;
+    background-size: 100% 100%;
+    border-radius: 0.333rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .ant-btn-primary:hover {
-    background-color: #eba63f !important ;
-  }
-  .ant-btn-primary:hover,
-  .ant-btn-primary:focus {
-    border-color: #eba63f;
-    background-color: #eba63f !important ;
-  }
-  .ant-btn-primary:hover {
-    background-color: #f38a0a;
-    transform: translate(-10px);
+    border-color: #1eafdc #1193d5 #035592;
+    background: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      from(white),
+      to(#057fdb),
+      color-stop(0.03, #2bcef3)
+    );
   }
 }

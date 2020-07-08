@@ -1,16 +1,11 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import AsyncFunc from "../helpers/AsyncFunc";
-const RestrictedRoute = ({
-  component: Component,
-  path,
-  isLoggedIn,
-  ...rest
-}) => {
+const PrivateRoute = ({ component: Component, path, isLoggedIn, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={props =>
+      render={(props) =>
         isLoggedIn ? (
           <AsyncFunc>
             <Component {...props} />
@@ -18,7 +13,7 @@ const RestrictedRoute = ({
         ) : (
           <Redirect
             to={{
-              pathname: "/signin"
+              pathname: "/signin",
             }}
           />
         )
@@ -27,4 +22,4 @@ const RestrictedRoute = ({
   );
 };
 
-export default RestrictedRoute;
+export default PrivateRoute;

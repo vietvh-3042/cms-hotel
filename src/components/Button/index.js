@@ -8,7 +8,7 @@ function BaseButton(props) {
   const { name } = props;
   return (
     <div className="add-button">
-      <Button type="primary" shape="round" icon={<PlusOutlined />}>
+      <Button type="primary" icon={<PlusOutlined />}>
         {name}
       </Button>
     </div>

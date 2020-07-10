@@ -4,11 +4,15 @@ import React from "react";
 
 BaseButton.propTypes = {};
 
+BaseButton.defaultProps = {
+  handleAddHotel: null,
+};
+
 function BaseButton(props) {
-  const { name } = props;
+  const { name, handleAddHotel } = props;
   return (
     <div className="add-button">
-      <Button type="primary" icon={<PlusOutlined />}>
+      <Button type="primary" icon={<PlusOutlined />} onClick={handleAddHotel}>
         {name}
       </Button>
     </div>

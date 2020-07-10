@@ -1,4 +1,7 @@
 import ManagerHotel from "@Containers/ManagerHotel";
+import ManagerHotelDiary from "@Containers/ManagerHotelDiary";
+import ManagerHotelFloor from "@Containers/ManagerHotelFloor";
+import ManagerListRoom from "@Containers/ManagerListRoom";
 import ManagerMapHotel from "@Containers/ManagerMapHotel";
 import { ConnectedRouter } from "connected-react-router";
 import React from "react";
@@ -36,6 +39,24 @@ function PublicRoutes(props) {
           path={"/dashboard/list-hotel"}
           exact={true}
           component={ManagerHotel}
+          isLoggedIn={isLoggedIn}
+        />
+        <PrivateRoute
+          path={"/dashboard/hotel-floor"}
+          exact={true}
+          component={ManagerHotelFloor}
+          isLoggedIn={isLoggedIn}
+        />
+        <PrivateRoute
+          path={"/dashboard/hotel-diary"}
+          exact={true}
+          component={ManagerHotelDiary}
+          isLoggedIn={isLoggedIn}
+        />
+        <PrivateRoute
+          path={"/dashboard/list-room"}
+          exact={true}
+          component={ManagerListRoom}
           isLoggedIn={isLoggedIn}
         />
         <Route path="*" component={NotFound} />

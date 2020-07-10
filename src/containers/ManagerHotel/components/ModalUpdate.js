@@ -1,23 +1,20 @@
-import { Modal } from "antd";
 import React from "react";
-import TextArea from "antd/lib/input/TextArea";
+import PropTypes from "prop-types";
 
-ModalAddHotel.propTypes = {};
+import { Modal } from "antd";
 
-function ModalAddHotel(props) {
-  const { visible, handleAddHotel } = props;
+ModalUpdate.propTypes = {};
 
+function ModalUpdate(props) {
   return (
     <Modal
-      visible={visible}
-      onCancel={handleAddHotel}
       footer={false}
       closable={false}
       bodyStyle={{ padding: 0 }}
       width={425}
     >
       <div className="modal_header_action">
-        <span>Thêm khách sạn</span>
+        <span>Chỉnh sửa thông tin</span>
       </div>
       <div className="modal_content">
         <form>
@@ -27,27 +24,12 @@ function ModalAddHotel(props) {
           </div>
 
           <div className="flex items-center mb-2">
-            <div className="LabelCo">Số lầu:</div>
-            <input type="text" style={{ width: 220 }} />
-          </div>
-
-          <div className="flex items-center mb-2">
-            <div className="LabelCo">Số phòng:</div>
-            <input type="text" style={{ width: 220 }} />
-          </div>
-
-          <div className="flex items-center mb-2">
-            <div className="LabelCo">Số phòng trệt:</div>
-            <input type="text" style={{ width: 220 }} />
-          </div>
-
-          <div className="flex items-center mb-2">
             <div className="LabelCo">Địa chỉ:</div>
             <input type="text" style={{ width: 220 }} />
           </div>
 
           <div className="flex items-center mb-2">
-            <div className="LabelCo">Thành phố:</div>
+            <div className="LabelCo">Tỉnh/Thành phố:</div>
             <input type="text" style={{ width: 220 }} />
           </div>
 
@@ -75,6 +57,7 @@ function ModalAddHotel(props) {
             <div className="LabelCo">Ghi chú:</div>
             <TextArea style={{ width: 226 }} />
           </div>
+
           <div
             className="flex items-center justify-end"
             style={{ marginRight: 45 }}
@@ -93,4 +76,4 @@ function ModalAddHotel(props) {
   );
 }
 
-export default ModalAddHotel;
+export default ModalUpdate;

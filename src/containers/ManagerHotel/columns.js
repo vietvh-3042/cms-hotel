@@ -41,6 +41,10 @@ const columns = [
     title: "Created",
     dataIndex: "Created",
   },
+  {
+    title: "Thao tác",
+    dataIndex: "Created",
+  },
 ];
 
 export { columns };

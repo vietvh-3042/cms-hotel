@@ -12,17 +12,17 @@ const options = [
       {
         key: "list-hotel",
         label: "Danh sách khách sạn",
-        icon: "icon-user",
+        icon: "/images/Sidebar/Hotel/sub-hotel.png",
       },
       {
         key: "hotel-floor",
         label: "Quản lý Lầu/Tầng",
-        icon: "icon-user",
+        icon: "/images/Sidebar/Hotel/sub-hotel.png",
       },
       {
         key: "hotel-diary",
         label: "Nhật ký sử dụng",
-        icon: "icon-user",
+        icon: "/images/Sidebar/Hotel/hotel-nhatki.png",
       },
     ],
   },
@@ -47,11 +47,11 @@ const options = [
         label: "Giá theo thời điểm",
         icon: "icon-user",
       },
-      {
-        key: "setting",
-        label: "Cài đặt chung",
-        icon: "icon-user",
-      },
+      // {
+      //   key: "setting",
+      //   label: "Cài đặt chung",
+      //   icon: "icon-user",
+      // },
     ],
   },
 
@@ -73,23 +73,23 @@ const options = [
     ],
   },
 
-  {
-    key: "3",
-    label: "Công nợ",
-    icon: "/images/Sidebar/CongNo/congno.png",
-    children: [
-      {
-        key: "users",
-        label: "Công nợ phải thu",
-        icon: "icon-user",
-      },
-      {
-        key: "users",
-        label: "Danh sách HĐ nợ",
-        icon: "icon-user",
-      },
-    ],
-  },
+  // {
+  //   key: "3",
+  //   label: "Công nợ",
+  //   icon: "/images/Sidebar/CongNo/congno.png",
+  //   children: [
+  //     {
+  //       key: "users",
+  //       label: "Công nợ phải thu",
+  //       icon: "icon-user",
+  //     },
+  //     {
+  //       key: "users",
+  //       label: "Danh sách HĐ nợ",
+  //       icon: "icon-user",
+  //     },
+  //   ],
+  // },
 
   {
     key: "4",
@@ -129,11 +129,11 @@ const options = [
         label: "Doanh thu gần đây",
         icon: "icon-user",
       },
-      {
-        key: "users",
-        label: "Phân tích biểu đồ",
-        icon: "icon-user",
-      },
+      // {
+      //   key: "users",
+      //   label: "Phân tích biểu đồ",
+      //   icon: "icon-user",
+      // },
     ],
   },
 

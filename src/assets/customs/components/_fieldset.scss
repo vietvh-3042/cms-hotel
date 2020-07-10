@@ -1,0 +1,21 @@
+.groupHour {
+  white-space: nowrap;
+  background: #eee;
+  background: -moz-linear-gradient(top, #f9f9f9, #dfdfe0);
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(#f9f9f9),
+    to(#dfdfe0)
+  );
+  filter: progid:DXImageTransform.Microsoft.Gradient(StartColorStr='#F9F9F9',EndColorStr='#DFDFE0',GradientType=0);
+  border: 1px solid #d0d0d0;
+  font-size: 12px;
+  padding: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  width: auto;
+  padding-right: 10px;
+  padding-left: 10px;
+}

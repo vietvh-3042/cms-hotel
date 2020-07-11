@@ -2,16 +2,22 @@ import { Tooltip } from "antd";
 import React, { useState } from "react";
 import { Table } from "reactstrap";
 import ModalAddService from "./components/ModalAddService";
+import { useHistory } from "react-router-dom";
 
 ManagerService.propTypes = {};
 
 function ManagerService(props) {
+	const history = useHistory();
 	const [visible, setVisible] = useState(false);
 	function handleAddListService() {
 		setVisible(!visible);
 	}
 	function format_current(price) {
 		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+	}
+
+	function handleGetWarehousing(id) {
+		history.push("/dashboard/list-service/warehousing/" + id);
 	}
 	return (
 		<div className="onecolumn mt-2 mx-2">
@@ -86,9 +92,14 @@ function ManagerService(props) {
 							<td className="centertext align-middle">
 								<div className="flex items-center">
 									<span className="w-6/12 text-right inline-block">0</span>
-									<span className="w-6/12 inline-block pl-2">
-										<img src="/images/Common/add.png" alt="add" />
-									</span>
+									<Tooltip placement="top" title="Nhập-Xuất kho mặt hàng này">
+										<span
+											className="w-6/12 inline-block pl-2"
+											onClick={() => handleGetWarehousing(1)}
+										>
+											<img src="/images/Common/add.png" alt="add" />
+										</span>
+									</Tooltip>
 								</div>
 							</td>
 							<td className="centertext align-middle">
@@ -96,7 +107,7 @@ function ManagerService(props) {
 									<span className="w-6/12 text-right inline-block">0</span>
 									<span className="w-6/12 inline-block pl-2">
 										<img
-											src="/images/Sidebar/Nhanvien/shift-history.png"
+											src="/images/Sidebar/Staff/shift-history.png"
 											alt="shift-history"
 										/>
 									</span>
@@ -160,7 +171,7 @@ function ManagerService(props) {
 									<span className="w-6/12 text-right inline-block">0</span>
 									<span className="w-6/12 inline-block pl-2">
 										<img
-											src="/images/Sidebar/Nhanvien/shift-history.png"
+											src="/images/Sidebar/Staff/shift-history.png"
 											alt="shift-history"
 										/>
 									</span>

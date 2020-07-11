@@ -201,7 +201,7 @@ const options = [
 	{
 		key: "8",
 		label: "Nhân viên",
-		icon: "/images/Sidebar/Nhanvien/nhanvien.png",
+		icon: "/images/Sidebar/Staff/nhanvien.png",
 		children: [
 			{
 				key: "users",
@@ -211,17 +211,17 @@ const options = [
 			{
 				key: "users",
 				label: "Lịch sử giao ca",
-				icon: "/images/Sidebar/Nhanvien/shift-history.png",
+				icon: "/images/Sidebar/Staff/shift-history.png",
 			},
 			{
 				key: "users",
 				label: "Quản lý nhân viên",
-				icon: "/images/Sidebar/Nhanvien/manager-user.png",
+				icon: "/images/Sidebar/Staff/manager-user.png",
 			},
 			{
 				key: "users",
 				label: "Nhóm phân quyền",
-				icon: "/images/Sidebar/Nhanvien/permision.png",
+				icon: "/images/Sidebar/Staff/permision.png",
 			},
 		],
 	},

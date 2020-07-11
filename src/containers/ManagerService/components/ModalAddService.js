@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Modal } from "antd";
+import { Modal, Tooltip } from "antd";
 import TextArea from "antd/lib/input/TextArea";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
 
 ModalAddService.propTypes = {
 	handleAddListService: PropTypes.func,
@@ -12,9 +12,11 @@ ModalAddService.defaultProps = {
 
 function ModalAddService(props) {
 	const { visible, handleAddListService } = props;
+	const [status, setStatus] = useState(0);
 	function handleSubmit(e) {
 		e.preventDefault();
 	}
+
 	return (
 		<Modal
 			visible={visible}
@@ -46,12 +48,15 @@ function ModalAddService(props) {
 						<div className="flex items-center mb-2">
 							<div className="LabelCo">Giá Bán:</div>
 							<input type="text" style={{ width: 200 }} className="dashboard" />
-							<img
-								src="/images/Modal/addAction.png"
-								alt="addAction"
-								className="ml-2 cursor-pointer"
-							/>
+							{/* <Tooltip placement="top" title="Thêm các giá bán khác.">
+								<img
+									src="/images/Modal/addAction.png"
+									alt="addAction"
+									className="ml-2 cursor-pointer"
+								/>
+							</Tooltip> */}
 						</div>
+
 						<div className="flex items-center mb-2">
 							<div className="LabelCo">Ghi chú:</div>
 							<TextArea style={{ width: 206 }} />

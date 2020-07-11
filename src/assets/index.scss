@@ -1,5 +1,6 @@
 //core
 @import "./core//tailwind";
+@import "~bootstrap/scss/bootstrap";
 
 //layouts
 @import "./customs/layouts/mainLayout";
@@ -11,6 +12,9 @@
 @import "./customs/components/button";
 @import "./customs/components/modal";
 @import "./customs/components/fieldset";
+@import "./customs/components/input";
+@import "./customs/components/main";
+@import "./customs/components/table";
 
 //containers
 @import "./customs/containers/common";

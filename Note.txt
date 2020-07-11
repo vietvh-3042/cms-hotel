@@ -1,0 +1,3 @@
+- Cần phải sửa lại ảnh menu 1 của sidebar
+- Menu 2 của khách sạn cũng phải sửa lại ảnh
+- Chỉnh sửa lại header

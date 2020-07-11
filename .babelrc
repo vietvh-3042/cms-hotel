@@ -9,7 +9,8 @@
           "@Components": "./src/components",
           "@Containers": "./src/containers",
           "@Reducer": "./src/redux/reducers",
-          "@Layout": "./src/layout"
+          "@Layout": "./src/layout",
+          "@Src": "./src"
         },
         "extensions": [".js", ".jsx", ".json"]
       }

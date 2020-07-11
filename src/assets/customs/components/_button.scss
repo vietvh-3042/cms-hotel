@@ -1,92 +1,67 @@
-.add-button {
-  display: flex;
-  justify-content: flex-end;
-  .ant-btn-primary {
-    background: #0c5fa5 url("/images/Button/button-element-bg.png") repeat-x
-      left top;
-    background: -webkit-gradient(
-      linear,
-      left top,
-      left bottom,
-      from(white),
-      to(#0c5fa5),
-      color-stop(0.03, #72c6e4)
-    );
-    border: 1px solid;
-    border-color: #50a3c8 #297cb4;
-    background-size: 100% 100%;
-    border-radius: 0.333rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .ant-btn-primary:hover {
-    border-color: #1eafdc #1193d5 #035592;
-    background: -webkit-gradient(
-      linear,
-      left top,
-      left bottom,
-      from(white),
-      to(#057fdb),
-      color-stop(0.03, #2bcef3)
-    );
-  }
+.dashboardButton {
+	white-space: nowrap;
+	display: inline-block;
+	border: 1px solid;
+	border-color: #50a3c8 #297cb4 #083f6f;
+	background: #0c5fa5 url("/images/Button/button-element-bg.png") repeat-x left
+		top;
+	-webkit-background-size: 100% 100%;
+	-moz-background-size: 100% 100%;
+	-o-background-size: 100% 100%;
+	background-size: 100% 100%;
+	min-width: 70px;
+	background: -moz-linear-gradient(top, white, #72c6e4 4%, #0c5fa5);
+	background: -webkit-gradient(
+		linear,
+		left top,
+		left bottom,
+		from(white),
+		to(#0c5fa5),
+		color-stop(0.03, #72c6e4)
+	);
+	-moz-border-radius: 0.333em;
+	-webkit-border-radius: 0.333em;
+	-webkit-background-clip: padding-box;
+	border-radius: 0.333em;
+	color: white;
+	-moz-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-webkit-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	padding: 0.3em 0.5em;
+	line-height: 1.429em;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 12px;
+	height: 26px;
+	outline: 0;
 }
 
-button {
-  white-space: nowrap;
-  display: inline-block;
-  border: 1px solid;
-  border-color: #50a3c8 #297cb4 #083f6f;
-  background: #0c5fa5 url("/images/Button/button-element-bg.png") repeat-x left
-    top;
-  -webkit-background-size: 100% 100%;
-  -moz-background-size: 100% 100%;
-  -o-background-size: 100% 100%;
-  background-size: 100% 100%;
-  min-width: 70px;
-  background: -moz-linear-gradient(top, white, #72c6e4 4%, #0c5fa5);
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(white),
-    to(#0c5fa5),
-    color-stop(0.03, #72c6e4)
-  );
-  -moz-border-radius: 0.333em;
-  -webkit-border-radius: 0.333em;
-  -webkit-background-clip: padding-box;
-  border-radius: 0.333em;
-  color: white;
-  -moz-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  -webkit-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  padding: 0.3em 0.5em;
-  line-height: 1.429em;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 12px;
-  height: 26px;
-  outline: 0;
+.add {
+	width: 20px;
+	height: 18px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 2px;
+	background: url("/images/Button/add.png") no-repeat;
 }
 
 .submit_cancel_Building {
-  color: white;
-  border-color: #bf3636 #5d0000 #0a0000;
-  background: #790000 url("/images/Button/button-element-red-bg.png") repeat-x
-    top;
-  background: -moz-linear-gradient(top, white, #ca3535 4%, #790000);
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(white),
-    to(#790000),
-    color-stop(0.03, #ca3535)
-  );
-  margin-right: 10px;
+	@extend .dashboardButton;
+	color: white;
+	border-color: #bf3636 #5d0000 #0a0000;
+	background: #790000 url("/images/Button/button-element-red-bg.png") repeat-x
+		top;
+	background: -moz-linear-gradient(top, white, #ca3535 4%, #790000);
+	background: -webkit-gradient(
+		linear,
+		left top,
+		left bottom,
+		from(white),
+		to(#790000),
+		color-stop(0.03, #ca3535)
+	);
+	margin-right: 10px;
 }

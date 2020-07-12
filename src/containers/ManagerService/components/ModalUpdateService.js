@@ -1,18 +1,17 @@
 import { Modal } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React from "react";
 
-ModalAddService.propTypes = {
-	handleAddListService: PropTypes.func,
+ModalUpdateService.propTypes = {
+	handleUpdateService: PropTypes.func,
 };
-ModalAddService.defaultProps = {
-	handleAddListService: null,
+ModalUpdateService.defaultProps = {
+	handleUpdateService: null,
 };
 
-function ModalAddService(props) {
-	const { visible, handleAddListService } = props;
-	const [status, setStatus] = useState(0);
+function ModalUpdateService(props) {
+	const { visible, handleUpdateService } = props;
 	function handleSubmit(e) {
 		e.preventDefault();
 	}
@@ -20,7 +19,7 @@ function ModalAddService(props) {
 	return (
 		<Modal
 			visible={visible}
-			onCancel={handleAddListService}
+			onCancel={handleUpdateService}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
@@ -29,7 +28,7 @@ function ModalAddService(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-update"></span>
-					<span>Thêm một dịch vụ mới</span>
+					<span>Chỉnh sửa dịch vụ</span>
 				</div>
 				<div className="modal_content">
 					<form onSubmit={handleSubmit}>
@@ -67,7 +66,7 @@ function ModalAddService(props) {
 						>
 							<button
 								className="submit_cancel_Building focus:outline-none"
-								onClick={handleAddListService}
+								onClick={handleUpdateService}
 							>
 								Cancel
 							</button>
@@ -81,11 +80,11 @@ function ModalAddService(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleAddListService}
+					onClick={handleUpdateService}
 				/>
 			</div>
 		</Modal>
 	);
 }
 
-export default ModalAddService;
+export default ModalUpdateService;

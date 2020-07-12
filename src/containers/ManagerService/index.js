@@ -1,23 +1,36 @@
 import { Tooltip } from "antd";
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { Table } from "reactstrap";
 import ModalAddService from "./components/ModalAddService";
-import { useHistory } from "react-router-dom";
+import ModalDetails from "./components/ModalDetails";
+import ModalUpdateService from "./components/ModalUpdateService";
 
 ManagerService.propTypes = {};
 
 function ManagerService(props) {
 	const history = useHistory();
 	const [visible, setVisible] = useState(false);
+	const [visibleUpdate, setVisibleUpdate] = useState(false);
+	const [visibleDetail, setVisibleDetail] = useState(false);
+
 	function handleAddListService() {
 		setVisible(!visible);
 	}
-	function format_current(price) {
-		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+
+	function handleUpdateService() {
+		setVisibleUpdate(!visibleUpdate);
+	}
+
+	function handleViewDetail() {
+		setVisibleDetail(!visibleDetail);
 	}
 
 	function handleGetWarehousing(id) {
 		history.push("/dashboard/list-service/warehousing/" + id);
+	}
+	function format_current(price) {
+		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 	}
 	return (
 		<div className="onecolumn mt-2 mx-2">
@@ -30,13 +43,27 @@ function ManagerService(props) {
 					/>
 					<span className="titleMainContain">Dịch vụ và kho</span>
 				</div>
-				<button
-					className="dashboardButton mr-3 focus:outline-none"
-					onClick={handleAddListService}
-				>
-					<span className="add"></span>
-					<span>Thêm</span>
-				</button>
+				<div>
+					<Tooltip placement="top" title="In thông tin Dịch vụ & Kho hiện tại">
+						<button className="grey mr-2">
+							<span className="print" />
+							<span>Print</span>
+						</button>
+					</Tooltip>
+					<Tooltip placement="top" title="Tải về Excel dữ liệu">
+						<button className="grey mr-2">
+							<span className="excel" />
+							<span>Xuất File</span>
+						</button>
+					</Tooltip>
+					<button
+						className="dashboardButton mr-3 focus:outline-none"
+						onClick={handleAddListService}
+					>
+						<span className="add"></span>
+						<span>Thêm</span>
+					</button>
+				</div>
 			</div>
 			<div className="mt-2 mx-2">
 				<Table bordered hover responsive size="sm">
@@ -92,24 +119,30 @@ function ManagerService(props) {
 							<td className="centertext align-middle">
 								<div className="flex items-center">
 									<span className="w-6/12 text-right inline-block">0</span>
-									<Tooltip placement="top" title="Nhập-Xuất kho mặt hàng này">
-										<span
-											className="w-6/12 inline-block pl-2"
-											onClick={() => handleGetWarehousing(1)}
-										>
-											<img src="/images/Common/add.png" alt="add" />
-										</span>
-									</Tooltip>
+									<span className="w-6/12 inline-block pl-2">
+										<Tooltip placement="top" title="Nhập-Xuất kho mặt hàng này">
+											<img
+												src="/images/Common/add.png"
+												alt="add"
+												className="inline"
+												onClick={() => handleGetWarehousing(1)}
+											/>
+										</Tooltip>
+									</span>
 								</div>
 							</td>
 							<td className="centertext align-middle">
 								<div className="flex items-center">
 									<span className="w-6/12 text-right inline-block">0</span>
 									<span className="w-6/12 inline-block pl-2">
-										<img
-											src="/images/Sidebar/Staff/shift-history.png"
-											alt="shift-history"
-										/>
+										<Tooltip placement="top" title="Xem chi tiết">
+											<img
+												src="/images/Sidebar/Staff/shift-history.png"
+												alt="shift-history"
+												className="inline"
+												onClick={handleViewDetail}
+											/>
+										</Tooltip>
 									</span>
 								</div>
 							</td>
@@ -125,71 +158,7 @@ function ManagerService(props) {
 											src="/images/Actions/Edit.png"
 											alt="Edit"
 											className="ml-2 mr-2 cursor-pointer"
-											// onClick={handleUpdateHotel}
-										/>
-									</Tooltip>
-									<Tooltip placement="top" title="Xóa">
-										<img
-											src="/images/Actions/Delete.png"
-											alt="Delete"
-											className="cursor-pointer"
-										/>
-									</Tooltip>
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td colSpan="10">
-								<img
-									src="/images/Common/status.png"
-									alt="status"
-									className="ml-3 mr-1 inline"
-								/>
-								<b style={{ color: "#d53b0a" }} className="centertext">
-									Đồ Ăn
-								</b>
-							</td>
-						</tr>
-						<tr>
-							<td className="centertext text-center align-middle">2</td>
-							<td className="centertext bold align-middle">Bánh Cook</td>
-							<td className="centertext text-right align-middle">
-								{format_current(10000)}
-							</td>
-							<td className="centertext text-right align-middle">0</td>
-							<td className="centertext align-middle">
-								<div className="flex items-center">
-									<span className="w-6/12 text-right inline-block">0</span>
-									<span className="w-6/12 inline-block pl-2">
-										<img src="/images/Common/add.png" alt="add" />
-									</span>
-								</div>
-							</td>
-							<td className="centertext align-middle">
-								<div className="flex items-center">
-									<span className="w-6/12 text-right inline-block">0</span>
-									<span className="w-6/12 inline-block pl-2">
-										<img
-											src="/images/Sidebar/Staff/shift-history.png"
-											alt="shift-history"
-										/>
-									</span>
-								</div>
-							</td>
-							<td className="centertext text-right align-middle">0</td>
-							<td className="centertext text-right align-middle">
-								<span className="text-red-600 bold">0</span>
-							</td>
-							<td className="centertext align-middle">10</td>
-							<td className="pt-2 align-middle">
-								<div className=" h-full flex items-center justify-center">
-									<Tooltip placement="top" title="Chỉnh sửa">
-										<img
-											src="/images/Actions/Edit.png"
-											alt="Edit"
-											className="ml-2 mr-2 cursor-pointer"
-											// onClick={handleUpdateHotel}
+											onClick={handleUpdateService}
 										/>
 									</Tooltip>
 									<Tooltip placement="top" title="Xóa">
@@ -208,6 +177,14 @@ function ManagerService(props) {
 			<ModalAddService
 				visible={visible}
 				handleAddListService={handleAddListService}
+			/>
+			<ModalUpdateService
+				visible={visibleUpdate}
+				handleUpdateService={handleUpdateService}
+			/>
+			<ModalDetails
+				visibleDetail={visibleDetail}
+				handleViewDetail={handleViewDetail}
 			/>
 		</div>
 	);

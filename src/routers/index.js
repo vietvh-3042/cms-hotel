@@ -3,10 +3,13 @@ import ManagerHotelDiary from "@Containers/ManagerHotelDiary";
 import ManagerHotelFloor from "@Containers/ManagerHotelFloor";
 import ManagerListRoom from "@Containers/ManagerListRoom";
 import ManagerMapHotel from "@Containers/ManagerMapHotel";
-import ManagerSamplePrice from "@Containers/ManagerSamplePrice";
+import ManagerPayment from "@Containers/ManagerPayment";
 import ManagerPriceTime from "@Containers/ManagerPriceTime";
+import ManagerReceipts from "@Containers/ManagerReceipts";
+import ManagerSamplePrice from "@Containers/ManagerSamplePrice";
 import ManagerService from "@Containers/ManagerService";
 import ManagerWarehousing from "@Containers/ManagerService/components/ManagerWarehousing";
+import ManagerStatisticalService from "@Containers/ManagerStatisticalService";
 import { ConnectedRouter } from "connected-react-router";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -84,6 +87,21 @@ function PublicRoutes(props) {
 				<PrivateRoute
 					path={"/dashboard/list-service/warehousing/:id"}
 					component={ManagerWarehousing}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/statistical-service"}
+					component={ManagerStatisticalService}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/receipts"}
+					component={ManagerReceipts}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/payment"}
+					component={ManagerPayment}
 					isLoggedIn={isLoggedIn}
 				/>
 				<Route path="*" component={NotFound} />

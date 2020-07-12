@@ -1,14 +1,24 @@
-import React from "react";
+import { Tooltip } from "antd";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Table } from "reactstrap";
-import { Tooltip } from "antd";
+import ModalAddWarehousing from "./components/ModalAddWarehousing";
+import ModalUpdateWarehousing from "./components/ModalUpdateWarehousing";
 
 ManagerWarehousing.propTypes = {};
 
 function ManagerWarehousing(props) {
 	let { id } = useParams();
+	const [visible, setVisible] = useState(false);
+	const [visibleUpdate, setVisibleUpdate] = useState(false);
 	function format_current(price) {
 		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+	}
+	function handleAddWarehousing() {
+		setVisible(!visible);
+	}
+	function handleUpdateWarehousing() {
+		setVisibleUpdate(!visibleUpdate);
 	}
 	return (
 		<div className="onecolumn mt-2 mx-2">
@@ -21,8 +31,16 @@ function ManagerWarehousing(props) {
 					/>
 					<span className="titleMainContain">{`Kho dịch vụ [${id}]`}</span>
 				</div>
-				<button className="dashboardButton mr-3 focus:outline-none">
-					<span className="add"></span>
+				<button
+					className="dashboardButton mr-3 focus:outline-none flex items-center"
+					onClick={handleAddWarehousing}
+				>
+					<img
+						src="/images/Actions/shoppingadd.png"
+						alt="shoppingadd"
+						style={{ width: 24, height: 20 }}
+						className="inline-block mr-1"
+					/>
 					<span>Nhập kho</span>
 				</button>
 			</div>
@@ -68,7 +86,7 @@ function ManagerWarehousing(props) {
 											src="/images/Actions/Edit.png"
 											alt="Edit"
 											className="ml-2 mr-2 cursor-pointer"
-											// onClick={handleUpdateHotel}
+											onClick={handleUpdateWarehousing}
 										/>
 									</Tooltip>
 									<Tooltip placement="top" title="Xóa">
@@ -84,6 +102,14 @@ function ManagerWarehousing(props) {
 					</tbody>
 				</Table>
 			</div>
+			<ModalAddWarehousing
+				visible={visible}
+				handleAddWarehousing={handleAddWarehousing}
+			/>
+			<ModalUpdateWarehousing
+				visible={visibleUpdate}
+				handleUpdateWarehousing={handleUpdateWarehousing}
+			/>
 		</div>
 	);
 }

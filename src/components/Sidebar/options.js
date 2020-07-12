@@ -66,7 +66,7 @@ const options = [
 				icon: "/images/Sidebar/Services/list-service.png",
 			},
 			{
-				key: "users",
+				key: "statistical-service",
 				label: "Thống kê DV đã bán",
 				icon: "/images/Sidebar/Services/statistical.png",
 			},
@@ -92,17 +92,17 @@ const options = [
 	// },
 
 	{
-		key: "4",
+		key: "receipts",
 		label: "Tiền chi & tiền thu",
 		icon: "/images/Sidebar/TienChi/tienchi.png",
 		children: [
 			{
-				key: "users",
+				key: "receipts",
 				label: "Quản lý phiếu thu",
 				icon: "/images/Sidebar/TienChi/receipts.png",
 			},
 			{
-				key: "users",
+				key: "payment",
 				label: "Quản lý phiếu chi",
 				icon: "/images/Sidebar/TienChi/payment.png",
 			},

@@ -11,7 +11,6 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [require("@tailwindcss/custom-forms")],
 	screens: {
 		sm: "640px",
 		// => @media (min-width: 640px) { ... }

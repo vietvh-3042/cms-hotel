@@ -10,24 +10,24 @@ const { Header } = Layout;
 Topbar.propTypes = {};
 
 function Topbar(props) {
-  const dispatch = useDispatch();
-  const view = useSelector((state) => state.App.view);
+	const dispatch = useDispatch();
+	const view = useSelector((state) => state.App.view);
 
-  return (
-    <Header className="isomorphicTopbar">
-      <div className="ant-pro-global-header">
-        <MenuOutlined
-          className="trigger"
-          onClick={
-            view !== "MobileView"
-              ? () => dispatch(toggleCollapsed())
-              : () => dispatch(actOpenSideBar())
-          }
-        />
-        <RightContent />
-      </div>
-    </Header>
-  );
+	return (
+		<Header className="isomorphicTopbar">
+			<div className="ant-pro-global-header">
+				<MenuOutlined
+					className="trigger"
+					onClick={
+						view !== "MobileView"
+							? () => dispatch(toggleCollapsed())
+							: () => dispatch(actOpenSideBar())
+					}
+				/>
+				<RightContent />
+			</div>
+		</Header>
+	);
 }
 
 export default Topbar;

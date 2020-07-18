@@ -1,0 +1,46 @@
+body {
+	margin: 0;
+	font-family: "Nunito", sans-serif;
+	font-size: 0.875rem;
+	line-height: 1.5;
+	color: #6c757d;
+	background-color: #f5f6f8;
+}
+
+.bg-signin {
+	background-image: url("/images/sigin.jpg");
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+.ant-layout-header {
+	background: #fff;
+	color: #000;
+}
+
+.ant-layout-content {
+	height: 100%;
+}
+
+.isomorphicLayout {
+	margin-left: 260px;
+	transition-duration: 0.1s;
+	transition-property: all;
+	transition-timing-function: linear;
+}
+
+.isomorphicLayoutCol {
+	margin-left: 80px;
+	transition-duration: 0.09s;
+	transition-property: all;
+	transition-timing-function: linear;
+	transition-delay: 0.1s;
+}
+
+@media only screen and (max-width: 767px) {
+	.isomorphicLayoutCol {
+		margin-left: 0;
+	}
+}

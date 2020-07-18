@@ -1,0 +1,13 @@
+.qty_room {
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	color: #fff;
+	font-weight: 700;
+	margin: 0 5px 0 15px;
+
+	&:first-child {
+		margin-left: 0;
+	}
+}

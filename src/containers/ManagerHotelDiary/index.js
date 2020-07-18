@@ -1,9 +1,16 @@
+import { Table } from "antd";
 import React from "react";
-import { Table } from "reactstrap";
 
 ManagerHotelDiary.propTypes = {};
 
 function ManagerHotelDiary(props) {
+	const columns = [
+		{ title: "Thời gian", dataIndex: "", key: "" },
+		{ title: "Username", dataIndex: "", key: "" },
+		{ title: "Thao tác", dataIndex: "", key: "" },
+		{ title: "Chi tiết", dataIndex: "", key: "" },
+	];
+
 	return (
 		<div className="onecolumn mt-2 mx-2">
 			<div className="header flex justify-between items-center">
@@ -17,21 +24,7 @@ function ManagerHotelDiary(props) {
 				</div>
 			</div>
 			<div className="mt-2 mx-2">
-				<Table bordered hover responsive size="sm">
-					<thead>
-						<tr>
-							<th className="w-3 sorting_disabled">Thời gian</th>
-							<th className="w-3 sorting_disabled">Username</th>
-							<th className="w-3 sorting_disabled">Thao tác</th>
-							<th className="w-3 sorting_disabled">Chi tiết</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td colSpan="4">Chưa có dữ liệu</td>
-						</tr>
-					</tbody>
-				</Table>
+				<Table columns={columns} />
 			</div>
 		</div>
 	);

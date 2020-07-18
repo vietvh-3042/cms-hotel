@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito:400,600,700,900");
+
+//font langding
+@font-face {
+	font-family: "roboto";
+	src: url("../../../fonts/Roboto-Regular.ttf");
+}
+
+@font-face {
+	font-family: "robotobold";
+	src: url("../../../fonts/Roboto-Bold.ttf");
+}
+
+@font-face {
+	font-family: "robotblack";
+	src: url("../../../fonts/Roboto-Black.ttf");
+}
+
+@font-face {
+	font-family: "robotmedium";
+	src: url("../../../fonts/Roboto-Medium.ttf");
+}
+
+@font-face {
+	font-family: "light";
+	src: url("../../../fonts/Roboto-Light.ttf");
+}
+@font-face {
+	font-family: "tinos";
+	src: url("../../../fonts/Tinos-Regular.ttf");
+}
+@font-face {
+	font-family: "tinosbold";
+	src: url("../../../fonts/Tinos-Bold.ttf");
+}
+
+.tinosbold {
+	font-family: "tinosbold" !important;
+}
+.tinos {
+	font-family: "tinos" !important;
+}
+.wapp-landing__page {
+	font-family: roboto;
+	font-size: 14px;
+	background-color: #fff;
+	margin-bottom: -60px;
+}
+
+.bold {
+	font-family: robotobold;
+	font-size: 14px;
+	color: #4f4f4f;
+}
+
+.medium {
+	font-family: "robotmedium";
+}
+
+.light {
+	font-family: "light";
+}
+
+.black {
+	font-family: "robotblack";
+}
+
+@media (max-width: 557.98px) {
+	.wapp-landing__page {
+		margin-bottom: -84px;
+	}
+}

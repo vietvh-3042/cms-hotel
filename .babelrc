@@ -5,12 +5,12 @@
       {
         "root": ["./"],
         "alias": {
+          "@Src": "./src",
           "@Actions": "./src/redux/actions",
           "@Components": "./src/components",
           "@Containers": "./src/containers",
           "@Reducer": "./src/redux/reducers",
-          "@Layout": "./src/layout",
-          "@Src": "./src"
+          "@Layout": "./src/layouts"
         },
         "extensions": [".js", ".jsx", ".json"]
       }

@@ -1,1 +1,1 @@
-export const API_TIMEOUT = 5000;
+export const API_TIMEOUT = 15000;

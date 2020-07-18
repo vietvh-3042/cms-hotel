@@ -1,3 +1,7 @@
+import Home from "@Containers/pages/Home";
+import ManagerBill from "@Containers/ManagerBill";
+import ManagerBusinessResult from "@Containers/ManagerBusinessResult";
+import ManagerCheckMoney from "@Containers/ManagerCheckMoney";
 import ManagerHotel from "@Containers/ManagerHotel";
 import ManagerHotelDiary from "@Containers/ManagerHotelDiary";
 import ManagerHotelFloor from "@Containers/ManagerHotelFloor";
@@ -6,21 +10,23 @@ import ManagerMapHotel from "@Containers/ManagerMapHotel";
 import ManagerPayment from "@Containers/ManagerPayment";
 import ManagerPriceTime from "@Containers/ManagerPriceTime";
 import ManagerReceipts from "@Containers/ManagerReceipts";
+import ManagerRecentRevenue from "@Containers/ManagerRecentRevenue";
+import ManagerRevenue from "@Containers/ManagerRevenue";
+import ManagerRoomSale from "@Containers/ManagerRoomSale";
 import ManagerSamplePrice from "@Containers/ManagerSamplePrice";
 import ManagerService from "@Containers/ManagerService";
 import ManagerWarehousing from "@Containers/ManagerService/components/ManagerWarehousing";
 import ManagerStatisticalService from "@Containers/ManagerStatisticalService";
+import NotFound from "@Containers/pages/NotFound";
+import Sigin from "@Containers/pages/Signin";
 import { ConnectedRouter } from "connected-react-router";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
-import NotFound from "../containers/pages/NotFound";
-import Sigin from "../containers/pages/Signin";
 import PrivateRoute from "./PrivateRoute";
 
 function PublicRoutes(props) {
 	const { history } = props;
-	console.log(history);
 	const isLoggedIn = useSelector((state) => state.Auth.loggedIn);
 	return (
 		<ConnectedRouter history={history}>
@@ -33,9 +39,10 @@ function PublicRoutes(props) {
 						isLoggedIn={isLoggedIn}
 					/>
 				) : (
-					<Route exact={true} path={"/"} component={Sigin} />
+					<Route exact={true} path={"/"} component={Home} />
 				)}
-				<Route exact={true} path={"/signin"} component={Sigin} />
+				<Route path={"/signin"} component={Sigin} />
+
 				<PrivateRoute
 					path={"/dashboard"}
 					exact={true}
@@ -44,37 +51,31 @@ function PublicRoutes(props) {
 				/>
 				<PrivateRoute
 					path={"/dashboard/list-hotel"}
-					exact={true}
 					component={ManagerHotel}
 					isLoggedIn={isLoggedIn}
 				/>
 				<PrivateRoute
 					path={"/dashboard/hotel-floor"}
-					exact={true}
 					component={ManagerHotelFloor}
 					isLoggedIn={isLoggedIn}
 				/>
 				<PrivateRoute
 					path={"/dashboard/hotel-diary"}
-					exact={true}
 					component={ManagerHotelDiary}
 					isLoggedIn={isLoggedIn}
 				/>
 				<PrivateRoute
 					path={"/dashboard/list-room"}
-					exact={true}
 					component={ManagerListRoom}
 					isLoggedIn={isLoggedIn}
 				/>
 				<PrivateRoute
 					path={"/dashboard/sample-price"}
-					exact={true}
 					component={ManagerSamplePrice}
 					isLoggedIn={isLoggedIn}
 				/>
 				<PrivateRoute
 					path={"/dashboard/price-time"}
-					exact={true}
 					component={ManagerPriceTime}
 					isLoggedIn={isLoggedIn}
 				/>
@@ -102,6 +103,36 @@ function PublicRoutes(props) {
 				<PrivateRoute
 					path={"/dashboard/payment"}
 					component={ManagerPayment}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/revenue"}
+					component={ManagerRevenue}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/room-sales"}
+					component={ManagerRoomSale}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/recent-revenue"}
+					component={ManagerRecentRevenue}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/list-bill"}
+					component={ManagerBill}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/check-money"}
+					component={ManagerCheckMoney}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/business-result"}
+					component={ManagerBusinessResult}
 					isLoggedIn={isLoggedIn}
 				/>
 				<Route path="*" component={NotFound} />

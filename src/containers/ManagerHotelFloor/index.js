@@ -1,23 +1,103 @@
-import { Tooltip } from "antd";
-import React, { useState } from "react";
-import { Table } from "reactstrap";
+import { getListHotelFloor, hideHotelFloor } from "@Actions/hotel_floor";
+import { Pagination, Popconfirm, Tooltip, Table } from "antd";
+import queryString from "query-string";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import ModalAddFloor from "./components/ModalAddFloor";
 import ModalUpdate from "./components/ModalUpdate";
 
 ManagerHotelFloor.propTypes = {};
 
 function ManagerHotelFloor(props) {
-	const data = [1, 2, 3, 4, 5];
+	const distPatch = useDispatch();
+	const [status, setStatus] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
-	const [visibleUpdate, setVisibleUpdate] = useState(false);
+	const [visibleUpdate, setVisibleUpdate] = useState({
+		visible: false,
+		detail: {},
+	});
+
+	const [filters, setFilter] = useState({
+		limit: 10,
+		page: 1,
+	});
+
+	const pagination = useSelector((state) => state.HotelFloor.pagination);
+	const listHotelFloor = useSelector(
+		(state) => state.HotelFloor.listHotelFloor
+	);
+
+	useEffect(() => {
+		setLoading(true);
+		const paramString = queryString.stringify(filters);
+		distPatch(
+			getListHotelFloor(paramString, (err, res) => {
+				res && setLoading(false);
+			})
+		);
+	}, [filters, status]);
 
 	function handleAddFloor() {
 		setVisible(!visible);
 	}
 
-	function handleUpdateFloor() {
-		setVisibleUpdate(!visibleUpdate);
+	function handleUpdateFloor(value) {
+		setVisibleUpdate({
+			visible: !visibleUpdate.visible,
+			detail: value,
+		});
 	}
+
+	function handleOnChangePage(current, size) {
+		setFilter({
+			...filters,
+			page: current,
+		});
+	}
+
+	function handleSetStatus() {
+		setStatus(!status);
+	}
+
+	function confirm(id, show_diagram, name) {
+		distPatch(
+			hideHotelFloor(
+				{ status: show_diagram === 1 ? 2 : 1, id: id },
+				(er, res) => {
+					if (res) {
+						handleSetStatus();
+						toast.success(
+							`Bạn vừa ${
+								show_diagram === 1 ? "hiện" : "ẩn"
+							} ${name} trên sơ đồ khách sạn`
+						);
+					}
+				}
+			)
+		);
+	}
+
+	const columns = [
+		{ title: "Ẩn khỏi sơ đồ", dataIndex: "", key: "" },
+		{ title: "STT", dataIndex: "STT", key: "STT" },
+		{ title: "Tên Tầng", dataIndex: "name", key: "name" },
+		{ title: "Số Phòng", dataIndex: "number_room", key: "number_room" },
+		{ title: "Ghi chú", dataIndex: "note", key: "note" },
+		{ title: "Thao tác", dataIndex: "", key: "" },
+	];
+
+	const allData = [];
+
+	listHotelFloor &&
+		listHotelFloor.length > 0 &&
+		listHotelFloor.forEach((infor, index) => {
+			allData.push({
+				...infor,
+				STT: index + 1,
+			});
+		});
 
 	return (
 		<div className="onecolumn mt-2 mx-2">
@@ -39,53 +119,26 @@ function ManagerHotelFloor(props) {
 				</button>
 			</div>
 			<div className="mt-2 mx-2">
-				<Table bordered hover responsive size="sm">
-					<thead>
-						<tr>
-							<th className="w-3 sorting_disabled">Ẩn khỏi sơ đồ</th>
-							<th className="w-3 sorting_disabled">STT</th>
-							<th className="w-3 sorting_disabled">Tên Tầng</th>
-							<th className="w-3 sorting_disabled">Số Phòng</th>
-							<th className="w-3 sorting_disabled">Ghi chú</th>
-							<th className="w-3 sorting_disabled">Thao tác</th>
-						</tr>
-					</thead>
-					<tbody>
-						{data.map((value, key) => (
-							<tr key={key}>
-								<td>Mark</td>
-								<td>{key + 1}</td>
-								<td>Otto</td>
-								<td>@mdo</td>
-								<td>09/07/2020 17:07</td>
-								<td className="pt-2">
-									<div className=" h-full flex items-center">
-										<Tooltip placement="top" title="Chỉnh sửa">
-											<img
-												src="/images/Actions/Edit.png"
-												alt="Edit"
-												className="ml-2 mr-1 cursor-pointer"
-												onClick={handleUpdateFloor}
-											/>
-										</Tooltip>
-										<Tooltip placement="top" title="Xóa">
-											<img
-												src="/images/Actions/Delete.png"
-												alt="Delete"
-												className="cursor-pointer"
-											/>
-										</Tooltip>
-									</div>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</Table>
+				<Table
+					dataSource={allData}
+					columns={columns}
+					loading={loading}
+					pagination={{
+						total: pagination.total,
+						pageSize: filters.limit,
+						current: filters.page,
+					}}
+				/>
 			</div>
-			<ModalAddFloor visible={visible} handleAddFloor={handleAddFloor} />
+			<ModalAddFloor
+				visible={visible}
+				handleAddFloor={handleAddFloor}
+				handleSetStatus={handleSetStatus}
+			/>
 			<ModalUpdate
 				visible={visibleUpdate}
 				handleUpdateFloor={handleUpdateFloor}
+				handleSetStatus={handleSetStatus}
 			/>
 		</div>
 	);

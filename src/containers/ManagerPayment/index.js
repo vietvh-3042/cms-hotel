@@ -94,7 +94,7 @@ function ManagerPayment(props) {
 							</td>
 							<td className="centertext text-center align-middle"></td>
 							<td className="pt-2 align-middle">
-								<div className=" h-full flex items-center justify-center">
+								<div className=" h-full flex items-center justify-center flex-wrap">
 									<Tooltip placement="top" title="Print">
 										<img
 											src="http://server6.skyhotel.vn/images/icons/fugue/printer16.png"
@@ -144,7 +144,7 @@ function ManagerPayment(props) {
 							</td>
 							<td className="centertext text-center align-middle"></td>
 							<td className="pt-2 align-middle">
-								<div className=" h-full flex items-center justify-center">
+								<div className=" h-full flex items-center justify-center flex-wrap">
 									<Tooltip placement="top" title="Print">
 										<img
 											src="http://server6.skyhotel.vn/images/icons/fugue/printer16.png"

@@ -1,0 +1,75 @@
+.modal_header_action {
+	background: #353c42 url("/images/bg_header.png") repeat-x;
+	padding: 5px 15px;
+	color: #fff;
+	text-shadow: 0 0 0 transparent !important;
+
+	span {
+		font-size: 13px;
+		color: #fff;
+		font-weight: bold;
+	}
+}
+
+.modal_content {
+	padding: 15px;
+	background: #f8f8f8;
+	background: -moz-linear-gradient(top, #f9f9f9, #dfdfe0);
+	background: -webkit-gradient(
+		linear,
+		left top,
+		left bottom,
+		from(#f9f9f9),
+		to(#dfdfe0)
+	);
+}
+
+.LabelCo {
+	text-align: right;
+	margin-right: 5px;
+	width: 110px;
+}
+
+.closeModal {
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	border-radius: 50%;
+}
+
+.hsp2_building-add {
+	width: 32px;
+	height: 32px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 5px;
+	background: url("/images/Modal/add.png") no-repeat;
+}
+
+.hsp2_building-update {
+	width: 32px;
+	height: 32px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 5px;
+	background: url("/images/Modal/update.png") no-repeat;
+}
+
+.hsp2_building-download {
+	width: 32px;
+	height: 32px;
+	display: inline-block;
+	vertical-align: middle;
+	background: url("/images/Modal/download.png") no-repeat;
+}
+
+.invalid-feedbacks {
+	margin-top: 0.25rem;
+	font-size: 80%;
+	color: #dc3545;
+	margin-bottom: 4px;
+}
+
+.custom-err {
+	margin-left: 115px !important;
+}

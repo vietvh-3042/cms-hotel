@@ -1,6 +1,9 @@
-import { Tooltip } from "antd";
-import React, { useState } from "react";
-import { Table } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import queryString from "query-string";
+import { deleteHotel, getListHotel } from "@Actions/hotel";
+import { useDispatch, useSelector } from "react-redux";
+import { Table } from "antd";
 import ModalAddHotel from "./components/ModalAddHotel";
 import ModalAddLocation from "./components/ModalAddLocation";
 import ModalUpdate from "./components/ModalUpdate";
@@ -8,21 +11,76 @@ import ModalUpdate from "./components/ModalUpdate";
 ManagerHotel.propTypes = {};
 
 function ManagerHotel(props) {
-	const data = [1, 2, 3, 4, 5];
+	const distPatch = useDispatch();
+	const [status, setStatus] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
-	const [visibleUpdate, setVisibleUpdate] = useState(false);
 	const [visibleLocation, setVisibleLocation] = useState(false);
+	const [filters, setFilter] = useState({
+		limit: 10,
+		page: 1,
+	});
+	const [visibleUpdate, setVisibleUpdate] = useState({
+		visible: false,
+		detail: {},
+	});
+
+	const listHotel = useSelector((state) => state.Hotel.listHotel);
+	const pagination = useSelector((state) => state.Hotel.pagination);
+
+	useEffect(() => {
+		setLoading(true);
+		const paramString = queryString.stringify(filters);
+		distPatch(
+			getListHotel(paramString, (err, res) => {
+				res && setLoading(false);
+			})
+		);
+	}, [filters, status]);
 
 	function handleAddHotel() {
 		setVisible(!visible);
 	}
-	function handleUpdateHotel() {
-		setVisibleUpdate(!visibleUpdate);
+
+	function handleUpdateHotel(value) {
+		setVisibleUpdate({
+			visible: !visibleUpdate.visible,
+			detail: value,
+		});
 	}
 
 	function handleAddLocation() {
 		setVisibleLocation(!visibleLocation);
 	}
+
+	function handleSetStatus() {
+		setStatus(!status);
+	}
+
+	const columns = [
+		{ title: "STT", dataIndex: "STT", key: "STT" },
+		{ title: "Tên KS", dataIndex: "name", key: "name" },
+		{ title: "SL.Tầng", dataIndex: "total_floor", key: "total_floor" },
+		{ title: "SL.Phòng", dataIndex: "total_room", key: "total_room" },
+		{ title: "Địa chỉ", dataIndex: "address", key: "address" },
+		{ title: "Phone", dataIndex: "phone", key: "phone" },
+		{ title: "Email", dataIndex: "email", key: "email" },
+		{ title: "Website", dataIndex: "website", key: "website" },
+		{ title: "Ghi chú", dataIndex: "note", key: "note" },
+		{ title: "Thao tác", dataIndex: "", key: "" },
+	];
+
+	const allData = [];
+
+	listHotel &&
+		listHotel.length > 0 &&
+		listHotel.forEach((infor, index) => {
+			allData.push({
+				...infor,
+				STT: index + 1,
+			});
+		});
+
 	return (
 		<div className="onecolumn mt-2 mx-2">
 			<div className="header flex justify-between items-center">
@@ -43,76 +101,26 @@ function ManagerHotel(props) {
 				</button>
 			</div>
 			<div className="mt-2 mx-2">
-				<Table bordered hover size="sm" responsive>
-					<thead>
-						<tr>
-							<th className="w-3 sorting_disabled">STT</th>
-							<th className="w-3 sorting_disabled">Tên KS</th>
-							<th className="w-3 sorting_disabled">SL.Tầng</th>
-							<th className="w-3 sorting_disabled">SL.Phòng</th>
-							<th className="w-3 sorting_disabled">Địa chỉ</th>
-							<th className="w-3 sorting_disabled">Phone</th>
-							<th className="w-3 sorting_disabled">Email</th>
-							<th className="w-3 sorting_disabled">Website</th>
-							<th className="w-3 sorting_disabled">Ghi chú</th>
-							<th className="w-3 sorting_disabled">Created</th>
-							<th className="w-3 sorting_disabled">Thao tác</th>
-						</tr>
-					</thead>
-					<tbody>
-						{data.map((value, key) => (
-							<tr key={key}>
-								<td className="centertext text-center align-middle">
-									{key + 1}
-								</td>
-								<td>Mark</td>
-								<td>Otto</td>
-								<td>@mdo</td>
-								<td>Hà Nội</td>
-								<td>435646</td>
-								<td>a@gmail.com</td>
-								<td>gfhf</td>
-								<td>1 l</td>
-								<td>09/07/2020 17:07</td>
-								<td className="align-middle">
-									<div className=" h-full flex items-center flex-wrap">
-										<Tooltip placement="top" title="Chỉnh sửa">
-											<img
-												src="/images/Actions/Edit.png"
-												alt="Edit"
-												className="ml-2 mr-1  cursor-pointer"
-												onClick={handleUpdateHotel}
-											/>
-										</Tooltip>
-										<Tooltip
-											placement="top"
-											title="Thêm khu vực khác. VD: Nhà hàng, Massage...)"
-										>
-											<img
-												src="/images/Actions/Add.png"
-												alt="Add"
-												className="mr-1  cursor-pointer"
-												onClick={handleAddLocation}
-											/>
-										</Tooltip>
-										<Tooltip placement="top" title="Xóa">
-											<img
-												src="/images/Actions/Delete.png"
-												alt="Delete"
-												className="cursor-pointer"
-											/>
-										</Tooltip>
-									</div>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</Table>
+				<Table
+					dataSource={allData}
+					columns={columns}
+					loading={loading}
+					pagination={{
+						total: pagination.total,
+						pageSize: filters.limit,
+						current: filters.page,
+					}}
+				/>
 			</div>
-			<ModalAddHotel visible={visible} handleAddHotel={handleAddHotel} />
+			<ModalAddHotel
+				visible={visible}
+				handleAddHotel={handleAddHotel}
+				handleSetStatus={handleSetStatus}
+			/>
 			<ModalUpdate
-				visible={visibleUpdate}
+				visibleUpdate={visibleUpdate}
 				handleUpdateHotel={handleUpdateHotel}
+				handleSetStatus={handleSetStatus}
 			/>
 			<ModalAddLocation
 				visible={visibleLocation}

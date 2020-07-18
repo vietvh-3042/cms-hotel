@@ -13,11 +13,13 @@ function AvatarDropdown(props) {
 
 	const menuHeaderDropdown = (
 		<Menu className="menu">
-			<Menu.Item key="logout">
+			<Menu.Item
+				key="logout"
+				className="flex items-center"
+				onClick={() => dispatch(logout())}
+			>
 				<LogoutOutlined />
-				<span className="menuText" onClick={() => dispatch(logout())}>
-					logout
-				</span>
+				<span className="menuText font-bold text-xs">Đăng Xuất</span>
 			</Menu.Item>
 		</Menu>
 	);

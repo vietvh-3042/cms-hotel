@@ -1,0 +1,28 @@
+//core
+@import "custom/core/tailwind";
+@import "~bootstrap/scss/bootstrap";
+@import "~react-toastify/dist/ReactToastify";
+@import "~antd/dist/antd.css";
+
+//layouts
+@import "custom/layouts/main";
+
+//components
+@import "custom/components/button";
+@import "custom/components/fieldset";
+@import "custom/components/input";
+@import "custom/components/modal";
+@import "custom/components/sidebar";
+@import "custom/components/table";
+@import "custom/components/topbar";
+@import "custom/components/homeHeader";
+
+//containers
+@import "custom/containers/Home/homepage";
+@import "custom/containers/DashBoard/dashboard";
+
+//utility
+@import "custom/utility/logo";
+
+//font
+@import "custom/fonts/fonts";

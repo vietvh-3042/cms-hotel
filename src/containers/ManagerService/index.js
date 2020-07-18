@@ -34,8 +34,8 @@ function ManagerService(props) {
 	}
 	return (
 		<div className="onecolumn mt-2 mx-2">
-			<div className="header flex justify-between items-center">
-				<div className="h-full flex items-center">
+			<div className="header flex flex-col md:flex-row md:justify-between md:items-center">
+				<div className="h-full flex items-center group2">
 					<img
 						src="/images/Sidebar/Services/list-service.png"
 						alt="list-service"
@@ -43,7 +43,7 @@ function ManagerService(props) {
 					/>
 					<span className="titleMainContain">Dịch vụ và kho</span>
 				</div>
-				<div>
+				<div className="group3">
 					<Tooltip placement="top" title="In thông tin Dịch vụ & Kho hiện tại">
 						<button className="grey mr-2">
 							<span className="print" />

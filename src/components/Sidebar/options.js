@@ -47,11 +47,6 @@ const options = [
 				label: "Giá theo thời điểm",
 				icon: "/images/Sidebar/Settings/price.png",
 			},
-			// {
-			//   key: "setting",
-			//   label: "Cài đặt chung",
-			//   icon: "icon-user",
-			// },
 		],
 	},
 
@@ -73,24 +68,6 @@ const options = [
 		],
 	},
 
-	// {
-	//   key: "3",
-	//   label: "Công nợ",
-	//   icon: "/images/Sidebar/CongNo/congno.png",
-	//   children: [
-	//     {
-	//       key: "users",
-	//       label: "Công nợ phải thu",
-	//       icon: "icon-user",
-	//     },
-	//     {
-	//       key: "users",
-	//       label: "Danh sách HĐ nợ",
-	//       icon: "icon-user",
-	//     },
-	//   ],
-	// },
-
 	{
 		key: "receipts",
 		label: "Tiền chi & tiền thu",
@@ -110,58 +87,53 @@ const options = [
 	},
 
 	{
-		key: "5",
+		key: "revenue",
 		label: "Doanh thu",
 		icon: "/images/Sidebar/DoanhThu/doanhthu.png",
 		children: [
 			{
-				key: "users",
+				key: "revenue",
 				label: "Doanh thu chi tiết",
 				icon: "/images/Sidebar/DoanhThu/details-sale.png",
 			},
 			{
-				key: "users",
+				key: "room-sales",
 				label: "Doanh thu bán phòng",
 				icon: "/images/Sidebar/DoanhThu/room-sale.png",
 			},
 			{
-				key: "users",
+				key: "recent-revenue",
 				label: "Doanh thu gần đây",
 				icon: "/images/Sidebar/DoanhThu/analysis.png",
 			},
-			// {
-			//   key: "users",
-			//   label: "Phân tích biểu đồ",
-			//   icon: "icon-user",
-			// },
 		],
 	},
 
 	{
-		key: "6",
+		key: "bill",
 		label: "Thống kê",
 		icon: "/images/Sidebar/ThongKe/thongke.png",
 		children: [
 			{
-				key: "users",
+				key: "list-bill",
 				label: "Doanh sách hóa đơn",
 				icon: "/images/Sidebar/ThongKe/bill.png",
 			},
 			{
-				key: "users",
+				key: "check-money",
 				label: "Kiểm tra $ tài khoản",
 				icon: "/images/Sidebar/ThongKe/checkout.png",
 			},
 			{
-				key: "users",
+				key: "business-result",
 				label: "Kết quả kinh doanh",
 				icon: "/images/Sidebar/ThongKe/business-result.png",
 			},
-			{
-				key: "users",
-				label: "Báo cáo",
-				icon: "/images/Sidebar/ThongKe/report.png",
-			},
+			// {
+			// 	key: "users",
+			// 	label: "Báo cáo",
+			// 	icon: "/images/Sidebar/ThongKe/report.png",
+			// },
 		],
 	},
 

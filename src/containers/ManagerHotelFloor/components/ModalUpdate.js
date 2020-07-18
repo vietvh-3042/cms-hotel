@@ -1,19 +1,50 @@
-import React from "react";
-import PropTypes from "prop-types";
+import { updateHotelFloor } from "@Actions/hotel_floor";
 import { Modal } from "antd";
-import TextArea from "antd/lib/input/TextArea";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 
-ModalUpdate.propTypes = {};
+ModalUpdate.propTypes = {
+	visible: PropTypes.object,
+	handleUpdateFloor: PropTypes.func,
+	handleSetStatus: PropTypes.func,
+};
+
+ModalUpdate.defaultProps = {
+	visible: null,
+	handleUpdateFloor: null,
+	handleSetStatus: null,
+};
 
 function ModalUpdate(props) {
-	const { visible, handleUpdateFloor } = props;
-	function handleSubmit(e) {
-		e.preventDefault();
+	const distPatch = useDispatch();
+	const { visible, handleUpdateFloor, handleSetStatus } = props;
+	const [name, setName] = useState("");
+	const [note, setNote] = useState("");
+	const { register, handleSubmit, errors } = useForm();
+
+	function onSubmit(data) {
+		const id = visible.detail.id;
+		distPatch(
+			updateHotelFloor(id, data, (er, res) => {
+				if (res) {
+					handleUpdateFloor({ visible: false, detail: {} });
+					handleSetStatus();
+				}
+			})
+		);
 	}
+	useEffect(() => {
+		if (visible !== null) {
+			setName(visible.detail.name || "");
+			setNote(visible.detail.note || "");
+		}
+	}, [visible]);
 
 	return (
 		<Modal
-			visible={visible}
+			visible={visible.visible}
 			onCancel={handleUpdateFloor}
 			footer={false}
 			closable={false}
@@ -26,15 +57,30 @@ function ModalUpdate(props) {
 					<span>Sửa tầng</span>
 				</div>
 				<div className="modal_content">
-					<form onSubmit={handleSubmit}>
+					<form onSubmit={handleSubmit(onSubmit)}>
 						<div className="flex items-center mb-2">
 							<div className="LabelCo">Tầng:</div>
-							<input type="text" style={{ width: 160 }} className="dashboard" />
+							<input
+								type="text"
+								style={{ width: 160 }}
+								className="dashboard"
+								name="name"
+								value={name}
+								onChange={(e) => setName(e.target.value)}
+								ref={register({ required: true })}
+							/>
 						</div>
 
 						<div className="flex items-center mb-2">
 							<div className="LabelCo">Ghi chú:</div>
-							<TextArea style={{ width: 166 }} />
+							<textarea
+								style={{ width: 166 }}
+								className="focus:outline-none border-none"
+								name="note"
+								value={note}
+								onChange={(e) => setNote(e.target.value)}
+								ref={register({ required: true })}
+							/>
 						</div>
 						<div
 							className="flex items-center justify-end"
@@ -46,7 +92,9 @@ function ModalUpdate(props) {
 							>
 								Cancel
 							</button>
-							<button className="focus:outline-none">Thêm</button>
+							<button className="dashboardButton focus:outline-none">
+								Thêm
+							</button>
 						</div>
 					</form>
 				</div>

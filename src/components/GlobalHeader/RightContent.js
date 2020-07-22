@@ -1,12 +1,12 @@
 import React from "react";
-import Avatar from "./AvatarDropdown";
+import AvatarDropdown from "./AvatarDropdown";
 
 RightContent.propTypes = {};
 
 function RightContent(props) {
 	return (
 		<div className="right">
-			<Avatar />
+			<AvatarDropdown />
 		</div>
 	);
 }

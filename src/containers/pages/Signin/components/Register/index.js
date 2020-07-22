@@ -1,30 +1,52 @@
+import Axios from "axios";
 import { FastField, Form, Formik } from "formik";
+import FieldInput from "helpers/CustomFields/FieldInputBootstrap";
 import React from "react";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { endpoint } from "settings";
 import * as Yup from "yup";
-import FieldInput from "@Src/helpers/CustomFields/FieldInputBootstrap";
 
 Register.propTypes = {};
 
 function Register(props) {
-	const dispatch = useDispatch();
-
 	const initialValues = {
 		email: "",
-		userName: "",
+		user_name: "",
+		phone: "",
 	};
+
 	const validationSchema = Yup.object().shape({
 		email: Yup.string()
 			.email("Email không đúng định dạng")
-
 			.required("Không được để trống"),
-		userName: Yup.string().required("Không được để trống"),
+		user_name: Yup.string().required("Không được để trống"),
+		phone: Yup.number().typeError("Phải là số").required("Không được để trống"),
 	});
 
 	function handleSubmit(data) {
-		console.log(data);
-		toast.success("Đăng kí thành công");
+		Axios({
+			method: "POST",
+			url: endpoint + "/client-auth/register",
+			data: data,
+		})
+			.then((res) => {
+				toast.success(
+					"Đăng kí thành công. Vui lòng kiểm tra email để lấy thông tin đăng nhập"
+				);
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	return (
@@ -44,14 +66,21 @@ function Register(props) {
 								name="email"
 								component={FieldInput}
 								label="Email"
-								placeholder="Email Address"
+								placeholder="Email"
 							/>
 
 							<FastField
-								name="userName"
+								name="user_name"
 								component={FieldInput}
-								label="User Name"
-								placeholder="User Name"
+								label="Tên Tài Khoản"
+								placeholder="Tên Tài Khoản"
+							/>
+
+							<FastField
+								name="phone"
+								component={FieldInput}
+								label="Số Điện Thoại"
+								placeholder="Số Điện Thoại"
 							/>
 
 							<div className="flex items-center justify-between">

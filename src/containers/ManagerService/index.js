@@ -1,37 +1,51 @@
-import { Tooltip } from "antd";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { Table } from "reactstrap";
-import ModalAddService from "./components/ModalAddService";
-import ModalDetails from "./components/ModalDetails";
-import ModalUpdateService from "./components/ModalUpdateService";
+import PropTypes from "prop-types";
+import { Table, Popconfirm } from "antd";
 
 ManagerService.propTypes = {};
 
 function ManagerService(props) {
-	const history = useHistory();
+	const [loading, setLoading] = useState(false);
+	const [listService, setListService] = useState([]);
+	const [pagination, setPagination] = useState();
 	const [visible, setVisible] = useState(false);
-	const [visibleUpdate, setVisibleUpdate] = useState(false);
-	const [visibleDetail, setVisibleDetail] = useState(false);
+	const [filters, setFilter] = useState({
+		limit: 10,
+		page: 1,
+	});
 
 	function handleAddListService() {
 		setVisible(!visible);
 	}
 
-	function handleUpdateService() {
-		setVisibleUpdate(!visibleUpdate);
+	function handleOnChange(pagination) {
+		setFilter({
+			...filters,
+			page: pagination.current,
+		});
 	}
 
-	function handleViewDetail() {
-		setVisibleDetail(!visibleDetail);
-	}
+	const columns = [
+		{ title: "STT", dataIndex: "STT", key: "STT" },
+		{ title: "Tên dịch vụ", dataIndex: "", key: "" },
+		{ title: "Giá bán", dataIndex: "", key: "" },
+		{ title: "SL.tồn Đầu kỳ(1)", dataIndex: "", key: "" },
+		{
+			title: "Đã nhập Trong kỳ(2)",
+			dataIndex: "number_bed",
+			key: "number_bed",
+		},
+		{
+			title: "Đã bán Trong kỳ(3)",
+			dataIndex: "number_person",
+			key: "number_person",
+		},
+		{ title: "Doanh thu Trong kỳ", dataIndex: "note", key: "note" },
+		{ title: "SL. Tồn Cuối kỳ(1+2+3)", dataIndex: "note", key: "note" },
+		{ title: "Ghi chú", dataIndex: "note", key: "note" },
+		{ title: "Thao tác", dataIndex: "note", key: "note" },
+	];
 
-	function handleGetWarehousing(id) {
-		history.push("/dashboard/list-service/warehousing/" + id);
-	}
-	function format_current(price) {
-		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-	}
 	return (
 		<div className="onecolumn mt-2 mx-2">
 			<div className="header flex flex-col md:flex-row md:justify-between md:items-center">
@@ -43,149 +57,29 @@ function ManagerService(props) {
 					/>
 					<span className="titleMainContain">Dịch vụ và kho</span>
 				</div>
-				<div className="group3">
-					<Tooltip placement="top" title="In thông tin Dịch vụ & Kho hiện tại">
-						<button className="grey mr-2">
-							<span className="print" />
-							<span>Print</span>
-						</button>
-					</Tooltip>
-					<Tooltip placement="top" title="Tải về Excel dữ liệu">
-						<button className="grey mr-2">
-							<span className="excel" />
-							<span>Xuất File</span>
-						</button>
-					</Tooltip>
-					<button
-						className="dashboardButton mr-3 focus:outline-none"
-						onClick={handleAddListService}
-					>
-						<span className="add"></span>
-						<span>Thêm</span>
-					</button>
-				</div>
+				<button
+					className="dashboardButton mr-3 focus:outline-none"
+					onClick={handleAddListService}
+				>
+					<span className="add"></span>
+					<span>Thêm dịch vụ</span>
+				</button>
 			</div>
 			<div className="mt-2 mx-2">
-				<Table bordered hover responsive size="sm">
-					<thead>
-						<tr>
-							<th className="w-3 sorting_disabled align-middle">STT</th>
-							<th className="w-3 sorting_disabled align-middle">Tên dịch vụ</th>
-							<th className="w-3 sorting_disabled align-middle">Giá bán</th>
-							<th className="w-3 sorting_disabled align-middle text-right">
-								SL.tồn <br />
-								Đầu kỳ(1)
-							</th>
-							<th className="w-3 sorting_disabled align-middle text-right">
-								Đã nhập <br />
-								Trong kỳ(2)
-							</th>
-							<th className="w-3 sorting_disabled align-middle text-right">
-								Đã bán <br />
-								Trong kỳ(3)
-							</th>
-							<th className="w-3 sorting_disabled align-middle text-right">
-								Doanh thu <br />
-								Trong kỳ
-							</th>
-							<th className="w-3 sorting_disabled align-middle text-right">
-								SL. Tồn <br />
-								Cuối kỳ(1+2+3)
-							</th>
-							<th className="w-3 sorting_disabled align-middle">Ghi chú</th>
-							<th className="w-3 sorting_disabled align-middle">Thao tác</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td colSpan="10">
-								<img
-									src="/images/Common/status.png"
-									alt="status"
-									className="ml-3 mr-1 inline"
-								/>
-								<b style={{ color: "#d53b0a" }} className="centertext">
-									Đồ Uống
-								</b>
-							</td>
-						</tr>
-						<tr>
-							<td className="centertext text-center align-middle">1</td>
-							<td className="centertext bold align-middle">Nước Suối</td>
-							<td className="centertext text-right align-middle">
-								{format_current(10000)}
-							</td>
-							<td className="centertext text-right align-middle">0</td>
-							<td className="centertext align-middle">
-								<div className="flex items-center">
-									<span className="w-6/12 text-right inline-block">0</span>
-									<span className="w-6/12 inline-block pl-2">
-										<Tooltip placement="top" title="Nhập-Xuất kho mặt hàng này">
-											<img
-												src="/images/Common/add.png"
-												alt="add"
-												className="inline"
-												onClick={() => handleGetWarehousing(1)}
-											/>
-										</Tooltip>
-									</span>
-								</div>
-							</td>
-							<td className="centertext align-middle">
-								<div className="flex items-center">
-									<span className="w-6/12 text-right inline-block">0</span>
-									<span className="w-6/12 inline-block pl-2">
-										<Tooltip placement="top" title="Xem chi tiết">
-											<img
-												src="/images/Sidebar/Staff/shift-history.png"
-												alt="shift-history"
-												className="inline"
-												onClick={handleViewDetail}
-											/>
-										</Tooltip>
-									</span>
-								</div>
-							</td>
-							<td className="centertext text-right align-middle">0</td>
-							<td className="centertext text-right align-middle">
-								<span className="text-red-600 bold">0</span>
-							</td>
-							<td className="centertext align-middle">10</td>
-							<td className="pt-2 align-middle">
-								<div className=" h-full flex items-center justify-center">
-									<Tooltip placement="top" title="Chỉnh sửa">
-										<img
-											src="/images/Actions/Edit.png"
-											alt="Edit"
-											className="ml-2 mr-2 cursor-pointer"
-											onClick={handleUpdateService}
-										/>
-									</Tooltip>
-									<Tooltip placement="top" title="Xóa">
-										<img
-											src="/images/Actions/Delete.png"
-											alt="Delete"
-											className="cursor-pointer"
-										/>
-									</Tooltip>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</Table>
+				<Table
+					rowKey={(record) => record.id}
+					dataSource={listService}
+					columns={columns}
+					loading={loading}
+					scroll={{ x: 1100 }}
+					pagination={{
+						total: pagination,
+						pageSize: filters.limit,
+						current: filters.page,
+					}}
+					onChange={handleOnChange}
+				/>
 			</div>
-			<ModalAddService
-				visible={visible}
-				handleAddListService={handleAddListService}
-			/>
-			<ModalUpdateService
-				visible={visibleUpdate}
-				handleUpdateService={handleUpdateService}
-			/>
-			<ModalDetails
-				visibleDetail={visibleDetail}
-				handleViewDetail={handleViewDetail}
-			/>
 		</div>
 	);
 }

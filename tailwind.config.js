@@ -2,8 +2,14 @@ module.exports = {
 	purge: [],
 	theme: {
 		extend: {
+			fontFamily: {
+				"source-sans-pro": ["Source Sans Pro"],
+				mitr: ["Mitr"],
+				"roboto-slab": ["Roboto Slab"],
+			},
 			width: {
 				"33px": "33px",
+				"150": "150px",
 				"280": "280px",
 			},
 			height: {
@@ -25,5 +31,5 @@ module.exports = {
 		// => @media (min-width: 1280px) { ... }
 	},
 	variants: {},
-	plugins: [],
+	plugins: [require("@tailwindcss/custom-forms")],
 };

@@ -1,43 +1,11 @@
-import { getListTypeRoom } from "@Actions/type_room";
+import React from "react";
+import PropTypes from "prop-types";
 import { Table } from "antd";
-import queryString from "query-string";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 ManagerSamplePrice.propTypes = {};
 
 function ManagerSamplePrice(props) {
-	const distPatch = useDispatch();
-	const [status, setStatus] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [visible, setVisible] = useState(false);
-
-	const [filters, setFilter] = useState({
-		limit: 10,
-		page: 1,
-	});
-
-	const listTypeRoom = useSelector((state) => state.TypeRoom.listTypeRoom);
-	const pagination = useSelector((state) => state.TypeRoom.pagination);
-
-	useEffect(() => {
-		setLoading(true);
-		const paramString = queryString.stringify(filters);
-		distPatch(
-			getListTypeRoom(paramString, (err, res) => {
-				res && setLoading(false);
-			})
-		);
-	}, [filters, status]);
-
-	function handleOnChangePage(current, size) {
-		setFilter({
-			...filters,
-			page: current,
-		});
-	}
-
-	function handleAddListRoom() {}
+	function handleAddPriceTime() {}
 
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
@@ -50,17 +18,6 @@ function ManagerSamplePrice(props) {
 		{ title: "Ghi chú", dataIndex: "note", key: "note" },
 		{ title: "Thao tác", dataIndex: "", key: "" },
 	];
-
-	const allData = [];
-
-	listTypeRoom &&
-		listTypeRoom.length > 0 &&
-		listTypeRoom.forEach((infor, index) => {
-			allData.push({
-				...infor,
-				STT: index + 1,
-			});
-		});
 
 	return (
 		<div className="onecolumn mt-2 mx-2">
@@ -75,23 +32,14 @@ function ManagerSamplePrice(props) {
 				</div>
 				<button
 					className="dashboardButton mr-3 focus:outline-none"
-					onClick={handleAddListRoom}
+					onClick={handleAddPriceTime}
 				>
 					<span className="add"></span>
-					<span>Thêm loại phòng</span>
+					<span>Thêm giá mẫu</span>
 				</button>
 			</div>
 			<div className="mt-2 mx-2">
-				<Table
-					dataSource={allData}
-					columns={columns}
-					loading={loading}
-					pagination={{
-						total: pagination.total,
-						pageSize: filters.limit,
-						current: filters.page,
-					}}
-				/>
+				<Table columns={columns} />
 			</div>
 		</div>
 	);

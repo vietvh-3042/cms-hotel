@@ -1,43 +1,61 @@
-import { getListHotelFloor, hideHotelFloor } from "@Actions/hotel_floor";
-import { Pagination, Popconfirm, Tooltip, Table } from "antd";
-import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
 import { toast } from "react-toastify";
-import ModalAddFloor from "./components/ModalAddFloor";
-import ModalUpdate from "./components/ModalUpdate";
+import queryString from "query-string";
+import { Pagination, Popconfirm, Tooltip, Table, Tag } from "antd";
+import Axios from "axios";
+import { endpoint } from "settings";
+import { useSelector } from "react-redux";
+import { API_Timeout } from "settings";
 
 ManagerHotelFloor.propTypes = {};
 
 function ManagerHotelFloor(props) {
-	const distPatch = useDispatch();
 	const [status, setStatus] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
+	const [listHotelFloor, setListHotelFloor] = useState([]);
+	const [pagination, setPagination] = useState();
 	const [visibleUpdate, setVisibleUpdate] = useState({
 		visible: false,
 		detail: {},
 	});
-
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
 	});
 
-	const pagination = useSelector((state) => state.HotelFloor.pagination);
-	const listHotelFloor = useSelector(
-		(state) => state.HotelFloor.listHotelFloor
-	);
+	const user = useSelector((state) => state.Auth.user);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
+
+	const allData = [];
 
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		distPatch(
-			getListHotelFloor(paramString, (err, res) => {
-				res && setLoading(false);
-			})
-		);
-	}, [filters, status]);
+		Axios({
+			method: "GET",
+			url: endpoint + "/tenant/hotel-manager/floor?" + paramString,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+			timeout: API_Timeout,
+		}).then((res) => {
+			setLoading(false);
+			res.data.data.forEach((infor, index) => {
+				allData.push({
+					...infor,
+					STT: index + 1,
+				});
+			});
+			setListHotelFloor(allData);
+			setPagination(res.data.meta.pagination.total);
+		});
+	}, [filters, status, hotel_ID]);
 
 	function handleAddFloor() {
 		setVisible(!visible);
@@ -62,42 +80,54 @@ function ManagerHotelFloor(props) {
 	}
 
 	function confirm(id, show_diagram, name) {
-		distPatch(
-			hideHotelFloor(
-				{ status: show_diagram === 1 ? 2 : 1, id: id },
-				(er, res) => {
-					if (res) {
-						handleSetStatus();
-						toast.success(
-							`Bạn vừa ${
-								show_diagram === 1 ? "hiện" : "ẩn"
-							} ${name} trên sơ đồ khách sạn`
-						);
-					}
-				}
-			)
-		);
+		Axios({
+			method: "POST",
+			url: endpoint + "/tenant/hotel-manager/hiden-floor",
+			data: {
+				status: 2,
+				id,
+			},
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		});
 	}
 
 	const columns = [
-		{ title: "Ẩn khỏi sơ đồ", dataIndex: "", key: "" },
+		{
+			title: "Ẩn khỏi sơ đồ",
+			render: (record) => (
+				<Popconfirm
+					placement="rightTop"
+					title="Bạn muốn khỏi sơ đồ?"
+					onConfirm={confirm}
+				>
+					<input
+						type="checkbox"
+						defaultChecked={record.show_diagram === 1 ? true : false}
+						className="cursor-pointer"
+					/>
+				</Popconfirm>
+			),
+		},
 		{ title: "STT", dataIndex: "STT", key: "STT" },
 		{ title: "Tên Tầng", dataIndex: "name", key: "name" },
 		{ title: "Số Phòng", dataIndex: "number_room", key: "number_room" },
 		{ title: "Ghi chú", dataIndex: "note", key: "note" },
+		{
+			title: "Trạng thái",
+			render: (record) => (
+				<Tag color={record.show_diagram === 1 ? "#cd201f" : "#87d068"}>
+					{record.show_diagram === 1 ? "Đang ẩn" : "Đang hiện"}
+				</Tag>
+			),
+		},
 		{ title: "Thao tác", dataIndex: "", key: "" },
 	];
-
-	const allData = [];
-
-	listHotelFloor &&
-		listHotelFloor.length > 0 &&
-		listHotelFloor.forEach((infor, index) => {
-			allData.push({
-				...infor,
-				STT: index + 1,
-			});
-		});
 
 	return (
 		<div className="onecolumn mt-2 mx-2">
@@ -120,17 +150,18 @@ function ManagerHotelFloor(props) {
 			</div>
 			<div className="mt-2 mx-2">
 				<Table
-					dataSource={allData}
+					rowKey={(record) => record.id}
+					dataSource={listHotelFloor}
 					columns={columns}
 					loading={loading}
 					pagination={{
-						total: pagination.total,
+						total: pagination,
 						pageSize: filters.limit,
 						current: filters.page,
 					}}
 				/>
 			</div>
-			<ModalAddFloor
+			{/* <ModalAddFloor
 				visible={visible}
 				handleAddFloor={handleAddFloor}
 				handleSetStatus={handleSetStatus}
@@ -139,7 +170,7 @@ function ManagerHotelFloor(props) {
 				visible={visibleUpdate}
 				handleUpdateFloor={handleUpdateFloor}
 				handleSetStatus={handleSetStatus}
-			/>
+			/> */}
 		</div>
 	);
 }

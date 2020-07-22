@@ -5,9 +5,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { createLogger } from "redux-logger";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import createSagaMiddleware from "redux-saga";
 import reducers from "./reducers";
-import rootSaga from "./sagas";
 
 const persistConfig = {
 	key: "Hotel Plaftform",
@@ -22,11 +20,9 @@ const loggerMiddleware = createLogger({
 
 const history = createBrowserHistory();
 
-const sagaMiddleware = createSagaMiddleware();
-
 const routeMiddleware = routerMiddleware(history);
 
-const middlewares = [sagaMiddleware, routeMiddleware, loggerMiddleware];
+const middlewares = [routeMiddleware, loggerMiddleware];
 
 const allReducer = combineReducers({
 	...reducers,
@@ -41,7 +37,5 @@ const store = createStore(
 );
 
 export const persistor = persistStore(store);
-
-sagaMiddleware.run(rootSaga);
 
 export { store, history };

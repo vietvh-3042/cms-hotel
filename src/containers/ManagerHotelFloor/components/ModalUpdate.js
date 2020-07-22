@@ -1,4 +1,4 @@
-import { updateHotelFloor } from "@Actions/hotel_floor";
+import { updateHotelFloor } from "redux/actions/hotel_floor";
 import { Modal } from "antd";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";

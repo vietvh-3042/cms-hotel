@@ -1,9 +1,9 @@
-import BasicLayout from "@Layout/BasicLayout";
 import Nprogress from "nprogress";
 import "nprogress/nprogress.css";
 import React, { Component } from "react";
 import ReactPlaceholder from "react-placeholder";
 import "react-placeholder/lib/reactPlaceholder.css";
+import BasicLayout from "layouts/BasicLayout";
 
 class AsyncFunc extends Component {
 	constructor(props) {

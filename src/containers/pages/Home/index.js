@@ -5,7 +5,7 @@ import SectionHighlights from "./components/SectionHighlights";
 import SectionMaamul from "./components/SectionMaamul";
 import SectionNew from "./components/SectionNew";
 import SectionRefer from "./components/SectionRefer";
-import HomePageLayout from "@Layout/HomePageLayout";
+import HomePageLayout from "layouts/HomePageLayout";
 
 Home.propTypes = {};
 

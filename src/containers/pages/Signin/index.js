@@ -27,27 +27,7 @@ function Signin(props) {
 					</div>
 				</nav>
 				<div className="body mt-20 mx-8">
-					<div className="md:flex items-center justify-between">
-						<div
-							className="w-full md:w-1/2 mr-auto"
-							style={{ textShadow: "0 20px 50px hsla(0,0%,0%,8)" }}
-						>
-							<h1 className="text-4xl font-bold text-white tracking-wide">
-								Brand
-							</h1>
-							<h2 className=" text-2xl font-bold text-white tracking-wide">
-								Welcome <span className="text-gray-800"> Aboard</span>
-							</h2>
-							<p className="text-gray-300">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit.
-							</p>
-							<span className="text-white">
-								Create New Account?
-								<a href="#" className="text-gray-900 text-lg ml-2 font-bold">
-									Sign Up
-								</a>
-							</span>
-						</div>
+					<div className="md:flex items-center justify-center">
 						{status ? <Login /> : <Register />}
 					</div>
 				</div>

@@ -1,38 +1,38 @@
 .isomorphicSidebar {
-  height: 100vh;
-  overflow: auto;
-  position: fixed;
-  left: 0;
-  // background: #f7f7f7 url("/images/bg_left.jpg") repeat-y;
-  // background-size: cover;
+	height: 100vh;
+	overflow: auto;
+	position: fixed;
+	left: 0;
+	// background: #f7f7f7 url("/images/bg_left.jpg") repeat-y;
+	// background-size: cover;
 
-  .isoLogoWrapper {
-    height: 64px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 25px;
-    background: url("/images/bg_header.png") repeat-x;
-    background-size: contain;
-    a {
-      color: #fff;
-    }
-  }
+	.isoLogoWrapper {
+		height: 64px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 25px;
+		// background: url("/images/bg_header.png") repeat-x;
+		// background-size: contain;
+		a {
+			color: #fff;
+		}
+	}
 
-  .dashboardMenu {
-    .isMenuIcon {
-      font-size: 18px !important;
-      padding-right: 15px;
-    }
-  }
+	.dashboardMenu {
+		.isMenuIcon {
+			font-size: 18px !important;
+			padding-right: 15px;
+		}
+	}
 }
 .ant-menu.ant-menu-dark .ant-menu-item-selected,
 .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
-  background-color: #d48166;
+	background-color: #d48166;
 }
 
 .textMenu {
-  text-transform: capitalize;
-  color: #fff;
-  font-size: 14px;
+	text-transform: capitalize;
+	color: #fff;
+	font-size: 14px;
 }

@@ -1,32 +1,38 @@
-import Home from "@Containers/pages/Home";
-import ManagerBill from "@Containers/ManagerBill";
-import ManagerBusinessResult from "@Containers/ManagerBusinessResult";
-import ManagerCheckMoney from "@Containers/ManagerCheckMoney";
-import ManagerHotel from "@Containers/ManagerHotel";
-import ManagerHotelDiary from "@Containers/ManagerHotelDiary";
-import ManagerHotelFloor from "@Containers/ManagerHotelFloor";
-import ManagerListRoom from "@Containers/ManagerListRoom";
-import ManagerMapHotel from "@Containers/ManagerMapHotel";
-import ManagerPayment from "@Containers/ManagerPayment";
-import ManagerPriceTime from "@Containers/ManagerPriceTime";
-import ManagerReceipts from "@Containers/ManagerReceipts";
-import ManagerRecentRevenue from "@Containers/ManagerRecentRevenue";
-import ManagerRevenue from "@Containers/ManagerRevenue";
-import ManagerRoomSale from "@Containers/ManagerRoomSale";
-import ManagerSamplePrice from "@Containers/ManagerSamplePrice";
-import ManagerService from "@Containers/ManagerService";
-import ManagerWarehousing from "@Containers/ManagerService/components/ManagerWarehousing";
-import ManagerStatisticalService from "@Containers/ManagerStatisticalService";
-import NotFound from "@Containers/pages/NotFound";
-import Sigin from "@Containers/pages/Signin";
 import { ConnectedRouter } from "connected-react-router";
+import ManagerBill from "containers/ManagerBill";
+import ManagerBusinessResult from "containers/ManagerBusinessResult";
+import ManagerCheckMoney from "containers/ManagerCheckMoney";
+import ManagerHotel from "containers/ManagerHotel";
+import ManagerHotelDiary from "containers/ManagerHotelDiary";
+import ManagerHotelFloor from "containers/ManagerHotelFloor";
+import ManagerListRoom from "containers/ManagerListRoom";
+import ManagerMapHotel from "containers/ManagerMapHotel";
+import ManagerPayment from "containers/ManagerPayment";
+import ManagerPriceTime from "containers/ManagerPriceTime";
+import ManagerReceipts from "containers/ManagerReceipts";
+import ManagerRecentRevenue from "containers/ManagerRecentRevenue";
+import ManagerRevenue from "containers/ManagerRevenue";
+import ManagerRoomSale from "containers/ManagerRoomSale";
+import ManagerSamplePrice from "containers/ManagerSamplePrice";
+import ManagerService from "containers/ManagerService";
+import ManagerWarehousing from "containers/ManagerService/components/ManagerWarehousing";
+import ManagerStatisticalService from "containers/ManagerStatisticalService";
+import Home from "containers/pages/Home";
+import NotFound from "containers/pages/NotFound";
+import Signin from "containers/pages/Signin";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
+
+let tenantName = cookies.get("tenant-name");
+
 function PublicRoutes(props) {
-	const { history } = props;
+	const { history, cookies } = props;
 	const isLoggedIn = useSelector((state) => state.Auth.loggedIn);
 	return (
 		<ConnectedRouter history={history}>
@@ -41,7 +47,7 @@ function PublicRoutes(props) {
 				) : (
 					<Route exact={true} path={"/"} component={Home} />
 				)}
-				<Route path={"/signin"} component={Sigin} />
+				<Route path={"/signin"} component={Signin} />
 
 				<PrivateRoute
 					path={"/dashboard"}

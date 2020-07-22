@@ -1,57 +1,77 @@
-import { updateHotel } from "@Actions/hotel";
 import { Modal } from "antd";
+import Axios from "axios";
+import { FastField, Form, Formik } from "formik";
+import InputField from "helpers/CustomFields/InputField";
+import TextAreaField from "helpers/CustomFields/TextAreaField";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { API_Timeout, endpoint } from "settings";
+import * as Yup from "yup";
 
 ModalUpdate.propTypes = {
 	handleUpdateHotel: PropTypes.func,
-	visibleUpdate: PropTypes.object,
 	handleSetStatus: PropTypes.func,
 };
 
-ModalUpdate.defaultProps = {
-	handleUpdateHotel: null,
-	visibleUpdate: null,
-	handleSetStatus: null,
-};
-
 function ModalUpdate(props) {
-	const distPatch = useDispatch();
-	const { handleUpdateHotel, visibleUpdate, handleSetStatus } = props;
-	const [name, setName] = useState("");
-	const [phone, setPhone] = useState("");
-	const [address, setAddress] = useState("");
-	const [province, setProvince] = useState("");
-	const [email, setEmail] = useState("");
-	const [website, setWebsite] = useState("");
-	const [note, setNote] = useState("");
-	const { register, handleSubmit, errors } = useForm();
+	const { visibleUpdate, handleUpdateHotel, handleSetStatus } = props;
 
-	function onSubmit(data) {
+	const initialValues = visibleUpdate.detail;
+
+	const user = useSelector((state) => state.Auth.user);
+
+	const validationSchema = Yup.object().shape({
+		name: Yup.string().required("Không được để trống."),
+		total_floor: Yup.number()
+			.typeError("Phải là số")
+			.required("Không được để trống."),
+		total_room: Yup.number()
+			.typeError("Phải là số")
+			.required("Không được để trống."),
+		address: Yup.string().required("Không được để trống."),
+		province: Yup.string().required("Không được để trống."),
+		phone: Yup.string().required("Không được để trống."),
+		email: Yup.string()
+			.email("Email không đúng định dạng")
+			.required("Không được để trống."),
+		website: Yup.string().required("Không được để trống."),
+	});
+
+	function handleSubmit(data) {
 		const id = visibleUpdate.detail.id;
-		distPatch(
-			updateHotel(id, data, (er, res) => {
-				if (res) {
-					handleUpdateHotel({ visible: false, detail: {} });
-					handleSetStatus();
-				}
+		Axios({
+			method: "PUT",
+			url: endpoint + "/tenant/hotel-manager/hotel/" + id,
+			data: data,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+			},
+			timeout: API_Timeout,
+		})
+			.then((res) => {
+				toast.success("Cập nhật thành công");
+				handleUpdateHotel();
+				handleSetStatus();
 			})
-		);
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
-
-	useEffect(() => {
-		if (visibleUpdate !== null) {
-			setName(visibleUpdate.detail.name || "");
-			setPhone(visibleUpdate.detail.phone || "");
-			setAddress(visibleUpdate.detail.address || "");
-			setProvince(visibleUpdate.detail.province || "");
-			setEmail(visibleUpdate.detail.email || "");
-			setWebsite(visibleUpdate.detail.website || "");
-			setNote(visibleUpdate.detail.note || "");
-		}
-	}, [visibleUpdate]);
 
 	return (
 		<Modal
@@ -68,113 +88,71 @@ function ModalUpdate(props) {
 					<span>Chỉnh sửa thông tin</span>
 				</div>
 				<div className="modal_content">
-					<form onSubmit={handleSubmit(onSubmit)}>
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Tên khách sạn:</div>
-							<input
-								type="text"
-								style={{ width: 220 }}
-								className="dashboard"
-								name="name"
-								value={name}
-								onChange={(e) => setName(e.target.value)}
-								ref={register({ required: true })}
-							/>
-						</div>
-
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Địa chỉ:</div>
-							<input
-								type="text"
-								style={{ width: 220 }}
-								className="dashboard"
-								name="address"
-								value={address}
-								onChange={(e) => setAddress(e.target.value)}
-								ref={register({ required: true })}
-							/>
-						</div>
-
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Tỉnh/Thành phố:</div>
-							<input
-								type="text"
-								style={{ width: 220 }}
-								className="dashboard"
-								name="province"
-								value={province}
-								onChange={(e) => setProvince(e.target.value)}
-								ref={register({ required: true })}
-							/>
-						</div>
-
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Phone:</div>
-							<input
-								type="text"
-								style={{ width: 220 }}
-								className="dashboard"
-								name="phone"
-								value={phone}
-								onChange={(e) => setPhone(e.target.value)}
-								ref={register({ required: true })}
-							/>
-						</div>
-
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Email:</div>
-							<input
-								type="text"
-								style={{ width: 220 }}
-								className="dashboard"
-								name="email"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-								ref={register({ required: true })}
-							/>
-						</div>
-
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Website:</div>
-							<input
-								type="text"
-								style={{ width: 220 }}
-								className="dashboard"
-								name="website"
-								value={website}
-								onChange={(e) => setWebsite(e.target.value)}
-								ref={register({ required: true })}
-							/>
-						</div>
-
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Ghi chú:</div>
-							<textarea
-								style={{ width: 226 }}
-								name="note"
-								value={note}
-								onChange={(e) => setNote(e.target.value)}
-								ref={register()}
-							/>
-						</div>
-						<div
-							className="flex items-center justify-end"
-							style={{ marginRight: 45 }}
-						>
-							<button
-								type="submit"
-								className="dashboardButton focus:outline-none"
-							>
-								Save
-							</button>
-							<button
-								className="submit_cancel_Building focus:outline-none"
-								onClick={handleUpdateHotel}
-							>
-								Cancel
-							</button>
-						</div>
-					</form>
+					<Formik
+						initialValues={initialValues}
+						validationSchema={validationSchema}
+						onSubmit={handleSubmit}
+					>
+						{() => (
+							<Form>
+								<FastField
+									name="name"
+									component={InputField}
+									label="Tên khách sạn:"
+								/>
+								<FastField
+									name="total_floor"
+									component={InputField}
+									label="Số lầu:"
+								/>
+								<FastField
+									name="total_room"
+									component={InputField}
+									label="Số phòng:"
+								/>
+								<FastField
+									name="address"
+									component={InputField}
+									label="Địa chỉ:"
+								/>
+								<FastField
+									name="province"
+									component={InputField}
+									label="Thành phố:"
+								/>
+								<FastField name="phone" component={InputField} label="Phone:" />
+								<FastField name="email" component={InputField} label="Email:" />
+								<FastField
+									name="website"
+									component={InputField}
+									label="Website:"
+								/>
+								<FastField
+									name="note"
+									component={TextAreaField}
+									label="Ghi chú:"
+								/>
+								<div
+									className="flex items-center justify-end"
+									style={{ marginRight: 45 }}
+								>
+									<button
+										type="button"
+										className="submit_cancel_Building focus:outline-none"
+										onClick={handleUpdateHotel}
+									>
+										Cancel
+									</button>
+									<button
+										type="submit"
+										className="dashboardButton focus:outline-none"
+									>
+										Sửa
+									</button>
+								</div>
+							</Form>
+						)}
+					</Formik>
 				</div>
 				<img
 					src="/images/Button/closeModal.png"

@@ -1,13 +1,15 @@
-import { createHotel } from "@Actions/hotel";
 import { Modal } from "antd";
+import Axios from "axios";
 import { FastField, Form, Formik } from "formik";
+import InputField from "helpers/CustomFields/InputField";
+import TextAreaField from "helpers/CustomFields/TextAreaField";
 import PropTypes from "prop-types";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { checkFlagHotel } from "redux/actions/app";
+import { API_Timeout, endpoint } from "settings";
 import * as Yup from "yup";
-import InputField from "@Src/helpers/CustomFields/InputField";
-import TextAreaField from "@Src/helpers/CustomFields/TextAreaField";
 
 ModalAddHotel.propTypes = {
 	handleAddHotel: PropTypes.func,
@@ -15,8 +17,9 @@ ModalAddHotel.propTypes = {
 };
 
 function ModalAddHotel(props) {
-	const distPatch = useDispatch();
+	const dispatch = useDispatch();
 	const { visible, handleAddHotel, handleSetStatus } = props;
+	const user = useSelector((state) => state.Auth.user);
 	const initialValues = {
 		name: "",
 		total_floor: "",
@@ -40,19 +43,34 @@ function ModalAddHotel(props) {
 		address: Yup.string().required("Không được để trống."),
 		province: Yup.string().required("Không được để trống."),
 		phone: Yup.string().required("Không được để trống."),
-		email: Yup.string().required("Không được để trống."),
+		email: Yup.string()
+			.email("Email không đúng định dạng")
+			.required("Không được để trống."),
 		website: Yup.string().required("Không được để trống."),
 	});
 
-	function handleSubmit(values) {
-		distPatch(createHotel(values), (er, res) => {
-			if (res) {
+	function handleSubmit(data) {
+		Axios({
+			method: "POST",
+			url: endpoint + "/tenant/hotel-manager/hotel",
+			data: data,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+			},
+			timeout: API_Timeout,
+		})
+			.then((res) => {
 				toast.success("Tạo mới thành công");
+				dispatch(checkFlagHotel());
 				handleAddHotel();
 				handleSetStatus();
-			} else {
+			})
+			.catch((err) => {
 				let error = [];
-				for (let value of Object.values(er.response.data.errors)) {
+				for (let value of Object.values(err.response.data.errors)) {
 					error.push(value);
 				}
 				toast.error(
@@ -62,9 +80,9 @@ function ModalAddHotel(props) {
 						))}
 					</React.Fragment>
 				);
-			}
-		});
+			});
 	}
+
 	return (
 		<Modal
 			visible={visible}

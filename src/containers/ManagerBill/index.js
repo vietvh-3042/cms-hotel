@@ -1,4 +1,3 @@
-import { Tooltip } from "antd";
 import React from "react";
 import { Table } from "reactstrap";
 

@@ -9,29 +9,17 @@ import { toast } from "react-toastify";
 import { API_Timeout, endpoint } from "settings";
 import * as Yup from "yup";
 
-ModalAddListRoom.propTypes = {
-	handleAddListRoom: PropTypes.func,
+ModalUpdateTypeRoom.propTypes = {
+	handleUpdateTypeRoom: PropTypes.func,
 	handleSetStatus: PropTypes.func,
 };
 
-function ModalAddListRoom(props) {
-	const { visible, handleAddListRoom, handleSetStatus } = props;
+function ModalUpdateTypeRoom(props) {
+	const { visibleUpdate, handleUpdateTypeRoom, handleSetStatus } = props;
 	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
-	const initialValues = {
-		name: "",
-		number_bed: "",
-		number_person: "",
-		price_day: "",
-		price_night: "",
-		price_by_hour: [{ time: 1, amount: "50000" }],
-		additional_overtime_checkout_day: [{ time: 1, amount: "50000" }],
-		additional_overtime_checkout_night: [{ time: 1, amount: "50000" }],
-		additional_checkin_soon_day: [{ time: 1, amount: "50000" }],
-		additional_checkin_soon_night: [{ time: 1, amount: "50000" }],
-		additional_add_extrabed: [{ person: 1, amount: "50000" }],
-	};
+	const initialValues = visibleUpdate.detail;
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
@@ -96,7 +84,7 @@ function ModalAddListRoom(props) {
 		})
 			.then((res) => {
 				toast.success("Tạo mới thành công");
-				handleAddListRoom();
+				handleUpdateTypeRoom();
 				handleSetStatus();
 			})
 			.catch((err) => {
@@ -130,8 +118,8 @@ function ModalAddListRoom(props) {
 
 	return (
 		<Modal
-			visible={visible}
-			onCancel={handleAddListRoom}
+			visible={visibleUpdate.visible}
+			onCancel={handleUpdateTypeRoom}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
@@ -140,7 +128,7 @@ function ModalAddListRoom(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Thêm loại phòng</span>
+					<span>Chỉnh sửa loại phòng</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -556,7 +544,7 @@ function ModalAddListRoom(props) {
 									<button
 										type="button"
 										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddListRoom}
+										onClick={handleUpdateTypeRoom}
 									>
 										Cancel
 									</button>
@@ -575,11 +563,11 @@ function ModalAddListRoom(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleAddListRoom}
+					onClick={handleUpdateTypeRoom}
 				/>
 			</div>
 		</Modal>
 	);
 }
 
-export default ModalAddListRoom;
+export default ModalUpdateTypeRoom;

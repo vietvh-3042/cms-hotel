@@ -1,11 +1,16 @@
-import { login } from "@Actions/auth";
+import Axios from "axios";
 import { FastField, Form, Formik } from "formik";
+import FieldInput from "helpers/CustomFields/FieldInputBootstrap";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { setAuthState, saveLoggedUser } from "redux/actions/auth";
+import { endpoint } from "settings";
+import Cookies from "universal-cookie";
 import * as Yup from "yup";
-import FieldInput from "@Src/helpers/CustomFields/FieldInputBootstrap";
+
+const cookies = new Cookies();
 
 Login.propTypes = {};
 
@@ -14,19 +19,46 @@ function Login(props) {
 	let history = useHistory();
 
 	const initialValues = {
-		userName: "",
+		user_name: "",
 		password: "",
 	};
 	const validationSchema = Yup.object().shape({
-		userName: Yup.string().required("Không được để trống"),
+		user_name: Yup.string().required("Không được để trống"),
+
 		password: Yup.string().required("Không được để trống"),
 	});
 
 	function handleSubmit(data) {
-		console.log(data);
-		dispatch(login());
-		toast.success("Đăng nhập thành công");
-		history.push("/");
+		Axios({
+			method: "POST",
+			url: endpoint + "/tenant-auth/login",
+			data: data,
+			headers: {
+				"tenant-name": data.user_name,
+			},
+		})
+			.then((res) => {
+				dispatch(setAuthState(true));
+				dispatch(saveLoggedUser(res.data));
+				toast.success("Đăng nhập thành công");
+				history.push("/dashboard");
+			})
+			.catch((err) => {
+				if (err.response.data.message) toast.error(err.response.data.message);
+				else {
+					let error = [];
+					for (let value of Object.values(err.response.data.errors)) {
+						error.push(value);
+					}
+					toast.error(
+						<React.Fragment>
+							{error.map((value, key) => (
+								<div key={key}>{value}</div>
+							))}
+						</React.Fragment>
+					);
+				}
+			});
 	}
 	return (
 		<div className="w-full md:max-w-md mt-6">
@@ -42,17 +74,17 @@ function Login(props) {
 					{() => (
 						<Form>
 							<FastField
-								name="userName"
+								name="user_name"
 								component={FieldInput}
-								label="Tên Đăng Nhập"
-								placeholder="User Name"
+								label="Tên Tài Khoản"
+								placeholder="Tên Tài Khoản"
 							/>
 
 							<FastField
 								name="password"
 								component={FieldInput}
 								label="Mật Khẩu"
-								placeholder="Password"
+								placeholder="Mật Khẩu"
 								type="password"
 							/>
 

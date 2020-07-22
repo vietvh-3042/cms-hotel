@@ -17,7 +17,7 @@ InputField.defaultProps = {
 };
 
 function InputField(props) {
-	const { field, form, type, label, placeholder, disabled } = props;
+	const { field, form, type, label, width } = props;
 	const { name } = field;
 	const { errors, touched } = form;
 	const showError = errors[name] && touched[name];
@@ -34,7 +34,7 @@ function InputField(props) {
 				id={name}
 				{...field}
 				type={type}
-				style={{ width: 220, height: 24, display: "inline" }}
+				style={{ width: width ? width : 220, height: 24, display: "inline" }}
 				className="dashboard"
 				invalid={showError}
 			/>

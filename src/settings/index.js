@@ -6,4 +6,9 @@ const siteConfig = {
 };
 // thêm mới icon
 const siteIcon = "//at.alicdn.com/t/font_1573023_20zr6xcg554.js";
-export { siteConfig, siteIcon };
+
+const endpoint = "http://192.168.1.31:8200";
+
+const API_Timeout = 15000;
+
+export { siteConfig, siteIcon, endpoint, API_Timeout };

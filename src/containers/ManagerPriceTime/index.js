@@ -1,20 +1,120 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Table } from "antd";
+import { Table, Popconfirm } from "antd";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import Axios from "axios";
+import queryString from "query-string";
+import { endpoint } from "settings";
 
 ManagerPriceTime.propTypes = {};
 
 function ManagerPriceTime(props) {
+	const allData = [];
+	const [status, setStatus] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [listPriceTime, setListPriceTime] = useState([]);
+	const [pagination, setPagination] = useState();
+	const user = useSelector((state) => state.Auth.user);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
+	const [filters, setFilter] = useState({
+		limit: 10,
+		page: 1,
+	});
+
+	useEffect(() => {
+		setLoading(true);
+		const paramString = queryString.stringify(filters);
+		Axios({
+			method: "GET",
+			url: endpoint + "/tenant/hotel-manager/price-time?" + paramString,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		}).then((res) => {
+			setLoading(false);
+			res.data.data.forEach((infor, index) => {
+				allData.push({
+					...infor,
+					STT: index + 1,
+				});
+			});
+			setListPriceTime(allData);
+			setPagination(res.data.meta.pagination.total);
+		});
+	}, [filters, status, hotel_ID]);
+
+	function format_current(price) {
+		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+	}
+
 	function handleAddPriceTime() {}
 
+	function handleOnChange(pagination) {
+		setFilter({
+			...filters,
+			page: pagination.current,
+		});
+	}
+
 	const columns = [
-		{ title: "STT", dataIndex: "STT", key: "STT" },
-		{ title: "Thời điểm", dataIndex: "STT", key: "STT" },
-		{ title: "Loại phòng", dataIndex: "STT", key: "STT" },
-		{ title: "Giá mặc định của loại phòng", dataIndex: "STT", key: "STT" },
-		{ title: "Giá sau khi điều chỉnh", dataIndex: "STT", key: "STT" },
-		{ title: "Ghi chú", dataIndex: "STT", key: "STT" },
-		{ title: "Thao tác", dataIndex: "STT", key: "STT" },
+		{ title: "STT", dataIndex: "STT", key: "STT", width: "45px" },
+		{ title: "Thời điểm", dataIndex: "", key: "", width: "230px" },
+		{
+			title: "Loại phòng",
+			key: "name",
+			width: "180px",
+			render: (record) => (
+				<b className="ml-2 bold" style={{ fontSize: 12 }}>
+					{record.name}
+				</b>
+			),
+		},
+		{
+			title: "Giá mặc định của loại phòng",
+			key: "STT",
+			width: "220px",
+			render: (record) => (
+				<div className="bg-green-300">
+					<span>♦ Qua đêm: </span>
+					<b className="ml-2 bold" style={{ fontSize: 12 }}>
+						{format_current(record.price_day)}
+					</b>
+				</div>
+			),
+		},
+		{
+			title: "Giá sau khi điều chỉnh",
+			dataIndex: "",
+			key: "",
+			width: "210px",
+		},
+		{ title: "Ghi chú", dataIndex: "note", key: "note", width: "85px" },
+		{
+			title: "Thao tác",
+			width: "95px",
+			render: (record) => (
+				<div className=" h-full flex justify-center items-center flex-wrap">
+					<Popconfirm
+						title="Bạn thực sự muốn xóa khách sạn này"
+						// onConfirm={() => confirm(record.id)}
+						okText="Yes"
+						cancelText="No"
+						placement="topRight"
+					>
+						<img
+							src="/images/Actions/Delete.png"
+							alt="Delete"
+							className="cursor-pointer"
+						/>
+					</Popconfirm>
+				</div>
+			),
+		},
 	];
 
 	return (
@@ -39,7 +139,18 @@ function ManagerPriceTime(props) {
 				</button>
 			</div>
 			<div className="mt-2 mx-2">
-				<Table columns={columns} />
+				<Table
+					dataSource={listPriceTime}
+					columns={columns}
+					loading={loading}
+					scroll={{ x: true }}
+					pagination={{
+						total: pagination,
+						pageSize: filters.limit,
+						current: filters.page,
+					}}
+					onChange={handleOnChange}
+				/>
 			</div>
 		</div>
 	);

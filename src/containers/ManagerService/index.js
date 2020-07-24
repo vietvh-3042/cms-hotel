@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Table, Popconfirm } from "antd";
+import ModalAddService from "./components/ModalAddService";
 
 ManagerService.propTypes = {};
 
@@ -80,6 +81,10 @@ function ManagerService(props) {
 					onChange={handleOnChange}
 				/>
 			</div>
+			<ModalAddService
+				visible={visible}
+				handleAddListService={handleAddListService}
+			/>
 		</div>
 	);
 }

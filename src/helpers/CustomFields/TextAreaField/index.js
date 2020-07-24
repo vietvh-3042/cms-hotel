@@ -17,7 +17,7 @@ TextAreaField.defaultProps = {
 };
 
 function TextAreaField(props) {
-	const { field, form, label } = props;
+	const { field, form, label, width } = props;
 	const { name } = field;
 	const { errors, touched } = form;
 	const showError = errors[name] && touched[name];
@@ -35,7 +35,7 @@ function TextAreaField(props) {
 				{...field}
 				allowClear
 				autoSize={true}
-				style={{ width: 226 }}
+				style={{ width: width ? width : 226 }}
 			/>
 		</div>
 	);

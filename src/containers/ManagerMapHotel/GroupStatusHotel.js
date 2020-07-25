@@ -1,8 +1,10 @@
 import { Dropdown, Menu } from "antd";
 import React, { useState } from "react";
-import ModalCheckin from "./components/ModalCheckin";
-import ModalCheckout from "./components/ModalCheckout";
+import ModalCheckin from "./components/Modal/ModalCheckin";
+import ModalCheckout from "./components/Modal/ModalCheckout";
 import StatusHotel from "./components/StatusHotel";
+import ModalAddBill from "./components/Modal/ModalAddBill";
+import ModalAddService from "./components/Modal/ModalAddService";
 
 GroupStatusHotel.propTypes = {};
 
@@ -16,12 +18,18 @@ function GroupStatusHotel(props) {
 
 	const menuReceipts = (
 		<Menu>
-			<Menu.Item className="text-xs">Tạo hóa đơn</Menu.Item>
-			<Menu.Item className="text-xs">Tạo phiếu chi</Menu.Item>
+			<Menu.Item className="text-xs" onClick={handleAddService}>
+				Tạo hóa đơn
+			</Menu.Item>
+			<Menu.Item className="text-xs" onClick={handleAddBill}>
+				Tạo phiếu chi
+			</Menu.Item>
 		</Menu>
 	);
 	const [visibleCheckin, setVisibleCheckin] = useState(false);
 	const [visibleCheckout, setVisibleCheckout] = useState(false);
+	const [visibleBill, setVisibleBill] = useState(false);
+	const [visibleService, setVisibleService] = useState(false);
 
 	function handleCheckin() {
 		setVisibleCheckin(!visibleCheckin);
@@ -30,6 +38,15 @@ function GroupStatusHotel(props) {
 	function handleCheckout() {
 		setVisibleCheckout(!visibleCheckout);
 	}
+
+	function handleAddBill() {
+		setVisibleBill(!visibleBill);
+	}
+
+	function handleAddService() {
+		setVisibleService(!visibleService);
+	}
+
 	return (
 		<React.Fragment>
 			<div className="form-inline flex">
@@ -54,9 +71,7 @@ function GroupStatusHotel(props) {
 						Khách đoàn / CTY
 					</button>
 				</Dropdown>
-				<button className="submit_cancel_Building mr-2 mb-2">
-					Hiện trạng & Đặt Phòng
-				</button>
+
 				<button className="grey mr-2 mb-2" onClick={handleCheckin}>
 					DS Checkin
 				</button>
@@ -72,6 +87,11 @@ function GroupStatusHotel(props) {
 			<ModalCheckout
 				visible={visibleCheckout}
 				handleCheckout={handleCheckout}
+			/>
+			<ModalAddBill visible={visibleBill} handleAddBill={handleAddBill} />
+			<ModalAddService
+				visible={visibleService}
+				handleAddService={handleAddService}
 			/>
 		</React.Fragment>
 	);

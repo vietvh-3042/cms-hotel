@@ -56,6 +56,16 @@ const options = [
 		icon: "/images/Sidebar/Services/service.png",
 		children: [
 			{
+				key: "type-category",
+				label: "Danh sách loại DV",
+				icon: "/images/Sidebar/Services/list-service.png",
+			},
+			{
+				key: "list-category",
+				label: "Danh sách nhóm DV",
+				icon: "/images/Sidebar/Services/list-service.png",
+			},
+			{
 				key: "list-service",
 				label: "Danh sách dịch vụ",
 				icon: "/images/Sidebar/Services/list-service.png",

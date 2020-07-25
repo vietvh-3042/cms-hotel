@@ -26,6 +26,8 @@ import { Route, Switch } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 
 import Cookies from "universal-cookie";
+import ManagerCategory from "containers/ManagerCategory";
+import ManagerTypeCategory from "containers/ManagerTypeCategory";
 
 const cookies = new Cookies();
 
@@ -83,6 +85,18 @@ function PublicRoutes(props) {
 				<PrivateRoute
 					path={"/dashboard/price-time"}
 					component={ManagerPriceTime}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/type-category"}
+					exact={true}
+					component={ManagerTypeCategory}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/list-category"}
+					exact={true}
+					component={ManagerCategory}
 					isLoggedIn={isLoggedIn}
 				/>
 				<PrivateRoute

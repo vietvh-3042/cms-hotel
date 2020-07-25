@@ -1,75 +1,74 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { FastField, Form, Formik, Field } from "formik";
 import { Modal } from "antd";
 import Axios from "axios";
-import { FastField, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
-import TextAreaField from "helpers/CustomFields/TextAreaField";
-import PropTypes from "prop-types";
-import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { API_Timeout, endpoint } from "settings";
 import * as Yup from "yup";
+import { useSelector } from "react-redux";
 
-ModalAddFloor.propTypes = {
-	handleAddFloor: PropTypes.func,
+ModalUpdateTypeCategory.propTypes = {
+	handleUpdateType: PropTypes.func,
 	handleSetStatus: PropTypes.func,
 };
 
-ModalAddFloor.defaultProps = {
-	handleAddFloor: null,
+ModalUpdateTypeCategory.defaultProps = {
+	handleUpdateType: null,
 	handleSetStatus: null,
 };
 
-function ModalAddFloor(props) {
-	const { visible, handleAddFloor, handleSetStatus } = props;
-
+function ModalUpdateTypeCategory(props) {
+	const { visibleUpdateType, handleUpdateType, handleSetStatus } = props;
 	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
-	const initialValues = {
-		name: "",
-		number_room: "",
-		note: "",
-	};
+	const initialValues = visibleUpdateType.detail;
+	console.log(initialValues);
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
-		number_room: Yup.number()
-			.typeError("Phải là số")
-			.required("Không được để trống."),
 	});
 
 	function handleSubmit(data) {
 		Axios({
 			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/floor",
+			url: endpoint + "/tenant/category/type-category",
 			data: {
 				...data,
-				show_diagram: 2,
+				status: 1,
 			},
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
 				Authorization: "Bearer" + user.meta.access_token,
 				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
 			},
-			timeout: API_Timeout,
 		})
 			.then((res) => {
 				toast.success("Thêm mới thành công");
-				handleAddFloor();
+				handleUpdateType();
 				handleSetStatus();
 			})
 			.catch((err) => {
-				console.log(err.response);
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
 			});
 	}
 
 	return (
 		<Modal
-			visible={visible}
-			onCancel={handleAddFloor}
+			visible={visibleUpdateType.visible}
+			onCancel={handleUpdateType}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
@@ -78,11 +77,12 @@ function ModalAddFloor(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Thêm lầu mới</span>
+					<span>Thêm loại danh mục</span>
 				</div>
 				<div className="modal_content">
 					<Formik
 						initialValues={initialValues}
+						enableReinitialize
 						validationSchema={validationSchema}
 						onSubmit={handleSubmit}
 					>
@@ -91,20 +91,8 @@ function ModalAddFloor(props) {
 								<FastField
 									name="name"
 									component={InputField}
-									label="Tên tầng:"
+									label="Tên loại:"
 									width={160}
-								/>
-								<FastField
-									name="number_room"
-									component={InputField}
-									label="Số lượng phòng:"
-									width={160}
-								/>
-								<FastField
-									name="note"
-									component={TextAreaField}
-									label="Ghi chú:"
-									width={166}
 								/>
 								<div
 									className="flex items-center justify-end"
@@ -113,7 +101,7 @@ function ModalAddFloor(props) {
 									<button
 										type="button"
 										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddFloor}
+										onClick={handleUpdateType}
 									>
 										Cancel
 									</button>
@@ -132,11 +120,11 @@ function ModalAddFloor(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleAddFloor}
+					onClick={handleUpdateType}
 				/>
 			</div>
 		</Modal>
 	);
 }
 
-export default ModalAddFloor;
+export default ModalUpdateTypeCategory;

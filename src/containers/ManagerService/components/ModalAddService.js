@@ -1,7 +1,13 @@
 import { Modal } from "antd";
-import TextArea from "antd/lib/input/TextArea";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { API_Timeout, endpoint } from "settings";
+import Axios from "axios";
+import { FastField, Form, Formik, Field } from "formik";
+import InputField from "helpers/CustomFields/InputField";
+import TextAreaField from "helpers/CustomFields/TextAreaField";
 
 ModalAddService.propTypes = {
 	handleAddListService: PropTypes.func,
@@ -12,10 +18,8 @@ ModalAddService.defaultProps = {
 
 function ModalAddService(props) {
 	const { visible, handleAddListService } = props;
-	const [status, setStatus] = useState(0);
-	function handleSubmit(e) {
-		e.preventDefault();
-	}
+
+	function handleSubmit(data) {}
 
 	return (
 		<Modal
@@ -32,50 +36,56 @@ function ModalAddService(props) {
 					<span>Thêm một dịch vụ mới</span>
 				</div>
 				<div className="modal_content">
-					<form onSubmit={handleSubmit}>
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Tên Dịch vụ:</div>
-							<input type="text" style={{ width: 200 }} className="dashboard" />
-						</div>
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Nhóm Dịch vụ:</div>
-							<select style={{ width: 206 }} className="focus:outline-none">
-								<option value="1">Chọn Nhóm Dịch Vụ</option>
-								<option value="2">Đồ Uống</option>
-								<option value="3">Đồ Ăn</option>
-							</select>
-						</div>
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Giá Bán:</div>
-							<input type="text" style={{ width: 200 }} className="dashboard" />
-							{/* <Tooltip placement="top" title="Thêm các giá bán khác.">
-								<img
-									src="/images/Modal/addAction.png"
-									alt="addAction"
-									className="ml-2 cursor-pointer"
+					<Formik onSubmit={handleSubmit}>
+						{() => (
+							<Form>
+								<FastField
+									name="name"
+									component={InputField}
+									label="Tên dịch vụ:"
+									width={200}
 								/>
-							</Tooltip> */}
-						</div>
-
-						<div className="flex items-center mb-2">
-							<div className="LabelCo">Ghi chú:</div>
-							<TextArea style={{ width: 206 }} />
-						</div>
-						<div
-							className="flex items-center justify-end"
-							style={{ marginRight: 45 }}
-						>
-							<button
-								className="submit_cancel_Building focus:outline-none"
-								onClick={handleAddListService}
-							>
-								Cancel
-							</button>
-							<button className="dashboardButton focus:outline-none">
-								Thêm
-							</button>
-						</div>
-					</form>
+								<div className="flex mb-2">
+									<div className="LabelCo">Nhóm Dịch vụ:</div>
+									<Field as="select" style={{ width: 206, height: 30 }}>
+										<option value="1">Chọn Nhóm Dịch Vụ</option>
+										<option value="2">Đồ Uống</option>
+										<option value="3">Đồ Ăn</option>
+									</Field>
+								</div>
+								<FastField
+									name="name"
+									component={InputField}
+									label="Giá bán:"
+									width={200}
+								/>
+								<FastField
+									name="note"
+									component={TextAreaField}
+									label="Ghi chú:"
+									width={206}
+								/>
+								<div
+									className="flex items-center justify-end"
+									style={{ marginRight: 45 }}
+								>
+									<button
+										type="button"
+										className="submit_cancel_Building focus:outline-none"
+										onClick={handleAddListService}
+									>
+										Cancel
+									</button>
+									<button
+										type="submit"
+										className="dashboardButton focus:outline-none"
+									>
+										Thêm
+									</button>
+								</div>
+							</Form>
+						)}
+					</Formik>
 				</div>
 				<img
 					src="/images/Button/closeModal.png"

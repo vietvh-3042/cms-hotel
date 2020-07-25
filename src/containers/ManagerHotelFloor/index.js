@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { toast } from "react-toastify";
-import queryString from "query-string";
-import { Pagination, Popconfirm, Tooltip, Table, Tag } from "antd";
+import { Popconfirm, Table, Tag } from "antd";
 import Axios from "axios";
-import { endpoint } from "settings";
+import queryString from "query-string";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { API_Timeout } from "settings";
+import { toast } from "react-toastify";
+import { API_Timeout, endpoint } from "settings";
+import ModalAddFloor from "./components/ModalAddFloor";
 
 ManagerHotelFloor.propTypes = {};
 
@@ -57,6 +56,36 @@ function ManagerHotelFloor(props) {
 		});
 	}, [filters, status, hotel_ID]);
 
+	function handleOnChangePage(current, size) {
+		console.log(current);
+		setFilter({
+			...filters,
+			page: current.current,
+		});
+	}
+
+	function confirm(id, show_diagram, name) {
+		Axios({
+			method: "POST",
+			url: endpoint + "/tenant/hotel-manager/hiden-floor",
+			data: {
+				status: show_diagram === 1 ? 2 : 1,
+				id,
+			},
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+			timeout: API_Timeout,
+		}).then((res) => {
+			toast.dark(`${name} đã ${show_diagram === 1 ? "hiện" : "ẩn"} trên sờ đồ`);
+			handleSetStatus();
+		});
+	}
+
 	function handleAddFloor() {
 		setVisible(!visible);
 	}
@@ -68,33 +97,8 @@ function ManagerHotelFloor(props) {
 		});
 	}
 
-	function handleOnChangePage(current, size) {
-		setFilter({
-			...filters,
-			page: current,
-		});
-	}
-
 	function handleSetStatus() {
 		setStatus(!status);
-	}
-
-	function confirm(id, show_diagram, name) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/hiden-floor",
-			data: {
-				status: 2,
-				id,
-			},
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		});
 	}
 
 	const columns = [
@@ -103,12 +107,15 @@ function ManagerHotelFloor(props) {
 			render: (record) => (
 				<Popconfirm
 					placement="rightTop"
-					title="Bạn muốn khỏi sơ đồ?"
-					onConfirm={confirm}
+					title={`Bạn muốn ${
+						record.show_diagram === 1 ? "hiện" : "ẩn"
+					} trên sơ đồ?`}
+					onConfirm={() => confirm(record.id, record.show_diagram, record.name)}
 				>
 					<input
 						type="checkbox"
-						defaultChecked={record.show_diagram === 1 ? true : false}
+						checked={record.show_diagram === 1 ? true : false}
+						onChange={() => {}}
 						className="cursor-pointer"
 					/>
 				</Popconfirm>
@@ -126,7 +133,32 @@ function ManagerHotelFloor(props) {
 				</Tag>
 			),
 		},
-		{ title: "Thao tác", dataIndex: "", key: "" },
+		{
+			title: "Thao tác",
+			render: (record) => (
+				<div className=" h-full flex justify-center items-center flex-wrap">
+					<img
+						src="/images/Actions/Edit.png"
+						alt="Edit"
+						className="ml-2 mr-1  cursor-pointer"
+						// onClick={() => handleUpdateHotel(record)}
+					/>
+					<Popconfirm
+						title="Bạn thực sự muốn xóa khách sạn này"
+						// onConfirm={() => confirm(record.id)}
+						okText="Yes"
+						cancelText="No"
+						placement="topRight"
+					>
+						<img
+							src="/images/Actions/Delete.png"
+							alt="Delete"
+							className="cursor-pointer"
+						/>
+					</Popconfirm>
+				</div>
+			),
+		},
 	];
 
 	return (
@@ -159,14 +191,15 @@ function ManagerHotelFloor(props) {
 						pageSize: filters.limit,
 						current: filters.page,
 					}}
+					onChange={handleOnChangePage}
 				/>
 			</div>
-			{/* <ModalAddFloor
+			<ModalAddFloor
 				visible={visible}
 				handleAddFloor={handleAddFloor}
 				handleSetStatus={handleSetStatus}
 			/>
-			<ModalUpdate
+			{/* <ModalUpdate
 				visible={visibleUpdate}
 				handleUpdateFloor={handleUpdateFloor}
 				handleSetStatus={handleSetStatus}

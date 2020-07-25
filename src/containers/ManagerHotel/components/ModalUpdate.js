@@ -90,6 +90,7 @@ function ModalUpdate(props) {
 				<div className="modal_content">
 					<Formik
 						initialValues={initialValues}
+						enableReinitialize
 						validationSchema={validationSchema}
 						onSubmit={handleSubmit}
 					>

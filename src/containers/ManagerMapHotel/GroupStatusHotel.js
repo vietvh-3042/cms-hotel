@@ -2,14 +2,22 @@ import { Dropdown, Menu } from "antd";
 import React, { useState } from "react";
 import ModalCheckin from "./components/ModalCheckin";
 import ModalCheckout from "./components/ModalCheckout";
+import StatusHotel from "./components/StatusHotel";
 
-StatusHotel.propTypes = {};
+GroupStatusHotel.propTypes = {};
 
-function StatusHotel(props) {
+function GroupStatusHotel(props) {
 	const menu = (
 		<Menu>
 			<Menu.Item className="text-xs">Checkin Khách đoàn / CTY</Menu.Item>
 			<Menu.Item className="text-xs">Checkout Khách đoàn / CTY</Menu.Item>
+		</Menu>
+	);
+
+	const menuReceipts = (
+		<Menu>
+			<Menu.Item className="text-xs">Tạo hóa đơn</Menu.Item>
+			<Menu.Item className="text-xs">Tạo phiếu chi</Menu.Item>
 		</Menu>
 	);
 	const [visibleCheckin, setVisibleCheckin] = useState(false);
@@ -25,40 +33,20 @@ function StatusHotel(props) {
 	return (
 		<React.Fragment>
 			<div className="form-inline flex">
-				<div className="flex items-center w-6/12 md:w-1/5 lg:w-1/6 mb-2">
-					<span className="qty_room text-center bg-teal-500">0</span>
-					<span>
-						<strong>Trống</strong>
-					</span>
-				</div>
-
-				<div className="flex items-center w-6/12 md:w-1/5 lg:w-1/6 mb-2">
-					<span className="qty_room text-center bg-pink-500">0</span>
-					<span>
-						<strong>Đang ở</strong>
-					</span>
-				</div>
-
-				<div className="flex items-center w-6/12 md:w-1/5 lg:w-1/6 mb-2">
-					<span className="qty_room text-center bg-orange-500">0</span>
-					<span>
-						<strong>Chờ khách</strong>
-					</span>
-				</div>
-
-				<div className="flex items-center w-6/12 md:w-1/5 lg:w-1/6 mb-2">
-					<span className="qty_room text-center bg-gray-500">0</span>
-					<span>
-						<strong>Chưa dọn</strong>
-					</span>
-				</div>
-
-				<div className="flex items-center w-6/12 md:w-1/5 lg:w-1/6 mb-2">
-					<span className="qty_room text-center bg-black">0</span>
-					<span>
-						<strong>Đang sửa</strong>
-					</span>
-				</div>
+				<StatusHotel quantity={0} title="Trống" background="bg-teal-500" />
+				<StatusHotel quantity={0} title="Đang ở" background="bg-pink-500" />
+				<StatusHotel
+					quantity={0}
+					title="Chờ khách"
+					background="bg-orange-500"
+				/>
+				<StatusHotel
+					quantity={0}
+					title="Chờ khách"
+					background="bg-orange-500"
+				/>
+				<StatusHotel quantity={0} title="Chưa dọn" background="bg-gray-500" />
+				<StatusHotel quantity={0} title="Đang sửa" background="bg-black" />
 			</div>
 			<div className="pl-1 mt-2">
 				<Dropdown overlay={menu}>
@@ -76,7 +64,9 @@ function StatusHotel(props) {
 					DS Checkout
 				</button>
 				<button className="grey mr-2 mb-2">DS Khách hàng</button>
-				<button className="dashboardButton mb-2">Tạo HD / Phiếu</button>
+				<Dropdown overlay={menuReceipts}>
+					<button className="dashboardButton mb-2">Tạo HD / Phiếu</button>
+				</Dropdown>
 			</div>
 			<ModalCheckin visible={visibleCheckin} handleCheckin={handleCheckin} />
 			<ModalCheckout
@@ -87,4 +77,4 @@ function StatusHotel(props) {
 	);
 }
 
-export default StatusHotel;
+export default GroupStatusHotel;

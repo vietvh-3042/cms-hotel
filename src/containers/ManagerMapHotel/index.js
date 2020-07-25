@@ -2,7 +2,7 @@ import { Empty } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import MapHotel from "./MapHotel";
-import StatusHotel from "./StatusHotel";
+import GroupStatusHotel from "./GroupStatusHotel";
 
 ManagerMapHotel.propTypes = {};
 
@@ -16,10 +16,11 @@ function ManagerMapHotel(props) {
 			</div>
 			<div className="mt-2 mx-2 ml-3">
 				{!hotel_ID ? (
-					<Empty />
+					// <Empty />
+					<GroupStatusHotel />
 				) : (
 					<React.Fragment>
-						<StatusHotel />
+						{/* <StatusHotel /> */}
 						<MapHotel />
 					</React.Fragment>
 				)}

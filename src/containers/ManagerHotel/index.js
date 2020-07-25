@@ -1,13 +1,12 @@
-import { Popconfirm, Table, Tooltip } from "antd";
+import { Popconfirm, Table } from "antd";
 import Axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { endpoint } from "settings";
+import { toast } from "react-toastify";
+import { API_Timeout, endpoint } from "settings";
 import ModalAddHotel from "./components/ModalAddHotel";
 import ModalUpdate from "./components/ModalUpdate";
-import { API_Timeout } from "settings";
-import { toast } from "react-toastify";
 
 ManagerHotel.propTypes = {};
 

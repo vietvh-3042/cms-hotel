@@ -1,12 +1,17 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { Table, Popconfirm } from "antd";
+import { Table } from "antd";
+import Axios from "axios";
+import queryString from "query-string";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { endpoint } from "settings";
 import ModalAddService from "./components/ModalAddService";
 
 ManagerService.propTypes = {};
 
 function ManagerService(props) {
+	const allData = [];
 	const [loading, setLoading] = useState(false);
+	const [status, setStatus] = useState(false);
 	const [listService, setListService] = useState([]);
 	const [pagination, setPagination] = useState();
 	const [visible, setVisible] = useState(false);
@@ -14,6 +19,35 @@ function ManagerService(props) {
 		limit: 10,
 		page: 1,
 	});
+
+	const user = useSelector((state) => state.Auth.user);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
+
+	useEffect(() => {
+		setLoading(true);
+		const paramString = queryString.stringify(filters);
+		Axios({
+			method: "GET",
+			url: endpoint + "/tenant/service-storage/service?" + paramString,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		}).then((res) => {
+			setLoading(false);
+			res.data.data.forEach((infor, index) => {
+				allData.push({
+					...infor,
+					STT: index + 1,
+				});
+			});
+			setListService(allData);
+			setPagination(res.data.meta.pagination.total);
+		});
+	}, [filters, status, hotel_ID]);
 
 	function handleAddListService() {
 		setVisible(!visible);
@@ -24,6 +58,9 @@ function ManagerService(props) {
 			...filters,
 			page: pagination.current,
 		});
+	}
+	function handleSetStatus() {
+		setStatus(!status);
 	}
 
 	const columns = [

@@ -1,24 +1,82 @@
-import { Tooltip } from "antd";
-import React, { useState } from "react";
-import { Table } from "reactstrap";
-import ModalAddReceipt from "./components/ModalAddReceipt";
-import ModalUpdateReceipt from "./components/ModalUpdateReceipt";
+import { Table } from "antd";
+import Axios from "axios";
+import queryString from "query-string";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { endpoint } from "settings";
 
 ManagerReceipts.propTypes = {};
 
 function ManagerReceipts(props) {
+	const allData = [];
+	const [loading, setLoading] = useState(false);
+	const [status, setStatus] = useState(false);
+	const [listReceipts, setListReceipts] = [];
+	const [pagination, setPagination] = useState();
 	const [visible, setVisible] = useState(false);
 	const [visibleUpdate, setVisibleUpdate] = useState(false);
+	const [filters, setFilter] = useState({
+		limit: 10,
+		page: 1,
+	});
+
+	const user = useSelector((state) => state.Auth.user);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
+
+	useEffect(() => {
+		setLoading(true);
+		const paramString = queryString.stringify(filters);
+		Axios({
+			method: "GET",
+			url: endpoint + "/tenant/payslip-receipt/receipt?" + paramString,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		}).then((res) => {
+			setLoading(false);
+			res.data.data.forEach((infor, index) => {
+				allData.push({
+					...infor,
+					STT: index + 1,
+				});
+			});
+			setListReceipts(allData);
+			setPagination(res.data.meta.pagination.total);
+		});
+	}, [filters, status, hotel_ID]);
 
 	function handleAddReceipt() {
 		setVisible(!visible);
 	}
-	function handleUpdateReceipt() {
-		setVisibleUpdate(!visibleUpdate);
+
+	function handleSetStatus() {
+		setStatus(!status);
 	}
-	function format_current(price) {
-		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+
+	function handleOnChange(pagination) {
+		setFilter({
+			...filters,
+			page: pagination.current,
+		});
 	}
+
+	const columns = [
+		{ title: "STT", dataIndex: "STT", key: "STT" },
+		{ title: "Mã Phiếu", dataIndex: "", key: "" },
+		{ title: "Ngày tạo", dataIndex: "", key: "" },
+		{ title: "Diễn giải phiếu thu", dataIndex: "", key: "" },
+		{ title: "Số tiền", dataIndex: "", key: "" },
+		{ title: "Hình thức", dataIndex: "", key: "" },
+		{ title: "Người trả", dataIndex: "", key: "" },
+		{ title: "Tạo bởi", dataIndex: "", key: "" },
+		{ title: "Ghi chú", dataIndex: "", key: "" },
+		{ title: "Thao tác", dataIndex: "", key: "" },
+	];
+
 	return (
 		<div className="onecolumn mt-2 mx-2">
 			<div className="header flex justify-between items-center">
@@ -31,12 +89,6 @@ function ManagerReceipts(props) {
 					<span className="titleMainContain">Quản lý phiếu thu </span>
 				</div>
 				<div>
-					<Tooltip placement="top" title="Tải về Excel dữ liệu">
-						<button className="grey mr-2">
-							<span className="excel" />
-							<span>Xuất File</span>
-						</button>
-					</Tooltip>
 					<button
 						className="dashboardButton mr-3 focus:outline-none"
 						onClick={handleAddReceipt}
@@ -47,75 +99,19 @@ function ManagerReceipts(props) {
 				</div>
 			</div>
 			<div className="mt-2 mx-2">
-				<Table bordered hover responsive size="sm">
-					<thead>
-						<tr>
-							<th className="w-3 sorting_disabled align-middle">STT</th>
-							<th className="w-3 sorting_disabled align-middle">Mã Phiếu</th>
-							<th className="w-3 sorting_disabled align-middle">Ngày tạo</th>
-							<th className="w-3 sorting_disabled align-middle">
-								Diễn giải phiếu thu
-							</th>
-							<th className="w-3 sorting_disabled align-middle">Số tiền</th>
-							<th className="w-3 sorting_disabled align-middle">Hình thức</th>
-							<th className="w-3 sorting_disabled align-middle">Người trả</th>
-							<th className="w-3 sorting_disabled align-middle">Tạo bởi</th>
-							<th className="w-3 sorting_disabled align-middle">Ghi chú</th>
-							<th className="w-3 sorting_disabled align-middle">Thao tác</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td className="centertext text-center align-middle">1</td>
-							<td className="centertext text-center align-middle">PT000001</td>
-							<td className="centertext text-center align-middle">
-								12/07/2020 13:35
-							</td>
-							<td className="centertext text-center align-middle">1213</td>
-							<td className="centertext text-center align-middle bold">
-								{format_current(1546464)}
-							</td>
-							<td className="centertext text-center align-middle">Tiền Mặt</td>
-							<td className="centertext text-center align-middle">435345</td>
-							<td className="centertext text-center align-middle">
-								hotel123456
-							</td>
-							<td className="centertext text-center align-middle"></td>
-							<td className="pt-2 align-middle">
-								<div className=" h-full flex items-center justify-center">
-									<Tooltip placement="top" title="Print">
-										<img
-											src="http://server6.skyhotel.vn/images/icons/fugue/printer16.png"
-											alt="print"
-											className="ml-2 mr-2 cursor-pointer"
-										/>
-									</Tooltip>
-									<Tooltip placement="top" title="Xem chi tiết">
-										<img
-											src="/images/Actions/Edit.png"
-											alt="Edit"
-											className="mr-2 cursor-pointer"
-											onClick={handleUpdateReceipt}
-										/>
-									</Tooltip>
-									<Tooltip placement="top" title="Xóa">
-										<img
-											src="/images/Actions/Delete.png"
-											alt="Delete"
-											className="cursor-pointer"
-										/>
-									</Tooltip>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</Table>
+				<Table
+					dataSource={listReceipts}
+					columns={columns}
+					loading={loading}
+					scroll={{ x: true }}
+					pagination={{
+						total: pagination,
+						pageSize: filters.limit,
+						current: filters.page,
+					}}
+					onChange={handleOnChange}
+				/>
 			</div>
-			<ModalAddReceipt visible={visible} handleAddReceipt={handleAddReceipt} />
-			<ModalUpdateReceipt
-				visible={visibleUpdate}
-				handleUpdateReceipt={handleUpdateReceipt}
-			/>
 		</div>
 	);
 }

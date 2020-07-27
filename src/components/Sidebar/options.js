@@ -84,6 +84,11 @@ const options = [
 		icon: "/images/Sidebar/TienChi/tienchi.png",
 		children: [
 			{
+				key: "paymentMethod",
+				label: "Phương thức thanh toán",
+				icon: "/images/Sidebar/TienChi/receipts.png",
+			},
+			{
 				key: "receipts",
 				label: "Quản lý phiếu thu",
 				icon: "/images/Sidebar/TienChi/receipts.png",
@@ -147,64 +152,69 @@ const options = [
 		],
 	},
 
-	{
-		key: "7",
-		label: "Khách hàng",
-		icon: "/images/Sidebar/KhachHang/khachhang.png",
-		children: [
-			{
-				key: "users",
-				label: "Khách hàng đang ở",
-				icon: "/images/Sidebar/KhachHang/user-hear.png",
-			},
-			{
-				key: "users",
-				label: "Khách hàng đặt phòng",
-				icon: "/images/Sidebar/KhachHang/user-book.png",
-			},
-			{
-				key: "users",
-				label: "Khách hàng theo ngày",
-				icon: "/images/Sidebar/KhachHang/user-day.png",
-			},
-			{
-				key: "users",
-				label: "Khách hàng để quên",
-				icon: "/images/Sidebar/KhachHang/user-forget.png",
-			},
-			{
-				key: "users",
-				label: "Danh sách khách hàng",
-				icon: "/images/Sidebar/KhachHang/user-forget.png",
-			},
-		],
-	},
+	// {
+	// 	key: "7",
+	// 	label: "Khách hàng",
+	// 	icon: "/images/Sidebar/KhachHang/khachhang.png",
+	// 	children: [
+	// 		{
+	// 			key: "users",
+	// 			label: "Khách hàng đang ở",
+	// 			icon: "/images/Sidebar/KhachHang/user-hear.png",
+	// 		},
+	// 		{
+	// 			key: "users",
+	// 			label: "Khách hàng đặt phòng",
+	// 			icon: "/images/Sidebar/KhachHang/user-book.png",
+	// 		},
+	// 		{
+	// 			key: "users",
+	// 			label: "Khách hàng theo ngày",
+	// 			icon: "/images/Sidebar/KhachHang/user-day.png",
+	// 		},
+	// 		{
+	// 			key: "users",
+	// 			label: "Khách hàng để quên",
+	// 			icon: "/images/Sidebar/KhachHang/user-forget.png",
+	// 		},
+	// 		{
+	// 			key: "users",
+	// 			label: "Danh sách khách hàng",
+	// 			icon: "/images/Sidebar/KhachHang/user-forget.png",
+	// 		},
+	// 	],
+	// },
 
 	{
 		key: "8",
 		label: "Nhân viên",
 		icon: "/images/Sidebar/Staff/nhanvien.png",
 		children: [
+			// {
+			// 	key: "users",
+			// 	label: "Lịch sử giao tiền",
+			// 	icon: "/images/Sidebar/ThongKe/checkout.png",
+			// },
+			// {
+			// 	key: "users",
+			// 	label: "Lịch sử giao ca",
+			// 	icon: "/images/Sidebar/Staff/shift-history.png",
+			// },
 			{
-				key: "users",
-				label: "Lịch sử giao tiền",
-				icon: "/images/Sidebar/ThongKe/checkout.png",
-			},
-			{
-				key: "users",
-				label: "Lịch sử giao ca",
-				icon: "/images/Sidebar/Staff/shift-history.png",
-			},
-			{
-				key: "users",
-				label: "Quản lý nhân viên",
+				key: "group",
+				label: "Quản lý Group",
 				icon: "/images/Sidebar/Staff/manager-user.png",
 			},
 			{
-				key: "users",
-				label: "Nhóm phân quyền",
-				icon: "/images/Sidebar/Staff/permision.png",
+				key: "employee",
+				label: "Quản lý nhân viên",
+				icon: "/images/Sidebar/Staff/manager-user.png",
 			},
+			// {
+			// 	key: "users",
+			// 	label: "Nhóm phân quyền",
+			// 	icon: "/images/Sidebar/Staff/permision.png",
+			// },
 		],
 	},
 	// {

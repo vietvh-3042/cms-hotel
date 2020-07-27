@@ -16,11 +16,13 @@ function ManagerMapHotel(props) {
 			</div>
 			<div className="mt-2 mx-2 ml-3">
 				{!hotel_ID ? (
-					// <Empty />
-					<GroupStatusHotel />
+					<React.Fragment>
+						<Empty />
+						<GroupStatusHotel /> /// test
+					</React.Fragment>
 				) : (
 					<React.Fragment>
-						{/* <StatusHotel /> */}
+						<GroupStatusHotel />
 						<MapHotel />
 					</React.Fragment>
 				)}

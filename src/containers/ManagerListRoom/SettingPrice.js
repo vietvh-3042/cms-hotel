@@ -3,6 +3,7 @@ import React from "react";
 SettingPrice.propTypes = {};
 
 function SettingPrice(props) {
+	const { value } = props;
 	function format_current(price) {
 		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 	}
@@ -10,28 +11,39 @@ function SettingPrice(props) {
 		<React.Fragment>
 			<div>
 				<span>♦ Một Ngày: </span>
-				<b className="ml-2">{format_current(220000)}</b>
+				{value.typePrices.data.map((value, key) => (
+					<b className="ml-2 bold" style={{ fontSize: 12 }} key={key}>
+						{format_current(value.price_day)}
+					</b>
+				))}
 			</div>
 			<div>
 				<span>♦ Qua đêm : </span>
-				<b className="ml-2">{format_current(160000)}</b>
+				{value.typePrices.data.map((value, key) => (
+					<b className="ml-2 bold" style={{ fontSize: 12 }} key={key}>
+						{format_current(value.price_night)}
+					</b>
+				))}
 			</div>
-			<div>
-				<span>♦</span>
-				<span className="bold">Tính theo giờ:</span>
-				<div className="ml-3">
-					<span>• Giờ thứ 1:</span>
-					<b className="ml-2">{format_current(50000)}</b>
+			{value.typePrices.data.map((value, key) => (
+				<div key={key}>
+					<span>♦</span>
+					<span className="bold" style={{ fontSize: 12 }}>
+						Tính theo giờ:
+						{value.priceTimes.data.map((val, key) => {
+							if (val.group_price_time_id === 1)
+								return (
+									<div className="ml-3">
+										<span>{`• Giờ thứ ${val.time}:`}</span>
+										<b className="ml-2 bold" style={{ fontSize: 12 }}>
+											{format_current(val.amount)}
+										</b>
+									</div>
+								);
+						})}
+					</span>
 				</div>
-				<div className="ml-3">
-					<span>• Giờ thứ 1:</span>
-					<b className="ml-2">{format_current(70000)}</b>
-				</div>
-				<div className="ml-3">
-					<span>• Giờ thứ 1:</span>
-					<b className="ml-2">{format_current(90000)}</b>
-				</div>
-			</div>
+			))}
 		</React.Fragment>
 	);
 }

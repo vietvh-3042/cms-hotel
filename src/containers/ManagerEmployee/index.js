@@ -3,33 +3,30 @@ import Axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { endpoint } from "settings";
-import ModalAddListRoom from "./components/ModalAddListRoom";
-import ModalUpdateTypeRoom from "./components/ModalUpdateTypeRoom";
-import SettingAdditional from "./SettingAdditional";
-import SettingPrice from "./SettingPrice";
+import ModalAddEmployee from "./components/ModalAddEmployee";
+import ModalUpdateEmployee from "./components/ModalUpdateEmployee";
+import { toast } from "react-toastify";
 
-ManagerListRoom.propTypes = {};
+ManagerEmployee.propTypes = {};
 
-function ManagerListRoom(props) {
-	const [loading, setLoading] = useState(false);
-	const [visible, setVisible] = useState(false);
+function ManagerEmployee(props) {
+	const allData = [];
 	const [status, setStatus] = useState(false);
-	const [listTypeRoom, setListTypeRoom] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [listEmployee, setListEmployee] = useState([]);
+	const [listGroup, setListGroup] = useState([]);
 	const [pagination, setPagination] = useState();
+	const [visible, setVisible] = useState(false);
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
-		include: "typePrices.priceTimes",
 	});
 
 	const [visibleUpdate, setVisibleUpdate] = useState({
 		visible: false,
 		detail: {},
 	});
-
-	const allData = [];
 
 	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
@@ -39,7 +36,7 @@ function ManagerListRoom(props) {
 		const paramString = queryString.stringify(filters);
 		Axios({
 			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/type-room?" + paramString,
+			url: endpoint + "/tenant/acl/employees?" + paramString,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
@@ -55,12 +52,28 @@ function ManagerListRoom(props) {
 					STT: index + 1,
 				});
 			});
-			setListTypeRoom(allData);
+			setListEmployee(allData);
 			setPagination(res.data.meta.pagination.total);
 		});
-	}, [filters, status, hotel_ID]);
+	}, [filters, status]);
 
-	function handleAddListRoom() {
+	useEffect(() => {
+		Axios({
+			method: "GET",
+			url: endpoint + "/tenant/acl/groups",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		}).then((res) => {
+			setListGroup(res.data.data);
+		});
+	}, []);
+
+	function handleAddListEmployee() {
 		setVisible(!visible);
 	}
 
@@ -75,21 +88,17 @@ function ManagerListRoom(props) {
 		});
 	}
 
-	function handleUpdateTypeRoom(value) {
+	function handleUpdateEmployee(value) {
 		setVisibleUpdate({
 			visible: !visibleUpdate.visible,
 			detail: value,
 		});
 	}
 
-	function format_current(price) {
-		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-	}
-
 	function confirm(id) {
 		Axios({
 			method: "DELETE",
-			url: endpoint + "/tenant/hotel-manager/type-room/" + id,
+			url: endpoint + "/tenant/acl/employees/" + id,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
@@ -103,58 +112,68 @@ function ManagerListRoom(props) {
 				handleSetStatus();
 			})
 			.catch((err) => {
-				toast.error("Có lỗi xảy ra");
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
 			});
 	}
 
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
+		{ title: "user_code", dataIndex: "user_code", key: "user_code" },
+		{ title: "Tên", dataIndex: "name", key: "name" },
+		{ title: "user_name", dataIndex: "user_name", key: "user_name" },
+		{ title: "Email", dataIndex: "email", key: "email" },
 		{
-			title: "Loại phòng",
-			dataIndex: "name",
-			key: "name",
-			render: (record) => (
-				<span className="capitalize font-bold">{record}</span>
-			),
+			title: "Giới tính",
+			render: (record) => {
+				if (record.gender === 1) return "Nam";
+				else return "Nữ";
+			},
 		},
 		{
-			title: (
-				<span className="text-left inline-block w-full ml-3">Cài đặt giá</span>
-			),
-			render: (record) => (
-				<div className="text-left">
-					<SettingPrice value={record} />
-				</div>
-			),
+			title: "CMND",
+			dataIndex: "identity_code",
+			key: "identity_code",
 		},
 		{
-			title: (
-				<span className="text-left inline-block w-full ml-10">
-					Qui định phụ trội
-				</span>
-			),
+			title: "Ngày cấp",
+			dataIndex: "identity_date",
+			key: "identity_date",
+		},
+		{ title: "Ngày Sinh", dataIndex: "birthday", key: "birthday" },
+		{ title: "Địa chỉ", dataIndex: "address", key: "address" },
+		{ title: "Số điện thoại", dataIndex: "phone", key: "phone" },
+		{
+			title: "Nhóm Group",
 
-			render: (record) => (
-				<div className="text-left ml-12">
-					<SettingAdditional />
-				</div>
-			),
+			render: (record) => {
+				for (var i = 0; i < listGroup.length; i++) {
+					if (listGroup[i].id === record.group_id) {
+						return listGroup[i].name;
+					}
+				}
+			},
 		},
-		{ title: "SL.G", dataIndex: "number_bed", key: "number_bed" },
-		{ title: "SL.N", dataIndex: "number_person", key: "number_person" },
-		{ title: "Ghi chú", dataIndex: "note", key: "note" },
+		{ title: "Ngày làm việc", dataIndex: "work_date_at", key: "work_date_at" },
 		{
 			title: "Thao tác",
-			width: "120px",
 			render: (record) => (
 				<div className=" h-full flex justify-center items-center flex-wrap">
 					<img
 						src="/images/Actions/Edit.png"
 						alt="Edit"
 						className="ml-2 mr-1  cursor-pointer"
-						onClick={() => handleUpdateTypeRoom(record)}
+						onClick={() => handleUpdateEmployee(record)}
 					/>
-
 					<Popconfirm
 						title="Bạn thực sự muốn xóa bản ghi này?"
 						onConfirm={() => confirm(record.id)}
@@ -175,31 +194,30 @@ function ManagerListRoom(props) {
 
 	return (
 		<div className="onecolumn mt-2 mx-2">
-			<div className="header flex justify-between items-center">
-				<div className="h-full flex items-center">
+			<div className="header flex flex-col md:flex-row md:justify-between md:items-center">
+				<div className="h-full flex items-center group2">
 					<img
-						src="/images/Sidebar/Settings/price.png"
-						alt="list-room"
+						src="/images/Sidebar/Services/list-service.png"
+						alt="list-service"
 						className="inline ml-3"
 					/>
-					<span className="titleMainContain">Danh sách các loại phòng</span>
+					<span className="titleMainContain">Danh sách nhân viên</span>
 				</div>
 				<button
 					className="dashboardButton mr-3 focus:outline-none"
-					onClick={handleAddListRoom}
+					onClick={handleAddListEmployee}
 				>
 					<span className="add"></span>
-					<span>Thêm loại phòng</span>
+					<span>Thêm mới</span>
 				</button>
 			</div>
 			<div className="mt-2 mx-2">
 				<Table
 					rowKey={(record) => record.id}
-					dataSource={listTypeRoom}
+					dataSource={listEmployee}
 					columns={columns}
 					loading={loading}
-					scroll={{ x: 1200 }}
-					bordered
+					scroll={{ x: 1500 }}
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,
@@ -208,18 +226,20 @@ function ManagerListRoom(props) {
 					onChange={handleOnChange}
 				/>
 			</div>
-			<ModalAddListRoom
+			<ModalAddEmployee
 				visible={visible}
-				handleAddListRoom={handleAddListRoom}
+				listGroup={listGroup}
 				handleSetStatus={handleSetStatus}
+				handleAddListEmployee={handleAddListEmployee}
 			/>
-			<ModalUpdateTypeRoom
+			<ModalUpdateEmployee
 				visibleUpdate={visibleUpdate}
-				handleUpdateTypeRoom={handleUpdateTypeRoom}
+				handleUpdateEmployee={handleUpdateEmployee}
+				listGroup={listGroup}
 				handleSetStatus={handleSetStatus}
 			/>
 		</div>
 	);
 }
 
-export default ManagerListRoom;
+export default ManagerEmployee;

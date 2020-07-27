@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ModalCheckin from "./components/Modal/ModalCheckin";
 import ModalCheckout from "./components/Modal/ModalCheckout";
 import StatusHotel from "./components/StatusHotel";
-import ModalAddBill from "./components/Modal/ModalAddBill";
+import ModalAddPayment from "./components/Modal/ModalAddPayment";
 import ModalAddService from "./components/Modal/ModalAddService";
 
 GroupStatusHotel.propTypes = {};
@@ -57,11 +57,6 @@ function GroupStatusHotel(props) {
 					title="Chờ khách"
 					background="bg-orange-500"
 				/>
-				<StatusHotel
-					quantity={0}
-					title="Chờ khách"
-					background="bg-orange-500"
-				/>
 				<StatusHotel quantity={0} title="Chưa dọn" background="bg-gray-500" />
 				<StatusHotel quantity={0} title="Đang sửa" background="bg-black" />
 			</div>
@@ -88,7 +83,7 @@ function GroupStatusHotel(props) {
 				visible={visibleCheckout}
 				handleCheckout={handleCheckout}
 			/>
-			<ModalAddBill visible={visibleBill} handleAddBill={handleAddBill} />
+			<ModalAddPayment visible={visibleBill} handleAddBill={handleAddBill} />
 			<ModalAddService
 				visible={visibleService}
 				handleAddService={handleAddService}

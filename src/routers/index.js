@@ -28,6 +28,9 @@ import PrivateRoute from "./PrivateRoute";
 import Cookies from "universal-cookie";
 import ManagerCategory from "containers/ManagerCategory";
 import ManagerTypeCategory from "containers/ManagerTypeCategory";
+import ManagerPaymentMethod from "containers/ManagerPaymentMethod";
+import ManagerGroup from "containers/ManagerGroup";
+import ManagerEmployee from "containers/ManagerEmployee";
 
 const cookies = new Cookies();
 
@@ -116,6 +119,11 @@ function PublicRoutes(props) {
 					isLoggedIn={isLoggedIn}
 				/>
 				<PrivateRoute
+					path={"/dashboard/paymentMethod"}
+					component={ManagerPaymentMethod}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
 					path={"/dashboard/receipts"}
 					component={ManagerReceipts}
 					isLoggedIn={isLoggedIn}
@@ -153,6 +161,16 @@ function PublicRoutes(props) {
 				<PrivateRoute
 					path={"/dashboard/business-result"}
 					component={ManagerBusinessResult}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/group"}
+					component={ManagerGroup}
+					isLoggedIn={isLoggedIn}
+				/>
+				<PrivateRoute
+					path={"/dashboard/employee"}
+					component={ManagerEmployee}
 					isLoggedIn={isLoggedIn}
 				/>
 				<Route path="*" component={NotFound} />

@@ -3,7 +3,7 @@ import Axios from "axios";
 import { FastField, Field, FieldArray, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { API_Timeout, endpoint } from "settings";
@@ -15,11 +15,88 @@ ModalUpdateTypeRoom.propTypes = {
 };
 
 function ModalUpdateTypeRoom(props) {
+	const priceHour = [];
+	const checkout_day = [];
+	const checkout_night = [];
+	const soon_day = [];
+	const soon_night = [];
+	const extrabed = [];
+
 	const { visibleUpdate, handleUpdateTypeRoom, handleSetStatus } = props;
+	const [price_by_hour, setprice_by_hour] = useState([]);
+
+	const [
+		additional_overtime_checkout_day,
+		setadditional_overtime_checkout_day,
+	] = useState([]);
+
+	const [
+		additional_overtime_checkout_night,
+		setadditional_overtime_checkout_night,
+	] = useState([]);
+
+	const [
+		additional_checkin_soon_day,
+		setadditional_checkin_soon_day,
+	] = useState([]);
+
+	const [
+		additional_checkin_soon_night,
+		setadditional_checkin_soon_night,
+	] = useState([]);
+
+	const [additional_add_extrabed, setadditional_add_extrabed] = useState([]);
+
 	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
-	const initialValues = visibleUpdate.detail;
+	useEffect(() => {
+		if (visibleUpdate.detail) {
+			const data = visibleUpdate.detail;
+			if (data.typePrices) {
+				data.typePrices.data.map((value) => {
+					value.priceTimes.data.map((val) => {
+						if (val.group_price_time_id === 1) priceHour.push(val);
+						if (val.group_price_time_id === 2) checkout_day.push(val);
+						if (val.group_price_time_id === 4) checkout_night.push(val);
+						if (val.group_price_time_id === 8) soon_day.push(val);
+						if (val.group_price_time_id === 16) soon_night.push(val);
+						if (val.group_price_time_id === 32) extrabed.push(val);
+					});
+				});
+				setprice_by_hour(priceHour);
+				setadditional_overtime_checkout_day(checkout_day);
+				setadditional_overtime_checkout_night(checkout_night);
+				setadditional_checkin_soon_day(soon_day);
+				setadditional_checkin_soon_night(soon_night);
+				setadditional_add_extrabed(extrabed);
+			}
+		}
+	}, [visibleUpdate.detail]);
+
+	const initialValues = {
+		name: visibleUpdate.detail ? visibleUpdate.detail.name : "",
+		number_bed: visibleUpdate.detail ? visibleUpdate.detail.number_bed : "",
+		number_person: visibleUpdate.detail
+			? visibleUpdate.detail.number_person
+			: "",
+		price_day: visibleUpdate.detail
+			? visibleUpdate.detail.typePrices
+				? visibleUpdate.detail.typePrices.data[0].price_day
+				: ""
+			: "",
+		price_night: visibleUpdate.detail
+			? visibleUpdate.detail.typePrices
+				? visibleUpdate.detail.typePrices.data[0].price_night
+				: ""
+			: "",
+		price_by_hour: price_by_hour,
+		additional_overtime_checkout_day: additional_overtime_checkout_day,
+		additional_overtime_checkout_night: additional_overtime_checkout_night,
+		additional_checkin_soon_day: additional_checkin_soon_day,
+		additional_checkin_soon_night: additional_checkin_soon_night,
+		additional_add_extrabed: additional_add_extrabed,
+	};
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
@@ -35,12 +112,9 @@ function ModalUpdateTypeRoom(props) {
 	});
 
 	function handleSubmit(data) {
+		const id = visibleUpdate.detail.id;
 		let convert = {
-			name: data.name,
-			number_person: data.number_person,
-			number_bed: data.number_bed,
-			price_day: data.price_day,
-			price_night: data.price_night,
+			...data,
 			price_by_hour: JSON.stringify({
 				type_id: 1,
 				data: data.price_by_hour,
@@ -70,8 +144,8 @@ function ModalUpdateTypeRoom(props) {
 		};
 
 		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/type-room",
+			method: "PUT",
+			url: endpoint + "/tenant/hotel-manager/type-room/" + id,
 			data: JSON.stringify(convert),
 			headers: {
 				Accept: "application/json",
@@ -80,10 +154,9 @@ function ModalUpdateTypeRoom(props) {
 				"tenant-name": user.data.name,
 				"hotel-id": hotel_ID,
 			},
-			timeout: API_Timeout,
 		})
 			.then((res) => {
-				toast.success("Tạo mới thành công");
+				toast.success("Cập nhật thành công");
 				handleUpdateTypeRoom();
 				handleSetStatus();
 			})
@@ -119,7 +192,7 @@ function ModalUpdateTypeRoom(props) {
 	return (
 		<Modal
 			visible={visibleUpdate.visible}
-			onCancel={handleUpdateTypeRoom}
+			onCancel={() => handleUpdateTypeRoom({})}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
@@ -128,13 +201,14 @@ function ModalUpdateTypeRoom(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Chỉnh sửa loại phòng</span>
+					<span>Thêm loại phòng</span>
 				</div>
 				<div className="modal_content">
 					<Formik
 						initialValues={initialValues}
 						validationSchema={validationSchema}
 						onSubmit={handleSubmit}
+						enableReinitialize
 					>
 						{() => (
 							<Form>
@@ -181,7 +255,7 @@ function ModalUpdateTypeRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -242,7 +316,7 @@ function ModalUpdateTypeRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -306,7 +380,7 @@ function ModalUpdateTypeRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -369,7 +443,7 @@ function ModalUpdateTypeRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -428,7 +502,7 @@ function ModalUpdateTypeRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -489,7 +563,7 @@ function ModalUpdateTypeRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -544,7 +618,7 @@ function ModalUpdateTypeRoom(props) {
 									<button
 										type="button"
 										className="submit_cancel_Building focus:outline-none"
-										onClick={handleUpdateTypeRoom}
+										onClick={() => handleUpdateTypeRoom({})}
 									>
 										Cancel
 									</button>
@@ -552,7 +626,7 @@ function ModalUpdateTypeRoom(props) {
 										type="submit"
 										className="dashboardButton focus:outline-none"
 									>
-										Thêm
+										Sửa
 									</button>
 								</div>
 							</Form>
@@ -563,7 +637,7 @@ function ModalUpdateTypeRoom(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleUpdateTypeRoom}
+					onClick={() => handleUpdateTypeRoom({})}
 				/>
 			</div>
 		</Modal>

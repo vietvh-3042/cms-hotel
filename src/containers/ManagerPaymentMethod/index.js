@@ -1,18 +1,25 @@
-import { Popconfirm, Table } from "antd";
+import { Popconfirm, Table, Tag } from "antd";
 import Axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { endpoint } from "settings";
+import shortid from "shortid";
+import ModalAddPaymentMethod from "./components/ModalAddPaymentMethod";
+import ModalUpdatePaymentMethod from "./components/ModalUpdatePaymentMethod";
 
-ManagerCategory.propTypes = {};
+ManagerPaymentMethod.propTypes = {};
 
-function ManagerCategory(props) {
+function ManagerPaymentMethod(props) {
 	const [status, setStatus] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [listCategory, setListCategory] = useState([]);
+	const [listPaymentMethod, setListPaymentMethod] = useState([]);
 	const [pagination, setPagination] = useState();
-	const [visible, setVisible] = useState(false);
+	const [visibleType, setVisibleType] = useState(false);
+	const [visibleUpdateType, setVisibleUpdateType] = useState({
+		detail: {},
+		visible: false,
+	});
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
@@ -26,7 +33,7 @@ function ManagerCategory(props) {
 		const paramString = queryString.stringify(filters);
 		Axios({
 			method: "GET",
-			url: endpoint + "/tenant/category/category?" + paramString,
+			url: endpoint + "/tenant/payslip-receipt/payment-method?" + paramString,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
@@ -41,13 +48,13 @@ function ManagerCategory(props) {
 					STT: index + 1,
 				});
 			});
-			setListCategory(allData);
+			setListPaymentMethod(allData);
 			setPagination(res.data.meta.pagination.total);
 		});
 	}, [filters, status]);
 
-	function handleAddListCategory() {
-		setVisible(!visible);
+	function handleAddListTypeCategory() {
+		setVisibleType(!visibleType);
 	}
 
 	function handleOnChange(pagination) {
@@ -57,12 +64,39 @@ function ManagerCategory(props) {
 		});
 	}
 
+	function handleSetStatus() {
+		setStatus(!status);
+	}
+
+	function handleUpdateType(record) {
+		setVisibleUpdateType({
+			detail: record,
+			visible: !visibleUpdateType.visible,
+		});
+	}
+
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
-		{ title: "Mã", dataIndex: "category_code", key: "category_code" },
-		{ title: "Nhóm Dịch vụ", dataIndex: "name", key: "name" },
-		{ title: "Loại Dịch vụ", dataIndex: "", key: "" },
-		{ title: "Ghi chú", dataIndex: "note", key: "note" },
+		{ title: "Tên", dataIndex: "name", key: "name" },
+		{
+			title: (
+				<span className="inline-block w-full text-center">Trạng thái</span>
+			),
+			render: (record) => {
+				if (record.status === 1)
+					return (
+						<div className="text-center">
+							<Tag color="#87d068">Có hỗ trợ thanh toán</Tag>
+						</div>
+					);
+				else
+					return (
+						<div className="text-center">
+							<Tag color="#f50">Không còn hỗ trợ</Tag>
+						</div>
+					);
+			},
+		},
 		{
 			title: "Thao tác",
 			render: (record) => (
@@ -71,7 +105,7 @@ function ManagerCategory(props) {
 						src="/images/Actions/Edit.png"
 						alt="Edit"
 						className="ml-2 mr-1  cursor-pointer"
-						// onClick={() => handleUpdateHotel(record)}
+						onClick={() => handleUpdateType(record)}
 					/>
 					<Popconfirm
 						title="Bạn thực sự muốn xóa khách sạn này"
@@ -90,7 +124,6 @@ function ManagerCategory(props) {
 			),
 		},
 	];
-
 	return (
 		<div className="onecolumn mt-2 mx-2">
 			<div className="header flex flex-col md:flex-row md:justify-between md:items-center">
@@ -100,25 +133,26 @@ function ManagerCategory(props) {
 						alt="list-service"
 						className="inline ml-3"
 					/>
-					<span className="titleMainContain">Danh sách nhóm dịch vụ</span>
+					<span className="titleMainContain">
+						Danh sách phương thức thanh toán
+					</span>
 				</div>
-				<div>
-					<button
-						className="dashboardButton mr-3 focus:outline-none"
-						onClick={handleAddListCategory}
-					>
-						<span className="add"></span>
-						<span>Thêm mới</span>
-					</button>
-				</div>
+				<button
+					className="dashboardButton mr-3 focus:outline-none"
+					onClick={handleAddListTypeCategory}
+				>
+					<span className="add"></span>
+					<span>Thêm mới</span>
+				</button>
 			</div>
 			<div className="mt-2 mx-2">
 				<Table
-					rowKey={(record) => record.id}
-					dataSource={listCategory}
+					rowKey={(record) => shortid.generate()}
+					dataSource={listPaymentMethod}
 					columns={columns}
 					loading={loading}
 					scroll={{ x: true }}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,
@@ -127,12 +161,18 @@ function ManagerCategory(props) {
 					onChange={handleOnChange}
 				/>
 			</div>
-			{/* <ModalAddService
-				visible={visible}
-				handleAddListService={handleAddListService}
-			/> */}
+			<ModalAddPaymentMethod
+				visible={visibleType}
+				handleAddListTypeCategory={handleAddListTypeCategory}
+				handleSetStatus={handleSetStatus}
+			/>
+			<ModalUpdatePaymentMethod
+				visibleUpdateType={visibleUpdateType}
+				handleUpdateType={handleUpdateType}
+				handleSetStatus={handleSetStatus}
+			/>
 		</div>
 	);
 }
 
-export default ManagerCategory;
+export default ManagerPaymentMethod;

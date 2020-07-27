@@ -25,12 +25,12 @@ function ModalAddListRoom(props) {
 		number_person: "",
 		price_day: "",
 		price_night: "",
-		price_by_hour: [{ time: 1, amount: "50000" }],
-		additional_overtime_checkout_day: [{ time: 1, amount: "50000" }],
-		additional_overtime_checkout_night: [{ time: 1, amount: "50000" }],
-		additional_checkin_soon_day: [{ time: 1, amount: "50000" }],
-		additional_checkin_soon_night: [{ time: 1, amount: "50000" }],
-		additional_add_extrabed: [{ person: 1, amount: "50000" }],
+		price_by_hour: [{ time: "1", amount: "50000" }],
+		additional_overtime_checkout_day: [{ time: "1", amount: "50000" }],
+		additional_overtime_checkout_night: [{ time: "1", amount: "50000" }],
+		additional_checkin_soon_day: [{ time: "1", amount: "50000" }],
+		additional_checkin_soon_night: [{ time: "1", amount: "50000" }],
+		additional_add_extrabed: [{ person: "1", amount: "50000" }],
 	};
 
 	const validationSchema = Yup.object().shape({
@@ -48,11 +48,7 @@ function ModalAddListRoom(props) {
 
 	function handleSubmit(data) {
 		let convert = {
-			name: data.name,
-			number_person: data.number_person,
-			number_bed: data.number_bed,
-			price_day: data.price_day,
-			price_night: data.price_night,
+			...data,
 			price_by_hour: JSON.stringify({
 				type_id: 1,
 				data: data.price_by_hour,
@@ -92,7 +88,6 @@ function ModalAddListRoom(props) {
 				"tenant-name": user.data.name,
 				"hotel-id": hotel_ID,
 			},
-			timeout: API_Timeout,
 		})
 			.then((res) => {
 				toast.success("Tạo mới thành công");
@@ -193,7 +188,7 @@ function ModalAddListRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -254,7 +249,7 @@ function ModalAddListRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -318,7 +313,7 @@ function ModalAddListRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -381,7 +376,7 @@ function ModalAddListRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -440,7 +435,7 @@ function ModalAddListRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img
@@ -501,7 +496,7 @@ function ModalAddListRoom(props) {
 													>
 														<legend
 															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
+															onClick={() => push({ time: 1, amount: "50000" })}
 														>
 															<div className="flex">
 																<img

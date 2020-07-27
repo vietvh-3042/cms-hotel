@@ -48,7 +48,7 @@ function MapHotel(props) {
 					<div className="flex flex-wrap">
 						{value.rooms.data.map((value, key) => (
 							<div
-								className="w-32 h-20 bg-green-600 flex items-center 
+								className="w-24 h-20 bg-green-600 flex items-center 
 							font-bold text-white justify-center mb-2 mr-2 hover:bg-green-700 cursor-pointer"
 								key={key}
 							>

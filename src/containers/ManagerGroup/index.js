@@ -96,18 +96,17 @@ function ManagerPaymentMethod(props) {
 				handleSetStatus();
 			})
 			.catch((err) => {
-				console.log(err.response);
-				// let error = [];
-				// for (let value of Object.values(err.response.data.errors)) {
-				// 	error.push(value);
-				// }
-				// toast.error(
-				// 	<React.Fragment>
-				// 		{error.map((value, key) => (
-				// 			<div key={key}>{value}</div>
-				// 		))}
-				// 	</React.Fragment>
-				// );
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
 			});
 	}
 
@@ -168,6 +167,7 @@ function ManagerPaymentMethod(props) {
 					columns={columns}
 					loading={loading}
 					scroll={{ x: true }}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,

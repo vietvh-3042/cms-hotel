@@ -10,47 +10,40 @@ import { toast } from "react-toastify";
 import { endpoint } from "settings";
 import * as Yup from "yup";
 
-ModalAddService.propTypes = {
-	handleAddListService: PropTypes.func,
+ModalAddCategory.propTypes = {
+	handleUpdateCategory: PropTypes.func,
 	handleSetStatus: PropTypes.func,
-	listCategory: PropTypes.array,
-};
-ModalAddService.defaultProps = {
-	handleAddListService: null,
-	handleSetStatus: null,
-	listCategory: [],
+	listTypeCategory: PropTypes.array,
 };
 
-function ModalAddService(props) {
+ModalAddCategory.defaultProps = {
+	handleSetStatus: null,
+	handleUpdateCategory: null,
+	listTypeCategory: [],
+};
+
+function ModalAddCategory(props) {
 	const {
-		visible,
-		handleAddListService,
+		visibleUpdateCategory,
+		handleUpdateCategory,
 		handleSetStatus,
-		listCategory,
+		listTypeCategory,
 	} = props;
 
 	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
-	const initialValues = {
-		name: "",
-		category_id: "",
-		price: "",
-		note: "",
-	};
+	const initialValues = visibleUpdateCategory.detail;
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
-		category_id: Yup.string().required("Không được để trống."),
-		price: Yup.number()
-			.typeError("Phải là số")
-			.required("Không được để trống."),
 	});
 
 	function handleSubmit(data) {
+		const id = visibleUpdateCategory.detail.id;
 		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/service-storage/services",
+			method: "PUT",
+			url: endpoint + "/tenant/category/category/" + id,
 			data: data,
 			headers: {
 				Accept: "application/json",
@@ -61,8 +54,8 @@ function ModalAddService(props) {
 			},
 		})
 			.then((res) => {
-				toast("Tạo mới thành công");
-				handleAddListService();
+				toast.success("Cập nhật thành công");
+				handleUpdateCategory();
 				handleSetStatus();
 			})
 			.catch((err) => {
@@ -79,20 +72,19 @@ function ModalAddService(props) {
 				);
 			});
 	}
-
 	return (
 		<Modal
-			visible={visible}
-			onCancel={handleAddListService}
+			visible={visibleUpdateCategory.visible}
+			onCancel={handleUpdateCategory}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
-			width={400}
+			width={390}
 		>
 			<div className="relative">
 				<div className="modal_header_action">
-					<span className="hsp2_building-update"></span>
-					<span>Thêm một dịch vụ mới</span>
+					<span className="hsp2_building-add"></span>
+					<span>Thêm nhóm dịch vụ</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -105,14 +97,18 @@ function ModalAddService(props) {
 								<FastField
 									name="name"
 									component={InputField}
-									label="Tên dịch vụ:"
+									label="Tên:"
 									width={200}
 								/>
-								<div className="flex mb-2">
-									<div className="LabelCo">Nhóm Dịch vụ:</div>
-									<Field as="select" style={{ width: 206, height: 30 }}>
-										<option value="1">Chọn Nhóm Dịch Vụ</option>
-										{listCategory.map((value) => (
+
+								<div className="flex mb-1 items-center">
+									<div className="LabelCo">Loại dịch vụ:</div>
+									<Field
+										as="select"
+										name="type_category_id"
+										style={{ width: 206, height: 30 }}
+									>
+										{listTypeCategory.map((value) => (
 											<option value={value.id} key={value.id}>
 												{value.name}
 											</option>
@@ -120,19 +116,15 @@ function ModalAddService(props) {
 									</Field>
 								</div>
 
-								{errors.category_id && touched.category_id ? (
+								{errors.type_category_id && touched.type_category_id ? (
 									<div className="flex items-center">
 										<div className="LabelCo opacity-0">-----</div>
-										<div className="custom-err-form">{errors.category_id}</div>
+										<div className="custom-err-form">
+											{errors.type_category_id}
+										</div>
 									</div>
 								) : null}
 
-								<FastField
-									name="name"
-									component={InputField}
-									label="Giá bán:"
-									width={200}
-								/>
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Ghi chú:</div>
 									<Field
@@ -142,7 +134,7 @@ function ModalAddService(props) {
 										style={{ width: 206 }}
 									/>
 								</div>
-								<FooterForm handleClick={handleAddListService} />
+								<FooterForm handleClick={handleUpdateCategory} update />
 							</Form>
 						)}
 					</Formik>
@@ -151,11 +143,11 @@ function ModalAddService(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleAddListService}
+					onClick={handleUpdateCategory}
 				/>
 			</div>
 		</Modal>
 	);
 }
 
-export default ModalAddService;
+export default ModalAddCategory;

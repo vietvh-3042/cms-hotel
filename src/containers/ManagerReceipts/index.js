@@ -11,7 +11,7 @@ function ManagerReceipts(props) {
 	const allData = [];
 	const [loading, setLoading] = useState(false);
 	const [status, setStatus] = useState(false);
-	const [listReceipts, setListReceipts] = [];
+	const [listReceipts, setListReceipts] = useState([]);
 	const [pagination, setPagination] = useState();
 	const [visible, setVisible] = useState(false);
 	const [visibleUpdate, setVisibleUpdate] = useState(false);
@@ -104,6 +104,7 @@ function ManagerReceipts(props) {
 					columns={columns}
 					loading={loading}
 					scroll={{ x: true }}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,

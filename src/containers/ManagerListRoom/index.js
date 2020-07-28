@@ -136,13 +136,12 @@ function ManagerListRoom(props) {
 
 			render: (record) => (
 				<div className="text-left ml-12">
-					<SettingAdditional />
+					<SettingAdditional value={record} />
 				</div>
 			),
 		},
 		{ title: "SL.G", dataIndex: "number_bed", key: "number_bed" },
 		{ title: "SL.N", dataIndex: "number_person", key: "number_person" },
-		{ title: "Ghi chú", dataIndex: "note", key: "note" },
 		{
 			title: "Thao tác",
 			width: "120px",
@@ -198,7 +197,7 @@ function ManagerListRoom(props) {
 					dataSource={listTypeRoom}
 					columns={columns}
 					loading={loading}
-					scroll={{ x: 1200 }}
+					scroll={{ x: true }}
 					bordered
 					pagination={{
 						total: pagination,

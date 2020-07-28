@@ -1,13 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
-import * as Yup from "yup";
-import { FastField, Form, Formik, Field } from "formik";
-import { Modal, DatePicker } from "antd";
+import { DatePicker, Modal } from "antd";
 import Axios from "axios";
+import { FastField, Field, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
+import PropTypes from "prop-types";
+import React from "react";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
+import { endpoint } from "settings";
+import * as Yup from "yup";
+import FooterForm from "components/utility/footerForm";
 
 ModalAddEmployee.propTypes = {
 	handleAddListEmployee: PropTypes.func,
@@ -167,7 +168,7 @@ function ModalAddEmployee(props) {
 									width={200}
 								/>
 								<div className="flex mb-2 items-center">
-									<div className="LabelCo">Nhóm quyền:</div>
+									<div className="LabelCo">Phân quyền:</div>
 									<Field
 										as="select"
 										name="group_id"
@@ -225,24 +226,7 @@ function ModalAddEmployee(props) {
 										}
 									/>
 								</div>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddListEmployee}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
-								</div>
+								<FooterForm handleClick={handleAddListEmployee} />
 							</Form>
 						)}
 					</Formik>

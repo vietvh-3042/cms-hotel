@@ -4,7 +4,7 @@ import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
+import { endpoint } from "settings";
 import ModalAddHotel from "./components/ModalAddHotel";
 import ModalUpdate from "./components/ModalUpdate";
 
@@ -43,7 +43,6 @@ function ManagerHotel(props) {
 				Authorization: "Bearer" + user.meta.access_token,
 				"tenant-name": user.data.name,
 			},
-			timeout: API_Timeout,
 		}).then((res) => {
 			setLoading(false);
 			res.data.data.forEach((infor, index) => {
@@ -86,7 +85,6 @@ function ManagerHotel(props) {
 				Authorization: "Bearer" + user.meta.access_token,
 				"tenant-name": user.data.name,
 			},
-			timeout: API_Timeout,
 		})
 			.then((res) => {
 				toast.success("Cập nhật thành công");
@@ -186,6 +184,7 @@ function ManagerHotel(props) {
 					columns={columns}
 					loading={loading}
 					scroll={{ x: 1500 }}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,

@@ -1,11 +1,12 @@
-import { Table, Popconfirm } from "antd";
+import { Popconfirm, Table } from "antd";
 import Axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { endpoint } from "settings";
-import SettingPrice from "./SettingPrice";
+import ModalAddSamplePrice from "./components/ModalAddSamplePrice";
 import SettingAdditional from "./SettingAdditional";
+import SettingPrice from "./SettingPrice";
 
 ManagerSamplePrice.propTypes = {};
 
@@ -13,7 +14,9 @@ function ManagerSamplePrice(props) {
 	const allData = [];
 	const [status, setStatus] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [visible, setVisible] = useState(false);
 	const [listSamplePrice, setListSamplePrice] = useState([]);
+	const [listTypeRoom, setListTypeRoom] = useState([]);
 	const [pagination, setPagination] = useState();
 	const [filters, setFilter] = useState({
 		limit: 10,
@@ -49,13 +52,35 @@ function ManagerSamplePrice(props) {
 		});
 	}, [filters, status, hotel_ID]);
 
-	function handleAddPriceTime() {}
+	useEffect(() => {
+		Axios({
+			method: "GET",
+			url: endpoint + "/tenant/hotel-manager/type-room",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		}).then((res) => {
+			setListTypeRoom(res.data.data);
+		});
+	}, []);
+
+	function handleAddPriceTime() {
+		setVisible(!visible);
+	}
 
 	function handleOnChange(pagination) {
 		setFilter({
 			...filters,
 			page: pagination.current,
 		});
+	}
+
+	function handleSetStatus() {
+		setStatus(!status);
 	}
 
 	function format_current(price) {
@@ -74,6 +99,7 @@ function ManagerSamplePrice(props) {
 				</b>
 			),
 		},
+		{ title: "Loại phòng" },
 		{
 			title: "Giá phòng",
 			key: "price_day",
@@ -93,7 +119,6 @@ function ManagerSamplePrice(props) {
 			title: "Qui định phụ trội",
 			render: (record) => <SettingAdditional />,
 		},
-		{ title: "Ghi chú", dataIndex: "note", key: "note", width: "85px" },
 		{
 			title: "Thao tác",
 			width: "95px",
@@ -152,6 +177,12 @@ function ManagerSamplePrice(props) {
 					onChange={handleOnChange}
 				/>
 			</div>
+			<ModalAddSamplePrice
+				listTypeRoom={listTypeRoom}
+				visible={visible}
+				handleAddPriceTime={handleAddPriceTime}
+				handleSetStatus={handleSetStatus}
+			/>
 		</div>
 	);
 }

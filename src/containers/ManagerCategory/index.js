@@ -4,13 +4,17 @@ import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { endpoint } from "settings";
+import ModalAddCategory from "./components/ModalAddCategory";
+import ModalUpdateCategory from "./components/ModalUpdateCategory";
 
 ManagerCategory.propTypes = {};
 
 function ManagerCategory(props) {
+	const allData = [];
 	const [status, setStatus] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [listCategory, setListCategory] = useState([]);
+	const [listTypeCategory, setListTypeCategory] = useState([]);
 	const [pagination, setPagination] = useState();
 	const [visible, setVisible] = useState(false);
 	const [filters, setFilter] = useState({
@@ -18,8 +22,13 @@ function ManagerCategory(props) {
 		page: 1,
 	});
 
-	const allData = [];
+	const [visibleUpdateCategory, setVisibleUpdateCategory] = useState({
+		detail: {},
+		visible: false,
+	});
+
 	const user = useSelector((state) => state.Auth.user);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
 		setLoading(true);
@@ -32,6 +41,7 @@ function ManagerCategory(props) {
 				"Content-Type": "application/json",
 				Authorization: "Bearer" + user.meta.access_token,
 				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
 			},
 		}).then((res) => {
 			setLoading(false);
@@ -44,7 +54,23 @@ function ManagerCategory(props) {
 			setListCategory(allData);
 			setPagination(res.data.meta.pagination.total);
 		});
-	}, [filters, status]);
+	}, [filters, status, hotel_ID]);
+
+	useEffect(() => {
+		Axios({
+			method: "GET",
+			url: endpoint + "/tenant/category/type-category",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		}).then((res) => {
+			setListTypeCategory(res.data.data);
+		});
+	}, []);
 
 	function handleAddListCategory() {
 		setVisible(!visible);
@@ -54,6 +80,17 @@ function ManagerCategory(props) {
 		setFilter({
 			...filters,
 			page: pagination.current,
+		});
+	}
+
+	function handleSetStatus() {
+		setStatus(!status);
+	}
+
+	function handleUpdateCategory(record) {
+		setVisibleUpdateCategory({
+			visible: !visibleUpdateCategory.visible,
+			detail: record,
 		});
 	}
 
@@ -71,7 +108,7 @@ function ManagerCategory(props) {
 						src="/images/Actions/Edit.png"
 						alt="Edit"
 						className="ml-2 mr-1  cursor-pointer"
-						// onClick={() => handleUpdateHotel(record)}
+						onClick={() => handleUpdateCategory(record)}
 					/>
 					<Popconfirm
 						title="Bạn thực sự muốn xóa khách sạn này"
@@ -119,6 +156,7 @@ function ManagerCategory(props) {
 					columns={columns}
 					loading={loading}
 					scroll={{ x: true }}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,
@@ -127,10 +165,18 @@ function ManagerCategory(props) {
 					onChange={handleOnChange}
 				/>
 			</div>
-			{/* <ModalAddService
+			<ModalAddCategory
 				visible={visible}
-				handleAddListService={handleAddListService}
-			/> */}
+				listTypeCategory={listTypeCategory}
+				handleAddListCategory={handleAddListCategory}
+				handleSetStatus={handleSetStatus}
+			/>
+			<ModalUpdateCategory
+				listTypeCategory={listTypeCategory}
+				visibleUpdateCategory={visibleUpdateCategory}
+				handleUpdateCategory={handleUpdateCategory}
+				handleSetStatus={handleSetStatus}
+			/>
 		</div>
 	);
 }

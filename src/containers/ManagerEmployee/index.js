@@ -218,6 +218,7 @@ function ManagerEmployee(props) {
 					columns={columns}
 					loading={loading}
 					scroll={{ x: 1500 }}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,
@@ -233,9 +234,9 @@ function ManagerEmployee(props) {
 				handleAddListEmployee={handleAddListEmployee}
 			/>
 			<ModalUpdateEmployee
+				listGroup={listGroup}
 				visibleUpdate={visibleUpdate}
 				handleUpdateEmployee={handleUpdateEmployee}
-				listGroup={listGroup}
 				handleSetStatus={handleSetStatus}
 			/>
 		</div>

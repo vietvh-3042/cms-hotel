@@ -1,12 +1,13 @@
-import { Modal, DatePicker } from "antd";
-import React from "react";
-import PropTypes from "prop-types";
-import * as Yup from "yup";
-import { FastField, Form, Formik, Field } from "formik";
-import InputField from "helpers/CustomFields/InputField";
+import { DatePicker, Modal } from "antd";
 import Axios from "axios";
-import { endpoint } from "settings";
+import { FastField, Field, Form, Formik } from "formik";
+import InputField from "helpers/CustomFields/InputField";
+import PropTypes from "prop-types";
+import React from "react";
 import { useSelector } from "react-redux";
+import { endpoint } from "settings";
+import * as Yup from "yup";
+import FooterForm from "components/utility/footerForm";
 
 ModalAddPayment.propTypes = {
 	handleAddBill: PropTypes.func,
@@ -40,27 +41,28 @@ function ModalAddPayment(props) {
 	});
 
 	function handleSubmit(data) {
-		var today = new Date();
-		var dd = String(today.getDate()).padStart(2, "0");
-		var mm = String(today.getMonth() + 1).padStart(2, "0");
-		var yyyy = today.getFullYear();
-		today = dd + "/" + mm + "/" + yyyy;
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/payslip-receipt/payslip",
-			data: {
-				...data,
-				date_created: today, /// ngày tạo
-				guest_id: 1,
-				employee_id: 2,
-			},
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		});
+		console.log(data);
+		// var today = new Date();
+		// var dd = String(today.getDate()).padStart(2, "0");
+		// var mm = String(today.getMonth() + 1).padStart(2, "0");
+		// var yyyy = today.getFullYear();
+		// today = dd + "/" + mm + "/" + yyyy;
+		// Axios({
+		// 	method: "POST",
+		// 	url: endpoint + "/tenant/payslip-receipt/payslip",
+		// 	data: {
+		// 		...data,
+		// 		date_created: today, /// ngày tạo
+		// 		guest_id: 1,
+		// 		employee_id: 2,
+		// 	},
+		// 	headers: {
+		// 		Accept: "application/json",
+		// 		"Content-Type": "application/json",
+		// 		Authorization: "Bearer" + user.meta.access_token,
+		// 		"tenant-name": user.data.name,
+		// 	},
+		// });
 	}
 	return (
 		<Modal
@@ -74,7 +76,7 @@ function ModalAddPayment(props) {
 			<div className="relative">
 				<div className="modal_header_action flex items-center">
 					<img
-						src="http://server6.skyhotel.vn/images/icons/costcaraddt32.png"
+						src="/images/Common/costcaraddt32.png"
 						alt="phieu thu"
 						style={{ marginRight: 10 }}
 					/>
@@ -99,10 +101,11 @@ function ModalAddPayment(props) {
 										}
 									/>
 								</div>
+
 								{errors.date_receipt && touched.date_receipt ? (
-									<div className="flex mb-2 items-center">
+									<div className="flex items-center">
 										<div className="LabelCo opacity-0">-----</div>
-										<div className="">{errors.date_receipt}</div>
+										<div className="custom-err-form">{errors.date_receipt}</div>
 									</div>
 								) : null}
 
@@ -118,7 +121,7 @@ function ModalAddPayment(props) {
 									label="Số tiền:"
 									width={200}
 								/>
-								<div className="flex mb-2 items-center">
+								<div className="flex mb-1 items-center">
 									<div className="LabelCo">Loại chi phí:</div>
 									<Field
 										as="select"
@@ -130,7 +133,15 @@ function ModalAddPayment(props) {
 										<option value="3">Điện Nước</option>
 									</Field>
 								</div>
-								<div className="flex mb-2 items-center">
+
+								{errors.category_id && touched.category_id ? (
+									<div className="flex items-center">
+										<div className="LabelCo opacity-0">-----</div>
+										<div className="custom-err-form">{errors.category_id}</div>
+									</div>
+								) : null}
+
+								<div className="flex mb-1 items-center">
 									<div className="LabelCo">Chi tiết:</div>
 									<Field
 										as="select"
@@ -143,6 +154,16 @@ function ModalAddPayment(props) {
 										<option value="3">Thẻ Tín Dụng</option>
 									</Field>
 								</div>
+
+								{errors.payment_method_id && touched.payment_method_id ? (
+									<div className="flex items-center">
+										<div className="LabelCo opacity-0">-----</div>
+										<div className="custom-err-form">
+											{errors.payment_method_id}
+										</div>
+									</div>
+								) : null}
+
 								<FastField
 									name="name"
 									component={InputField}
@@ -163,24 +184,7 @@ function ModalAddPayment(props) {
 										style={{ width: 206 }}
 									/>
 								</div>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddBill}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
-								</div>
+								<FooterForm handleClick={handleAddBill} />
 							</Form>
 						)}
 					</Formik>

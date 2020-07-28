@@ -4,6 +4,7 @@ SettingPrice.propTypes = {};
 
 function SettingPrice(props) {
 	const { value } = props;
+
 	function format_current(price) {
 		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 	}

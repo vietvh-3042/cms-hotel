@@ -10,6 +10,7 @@ import ModalAddFloor from "./components/ModalAddFloor";
 ManagerHotelFloor.propTypes = {};
 
 function ManagerHotelFloor(props) {
+	const allData = [];
 	const [status, setStatus] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
@@ -26,8 +27,6 @@ function ManagerHotelFloor(props) {
 
 	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
-
-	const allData = [];
 
 	useEffect(() => {
 		setLoading(true);
@@ -186,6 +185,7 @@ function ManagerHotelFloor(props) {
 					dataSource={listHotelFloor}
 					columns={columns}
 					loading={loading}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,

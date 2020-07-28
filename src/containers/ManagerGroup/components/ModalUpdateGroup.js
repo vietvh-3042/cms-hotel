@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { API_Timeout, endpoint } from "settings";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
+import FooterForm from "components/utility/footerForm";
 
 ModalUpdateGroup.propTypes = {
 	handleUpdateType: PropTypes.func,
@@ -43,23 +44,23 @@ function ModalUpdateGroup(props) {
 			},
 		})
 			.then((res) => {
-				toast.success("Thêm mới thành công");
+				toast.success("Cập nhật thành công");
 				handleUpdateType();
 				handleSetStatus();
 			})
 			.catch((err) => {
 				console.log(err.response);
-				// let error = [];
-				// for (let value of Object.values(err.response.data.errors)) {
-				// 	error.push(value);
-				// }
-				// toast.error(
-				// 	<React.Fragment>
-				// 		{error.map((value, key) => (
-				// 			<div key={key}>{value}</div>
-				// 		))}
-				// 	</React.Fragment>
-				// );
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
 			});
 	}
 
@@ -101,24 +102,7 @@ function ModalUpdateGroup(props) {
 										style={{ width: 166 }}
 									/>
 								</div>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleUpdateType}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
-								</div>
+								<FooterForm handleClick={handleUpdateType} update />
 							</Form>
 						)}
 					</Formik>

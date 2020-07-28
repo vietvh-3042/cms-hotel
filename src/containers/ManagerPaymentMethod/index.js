@@ -100,7 +100,7 @@ function ManagerPaymentMethod(props) {
 		{
 			title: "Thao tác",
 			render: (record) => (
-				<div className=" h-full flex justify-center items-center flex-wrap">
+				<div className=" h-full flex items-center flex-wrap">
 					<img
 						src="/images/Actions/Edit.png"
 						alt="Edit"

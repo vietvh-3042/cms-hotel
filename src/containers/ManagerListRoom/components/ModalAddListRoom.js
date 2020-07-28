@@ -6,8 +6,9 @@ import PropTypes from "prop-types";
 import React from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
+import { endpoint } from "settings";
 import * as Yup from "yup";
+import FooterForm from "components/utility/footerForm";
 
 ModalAddListRoom.propTypes = {
 	handleAddListRoom: PropTypes.func,
@@ -118,7 +119,7 @@ function ModalAddListRoom(props) {
 		}
 		return data.map((value, index) => (
 			<option value={value} key={index} className="focus:outline-none">
-				{value} P
+				{value} N
 			</option>
 		));
 	}
@@ -321,9 +322,7 @@ function ModalAddListRoom(props) {
 																	alt="add"
 																	className="mr-2"
 																/>
-																<span>
-																	Phụ trội quá giờ Checkout (Theo ngày)
-																</span>
+																<span>Phụ trội quá giờ Checkout (Qua đêm)</span>
 															</div>
 														</legend>
 														{additional_overtime_checkout_night.map(
@@ -384,9 +383,7 @@ function ModalAddListRoom(props) {
 																	alt="add"
 																	className="mr-2"
 																/>
-																<span>
-																	Phụ trội quá giờ Checkout (Theo ngày)
-																</span>
+																<span>Phụ trội Checkin sớm (Theo ngày)</span>
 															</div>
 														</legend>
 														{additional_checkin_soon_day.map((value, index) => (
@@ -394,7 +391,7 @@ function ModalAddListRoom(props) {
 																className="flex justify-center items-center mb-2"
 																key={index}
 															>
-																<span className="mr-2">Quá</span>
+																<span className="mr-2">Sớm</span>
 																<Field
 																	as="select"
 																	name={`additional_checkin_soon_day.${index}.time`}
@@ -443,9 +440,7 @@ function ModalAddListRoom(props) {
 																	alt="add"
 																	className="mr-2"
 																/>
-																<span>
-																	Phụ trội quá giờ Checkout (Theo ngày)
-																</span>
+																<span>Phụ trội Checkin sớm (Qua đêm)</span>
 															</div>
 														</legend>
 														{additional_checkin_soon_night.map(
@@ -454,7 +449,7 @@ function ModalAddListRoom(props) {
 																	className="flex justify-center items-center mb-2"
 																	key={index}
 																>
-																	<span className="mr-2">Quá</span>
+																	<span className="mr-2">Trước</span>
 																	<Field
 																		as="select"
 																		name={`additional_checkin_soon_night.${index}.time`}
@@ -512,7 +507,7 @@ function ModalAddListRoom(props) {
 																className="flex justify-center items-center mb-2"
 																key={index}
 															>
-																<span className="mr-2">Quá</span>
+																<span className="mr-2">Thêm</span>
 																<Field
 																	as="select"
 																	name={`additional_add_extrabed.${index}.time`}
@@ -543,25 +538,7 @@ function ModalAddListRoom(props) {
 										</FieldArray>
 									</div>
 								</div>
-
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddListRoom}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
-								</div>
+								<FooterForm handleClick={handleAddListRoom} />
 							</Form>
 						)}
 					</Formik>

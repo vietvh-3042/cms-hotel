@@ -1,5 +1,6 @@
-import { Dropdown, Menu, Spin } from "antd";
+import { Menu, Spin } from "antd";
 import Axios from "axios";
+import DropdownCustom from "components/Dropdown";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { endpoint } from "settings";
@@ -7,6 +8,7 @@ import ModalAddRoom from "./components/Modal/ModalAddRoom";
 import ModalDeleteRoom from "./components/Modal/ModalDeleteRoom";
 import ModalUpdateRoom from "./components/Modal/ModalUpdateRoom";
 import ModalUpdateStatus from "./components/Modal/ModalUpdateStatus";
+import { toast } from "react-toastify";
 
 MapHotel.propTypes = {};
 
@@ -43,8 +45,9 @@ function MapHotel(props) {
 		return (
 			<Menu>
 				<Menu.Item className="text-xs">Nhận Phòng</Menu.Item>
-				<Menu.Item className="text-xs">Đặt phòng trước</Menu.Item>
-				<Menu.Item className="text-xs">Cập nhật trạng thái</Menu.Item>
+				<Menu.Item className="text-xs" onClick={() => handleStatusRoom(record)}>
+					Cập nhật trạng thái
+				</Menu.Item>
 				<Menu.Item className="text-xs" onClick={() => handleUpdateRoom(record)}>
 					Chỉnh sửa
 				</Menu.Item>
@@ -62,8 +65,9 @@ function MapHotel(props) {
 		return (
 			<Menu>
 				<Menu.Item className="text-xs">Nhận Phòng</Menu.Item>
-				<Menu.Item className="text-xs">Đã dọn phòng</Menu.Item>
-				<Menu.Item className="text-xs">Đặt phòng trước</Menu.Item>
+				<Menu.Item className="text-xs" onClick={() => handleClear(record.id)}>
+					Dọn phòng
+				</Menu.Item>
 				<Menu.Item className="text-xs" onClick={() => handleUpdateRoom(record)}>
 					Chỉnh sửa
 				</Menu.Item>
@@ -102,53 +106,36 @@ function MapHotel(props) {
 		if (!detailHotel) return;
 		else
 			return detailHotel.floors.data.map((val) => (
-				<div className="grid grid-cols-6 mb-2 gap-2" key={val.id}>
-					<div className="col-span-6 md:col-span-1 bg-gray-600 font-bold text-white hover:bg-gray-700 cursor-pointer">
-						<Dropdown overlay={menu} trigger={["click"]} placement="topRight">
-							<div
-								className="h-full flex items-center justify-center bg-gray-600 font-bold text-white 
-							hover:bg-gray-700 cursor-pointer"
-							>
-								{val.name}
-							</div>
-						</Dropdown>
+				<div className="grid grid-cols-7 mb-2 gap-2" key={val.id}>
+					<div className="col-span-7 md:col-span-1">
+						<DropdownCustom
+							className="h-full flex items-center justify-center bg-blue-800 font-bold text-white hover:bg-blue-900 cursor-pointer"
+							menu={menu}
+							name={val.name}
+						/>
 					</div>
-					<div className="col-span-6 md:col-span-5 grid grid-cols-3 md:grid-cols-6 gap-2">
+					<div className="col-span-7 md:col-span-6 grid grid-cols-3 md:grid-cols-6 gap-2">
 						{val.rooms.data.map((value, key) => {
-							if (value.status === 4) {
+							if (value.status === 4)
 								return (
-									<Dropdown overlay={() => menuRoomEmpty(value)} key={key}>
-										<div
-											className="h-20 bg-green-600 flex items-center font-bold 
-											text-white justify-center hover:bg-green-700 cursor-pointer"
-										>
-											{value.name}
-										</div>
-									</Dropdown>
+									<DropdownCustom
+										key={key}
+										className="h-20 bg-green-600 flex items-center font-bold 
+									text-white justify-center hover:bg-green-700 cursor-pointer"
+										menu={() => menuRoomEmpty(value)}
+										name={value.name}
+									/>
 								);
-							}
-
-							if (value.status === 8) {
+							if (value.status === 8)
 								return (
-									<Dropdown overlay={() => menuRoomcleaned(value)} key={key}>
-										<div
-											className="h-20 bg-gray-400 flex items-center font-bold 
-											text-white justify-center hover:bg-green-700 cursor-pointer"
-										>
-											{value.name}
-										</div>
-									</Dropdown>
+									<DropdownCustom
+										key={key}
+										className="h-20 bg-gray-500 flex items-center font-bold 
+									text-white justify-center hover:bg-gray-600 cursor-pointer"
+										menu={() => menuRoomcleaned(value)}
+										name={value.name}
+									/>
 								);
-							} else {
-								return (
-									<div
-										className="h-20 bg-green-600 flex items-center font-bold text-white 
-								justify-center hover:bg-green-700 cursor-pointer"
-									>
-										{value.name}
-									</div>
-								);
-							}
 						})}
 					</div>
 				</div>
@@ -181,6 +168,25 @@ function MapHotel(props) {
 		setVisibleDelete({
 			visible: !visibleDelete.visible,
 			detail: id,
+		});
+	}
+
+	function handleClear(id) {
+		Axios({
+			method: "POST",
+			url: endpoint + "/tenant/hotel-manager/update-status-room/" + id,
+			data: {
+				status: 4,
+			},
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+			},
+		}).then((res) => {
+			toast.success("Dọn thành công");
+			handleStatus();
 		});
 	}
 

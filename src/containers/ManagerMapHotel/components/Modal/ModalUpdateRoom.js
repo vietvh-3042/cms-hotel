@@ -29,7 +29,7 @@ function ModalUpdateRoom(props) {
 	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
-	const initialValues = visibleUpdate.detail;
+	const initialValues = visibleUpdate.detail || "";
 
 	const validationSchema = Yup.object().shape({
 		floor_id: Yup.string().required("Không được để trống."),
@@ -86,7 +86,7 @@ function ModalUpdateRoom(props) {
 		}).then((res) => {
 			setListFloor(res.data.data);
 		});
-	}, []);
+	}, [hotel_ID]);
 
 	useEffect(() => {
 		Axios({
@@ -102,7 +102,7 @@ function ModalUpdateRoom(props) {
 		}).then((res) => {
 			setListTypeRoom(res.data.data);
 		});
-	}, []);
+	}, [hotel_ID]);
 
 	useEffect(() => {
 		Axios({
@@ -118,7 +118,7 @@ function ModalUpdateRoom(props) {
 		}).then((res) => {
 			setListClassify(res.data.data);
 		});
-	}, []);
+	}, [hotel_ID]);
 
 	return (
 		<Modal

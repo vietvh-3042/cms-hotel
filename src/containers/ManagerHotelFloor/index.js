@@ -10,6 +10,7 @@ import ModalAddFloor from "./components/ModalAddFloor";
 ManagerHotelFloor.propTypes = {};
 
 function ManagerHotelFloor(props) {
+	const allData = [];
 	const [status, setStatus] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
@@ -26,8 +27,6 @@ function ManagerHotelFloor(props) {
 
 	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
-
-	const allData = [];
 
 	useEffect(() => {
 		setLoading(true);
@@ -64,14 +63,10 @@ function ManagerHotelFloor(props) {
 		});
 	}
 
-	function confirm(id, show_diagram, name) {
+	function confirm(id) {
 		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/hiden-floor",
-			data: {
-				status: show_diagram === 1 ? 2 : 1,
-				id,
-			},
+			method: "DELETE",
+			url: endpoint + "/tenant/hotel-manager/floor-hotel/" + id,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
@@ -79,11 +74,14 @@ function ManagerHotelFloor(props) {
 				"tenant-name": user.data.name,
 				"hotel-id": hotel_ID,
 			},
-			timeout: API_Timeout,
-		}).then((res) => {
-			toast.dark(`${name} đã ${show_diagram === 1 ? "hiện" : "ẩn"} trên sờ đồ`);
-			handleSetStatus();
-		});
+		})
+			.then((res) => {
+				toast.success("Xóa thành công");
+				handleSetStatus();
+			})
+			.catch((err) => {
+				console.log(err.response);
+			});
 	}
 
 	function handleAddFloor() {
@@ -145,7 +143,7 @@ function ManagerHotelFloor(props) {
 					/>
 					<Popconfirm
 						title="Bạn thực sự muốn xóa khách sạn này"
-						// onConfirm={() => confirm(record.id)}
+						onConfirm={() => confirm(record.id)}
 						okText="Yes"
 						cancelText="No"
 						placement="topRight"
@@ -186,6 +184,7 @@ function ManagerHotelFloor(props) {
 					dataSource={listHotelFloor}
 					columns={columns}
 					loading={loading}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,

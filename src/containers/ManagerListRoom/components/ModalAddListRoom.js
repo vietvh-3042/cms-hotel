@@ -1,17 +1,26 @@
 import { Modal } from "antd";
 import Axios from "axios";
-import { FastField, Field, FieldArray, Form, Formik } from "formik";
+import FooterForm from "components/utility/footerForm";
+import { FastField, FieldArray, Form, Formik } from "formik";
+import { renderHour, renderPerson } from "helpers/Common/CommonRoom";
+import FiledArrayCustom from "helpers/CustomFields/FiledArray";
 import InputField from "helpers/CustomFields/InputField";
+import SelectField from "helpers/CustomFields/SelectField";
 import PropTypes from "prop-types";
 import React from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
+import { endpoint } from "settings";
 import * as Yup from "yup";
 
 ModalAddListRoom.propTypes = {
 	handleAddListRoom: PropTypes.func,
 	handleSetStatus: PropTypes.func,
+};
+
+ModalAddListRoom.defaultProps = {
+	handleAddListRoom: null,
+	handleSetStatus: null,
 };
 
 function ModalAddListRoom(props) {
@@ -25,12 +34,12 @@ function ModalAddListRoom(props) {
 		number_person: "",
 		price_day: "",
 		price_night: "",
-		price_by_hour: [{ time: 1, amount: "50000" }],
-		additional_overtime_checkout_day: [{ time: 1, amount: "50000" }],
-		additional_overtime_checkout_night: [{ time: 1, amount: "50000" }],
-		additional_checkin_soon_day: [{ time: 1, amount: "50000" }],
-		additional_checkin_soon_night: [{ time: 1, amount: "50000" }],
-		additional_add_extrabed: [{ person: 1, amount: "50000" }],
+		price_by_hour: [{ time: "1", amount: "50000" }],
+		additional_overtime_checkout_day: [{ time: "1", amount: "50000" }],
+		additional_overtime_checkout_night: [{ time: "1", amount: "50000" }],
+		additional_checkin_soon_day: [{ time: "1", amount: "50000" }],
+		additional_checkin_soon_night: [{ time: "1", amount: "50000" }],
+		additional_add_extrabed: [{ person: "1", amount: "50000" }],
 	};
 
 	const validationSchema = Yup.object().shape({
@@ -44,15 +53,14 @@ function ModalAddListRoom(props) {
 		price_day: Yup.number()
 			.typeError("Phải là số")
 			.required("Không được để trống."),
+		price_night: Yup.number()
+			.typeError("Phải là số")
+			.required("Không được để trống."),
 	});
 
 	function handleSubmit(data) {
 		let convert = {
-			name: data.name,
-			number_person: data.number_person,
-			number_bed: data.number_bed,
-			price_day: data.price_day,
-			price_night: data.price_night,
+			...data,
 			price_by_hour: JSON.stringify({
 				type_id: 1,
 				data: data.price_by_hour,
@@ -92,7 +100,6 @@ function ModalAddListRoom(props) {
 				"tenant-name": user.data.name,
 				"hotel-id": hotel_ID,
 			},
-			timeout: API_Timeout,
 		})
 			.then((res) => {
 				toast.success("Tạo mới thành công");
@@ -102,30 +109,6 @@ function ModalAddListRoom(props) {
 			.catch((err) => {
 				console.log(err.response);
 			});
-	}
-
-	function renderHour() {
-		let data = [];
-		for (let index = 1; index <= 24; index++) {
-			data.push(index);
-		}
-		return data.map((value, index) => (
-			<option value={value} key={index} className="focus:outline-none">
-				{value}h
-			</option>
-		));
-	}
-
-	function renderPerson() {
-		let data = [];
-		for (let index = 1; index <= 10; index++) {
-			data.push(index);
-		}
-		return data.map((value, index) => (
-			<option value={value} key={index} className="focus:outline-none">
-				{value} P
-			</option>
-		));
 	}
 
 	return (
@@ -148,7 +131,7 @@ function ModalAddListRoom(props) {
 						validationSchema={validationSchema}
 						onSubmit={handleSubmit}
 					>
-						{() => (
+						{({ values }) => (
 							<Form>
 								<div className="flex">
 									<div className="w-4/12">
@@ -182,391 +165,93 @@ function ModalAddListRoom(props) {
 											label="Giá qua đêm:"
 											width={156}
 										/>
-										<FieldArray name="price_by_hour">
-											{(fieldArrayProps) => {
-												const { push, remove, form } = fieldArrayProps;
-												const { price_by_hour } = form.values;
-												return (
-													<fieldset
-														className="mb-3"
-														style={{ border: "1px solid #d0d0d0" }}
-													>
-														<legend
-															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
-														>
-															<div className="flex">
-																<img
-																	src="/images/Common/add16.png"
-																	alt="add"
-																	className="mr-2"
-																/>
-																<span>Giá bán theo Giờ - Click để thêm</span>
-															</div>
-														</legend>
-														{price_by_hour.map((value, index) => (
-															<div
-																className="flex justify-center items-center mb-2"
-																key={index}
-															>
-																<span className="mr-2">Quá</span>
-																<Field
-																	as="select"
-																	name={`price_by_hour.${index}.time`}
-																	style={{ width: 50 }}
-																	className="focus:outline-none"
-																>
-																	{renderHour()}
-																</Field>
-
-																<span className="mx-1">:</span>
-																<Field
-																	name={`price_by_hour.${index}.amount`}
-																	type="text"
-																	className="focus:outline-none font-extrabold"
-																	style={{ width: 150 }}
-																/>
-																<img
-																	src="/images/Common/cancel20.png"
-																	alt="add"
-																	className="ml-1"
-																	onClick={() => remove(index)}
-																/>
-															</div>
-														))}
-													</fieldset>
-												);
-											}}
-										</FieldArray>
+										<FieldArray
+											name="price_by_hour"
+											component={(props) => (
+												<FiledArrayCustom
+													{...props}
+													name="price_by_hour"
+													label="Giá bán theo Giờ - Click để thêm"
+													titleArray="Quá"
+													array={values.price_by_hour}
+													renderOption={renderHour}
+												/>
+											)}
+										/>
 									</div>
-
 									<div className="w-4/12 mr-3">
-										<FieldArray name="additional_overtime_checkout_day">
-											{(fieldArrayProps) => {
-												const { push, remove, form } = fieldArrayProps;
-												const {
-													additional_overtime_checkout_day,
-												} = form.values;
-												return (
-													<fieldset
-														className="mb-3"
-														style={{ border: "1px solid #d0d0d0" }}
-													>
-														<legend
-															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
-														>
-															<div className="flex">
-																<img
-																	src="/images/Common/add16.png"
-																	alt="add"
-																	className="mr-2"
-																/>
-																<span>
-																	Phụ trội quá giờ Checkout (Theo ngày)
-																</span>
-															</div>
-														</legend>
-														{additional_overtime_checkout_day.map(
-															(value, index) => (
-																<div
-																	className="flex justify-center items-center mb-2"
-																	key={index}
-																>
-																	<span className="mr-2">Quá</span>
-																	<Field
-																		as="select"
-																		name={`additional_overtime_checkout_day.${index}.time`}
-																		style={{ width: 50 }}
-																		value={value.time}
-																		className="focus:outline-none"
-																	>
-																		{renderHour()}
-																	</Field>
-
-																	<span className="mx-1">:</span>
-																	<Field
-																		name={`additional_overtime_checkout_day.${index}.amount`}
-																		type="text"
-																		className="focus:outline-none font-extrabold"
-																		style={{ width: 150 }}
-																	/>
-																	<img
-																		src="/images/Common/cancel20.png"
-																		alt="add"
-																		className="ml-1"
-																		onClick={() => remove(index)}
-																	/>
-																</div>
-															)
-														)}
-													</fieldset>
-												);
-											}}
-										</FieldArray>
-
-										<FieldArray name="additional_overtime_checkout_night">
-											{(fieldArrayProps) => {
-												const { push, remove, form } = fieldArrayProps;
-												const {
-													additional_overtime_checkout_night,
-												} = form.values;
-												return (
-													<fieldset
-														className="mb-3"
-														style={{ border: "1px solid #d0d0d0" }}
-													>
-														<legend
-															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
-														>
-															<div className="flex">
-																<img
-																	src="/images/Common/add16.png"
-																	alt="add"
-																	className="mr-2"
-																/>
-																<span>
-																	Phụ trội quá giờ Checkout (Theo ngày)
-																</span>
-															</div>
-														</legend>
-														{additional_overtime_checkout_night.map(
-															(value, index) => (
-																<div
-																	className="flex justify-center items-center mb-2"
-																	key={index}
-																>
-																	<span className="mr-2">Quá</span>
-																	<Field
-																		as="select"
-																		name={`additional_overtime_checkout_night.${index}.time`}
-																		style={{ width: 50 }}
-																		className="focus:outline-none"
-																	>
-																		{renderHour()}
-																	</Field>
-
-																	<span className="mx-1">:</span>
-																	<Field
-																		name={`additional_overtime_checkout_night.${index}.amount`}
-																		type="text"
-																		className="focus:outline-none font-extrabold"
-																		style={{ width: 150 }}
-																	/>
-																	<img
-																		src="/images/Common/cancel20.png"
-																		alt="add"
-																		className="ml-1"
-																		onClick={() => remove(index)}
-																	/>
-																</div>
-															)
-														)}
-													</fieldset>
-												);
-											}}
-										</FieldArray>
+										<FieldArray
+											name="additional_overtime_checkout_day"
+											component={(props) => (
+												<FiledArrayCustom
+													{...props}
+													name="additional_overtime_checkout_day"
+													label="Phụ trội quá giờ Checkout (Theo ngày)"
+													titleArray="Quá"
+													array={values.additional_overtime_checkout_day}
+													renderOption={renderHour}
+												/>
+											)}
+										/>
+										<FieldArray
+											name="additional_overtime_checkout_night"
+											component={(props) => (
+												<FiledArrayCustom
+													{...props}
+													name="additional_overtime_checkout_night"
+													label="Phụ trội quá giờ Checkout (Qua đêm)"
+													titleArray="Quá"
+													array={values.additional_overtime_checkout_night}
+													renderOption={renderHour}
+												/>
+											)}
+										/>
 									</div>
-
 									<div className="w-4/12">
-										<FieldArray name="additional_checkin_soon_day">
-											{(fieldArrayProps) => {
-												const { push, remove, form } = fieldArrayProps;
-												const { additional_checkin_soon_day } = form.values;
-												return (
-													<fieldset
-														className="mb-3"
-														style={{ border: "1px solid #d0d0d0" }}
-													>
-														<legend
-															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
-														>
-															<div className="flex">
-																<img
-																	src="/images/Common/add16.png"
-																	alt="add"
-																	className="mr-2"
-																/>
-																<span>
-																	Phụ trội quá giờ Checkout (Theo ngày)
-																</span>
-															</div>
-														</legend>
-														{additional_checkin_soon_day.map((value, index) => (
-															<div
-																className="flex justify-center items-center mb-2"
-																key={index}
-															>
-																<span className="mr-2">Quá</span>
-																<Field
-																	as="select"
-																	name={`additional_checkin_soon_day.${index}.time`}
-																	style={{ width: 50 }}
-																	className="focus:outline-none"
-																>
-																	{renderHour()}
-																</Field>
-
-																<span className="mx-1">:</span>
-																<Field
-																	name={`additional_checkin_soon_day.${index}.amount`}
-																	type="text"
-																	className="focus:outline-none font-extrabold"
-																	style={{ width: 150 }}
-																/>
-																<img
-																	src="/images/Common/cancel20.png"
-																	alt="add"
-																	className="ml-1"
-																	onClick={() => remove(index)}
-																/>
-															</div>
-														))}
-													</fieldset>
-												);
-											}}
-										</FieldArray>
-
-										<FieldArray name="additional_checkin_soon_night">
-											{(fieldArrayProps) => {
-												const { push, remove, form } = fieldArrayProps;
-												const { additional_checkin_soon_night } = form.values;
-												return (
-													<fieldset
-														className="mb-3"
-														style={{ border: "1px solid #d0d0d0" }}
-													>
-														<legend
-															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
-														>
-															<div className="flex">
-																<img
-																	src="/images/Common/add16.png"
-																	alt="add"
-																	className="mr-2"
-																/>
-																<span>
-																	Phụ trội quá giờ Checkout (Theo ngày)
-																</span>
-															</div>
-														</legend>
-														{additional_checkin_soon_night.map(
-															(value, index) => (
-																<div
-																	className="flex justify-center items-center mb-2"
-																	key={index}
-																>
-																	<span className="mr-2">Quá</span>
-																	<Field
-																		as="select"
-																		name={`additional_checkin_soon_night.${index}.time`}
-																		style={{ width: 50 }}
-																		className="focus:outline-none"
-																	>
-																		{renderHour()}
-																	</Field>
-
-																	<span className="mx-1">:</span>
-																	<Field
-																		name={`additional_checkin_soon_night.${index}.amount`}
-																		type="text"
-																		className="focus:outline-none font-extrabold"
-																		style={{ width: 150 }}
-																	/>
-																	<img
-																		src="/images/Common/cancel20.png"
-																		alt="add"
-																		className="ml-1"
-																		onClick={() => remove(index)}
-																	/>
-																</div>
-															)
-														)}
-													</fieldset>
-												);
-											}}
-										</FieldArray>
-
-										<FieldArray name="additional_add_extrabed">
-											{(fieldArrayProps) => {
-												const { push, remove, form } = fieldArrayProps;
-												const { additional_add_extrabed } = form.values;
-												return (
-													<fieldset
-														className="mb-3"
-														style={{ border: "1px solid #d0d0d0" }}
-													>
-														<legend
-															className="groupHour w-280 mx-auto"
-															onClick={() => push("")}
-														>
-															<div className="flex">
-																<img
-																	src="/images/Common/add16.png"
-																	alt="add"
-																	className="mr-2"
-																/>
-																<span>Phụ trội thêm khách - Extra Bed</span>
-															</div>
-														</legend>
-														{additional_add_extrabed.map((value, index) => (
-															<div
-																className="flex justify-center items-center mb-2"
-																key={index}
-															>
-																<span className="mr-2">Quá</span>
-																<Field
-																	as="select"
-																	name={`additional_add_extrabed.${index}.time`}
-																	style={{ width: 50 }}
-																	className="focus:outline-none"
-																>
-																	{renderPerson()}
-																</Field>
-
-																<span className="mx-1">:</span>
-																<Field
-																	name={`additional_add_extrabed.${index}.amount`}
-																	type="text"
-																	className="focus:outline-none font-extrabold"
-																	style={{ width: 150 }}
-																/>
-																<img
-																	src="/images/Common/cancel20.png"
-																	alt="add"
-																	className="ml-1"
-																	onClick={() => remove(index)}
-																/>
-															</div>
-														))}
-													</fieldset>
-												);
-											}}
-										</FieldArray>
+										<FieldArray
+											name="additional_checkin_soon_day"
+											component={(props) => (
+												<FiledArrayCustom
+													{...props}
+													name="additional_checkin_soon_day"
+													label="Phụ trội Checkin sớm (Theo ngày)"
+													titleArray="Trước"
+													array={values.additional_checkin_soon_day}
+													renderOption={renderHour}
+												/>
+											)}
+										/>
+										<FieldArray
+											name="additional_checkin_soon_night"
+											component={(props) => (
+												<FiledArrayCustom
+													{...props}
+													name="additional_checkin_soon_night"
+													label="Phụ trội Checkin sớm (Qua đêm)"
+													titleArray="Trước"
+													array={values.additional_checkin_soon_night}
+													renderOption={renderHour}
+												/>
+											)}
+										/>
+										<FieldArray
+											name="additional_add_extrabed"
+											component={(props) => (
+												<FiledArrayCustom
+													{...props}
+													name="additional_add_extrabed"
+													label="Phụ trội thêm khách - Extra Bed"
+													titleArray="Thêm"
+													keyArray={{ person: "1", amount: "50000" }}
+													keyArrayText="person"
+													array={values.additional_add_extrabed}
+													renderOption={renderPerson}
+												/>
+											)}
+										/>
 									</div>
 								</div>
-
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddListRoom}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
-								</div>
+								<FooterForm handleClick={handleAddListRoom} />
 							</Form>
 						)}
 					</Formik>

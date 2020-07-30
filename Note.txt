@@ -1,3 +1,28 @@
 - Cần phải sửa lại ảnh menu 1 của sidebar
 - Menu 2 của khách sạn cũng phải sửa lại ảnh
 - Chỉnh sửa lại header
+
+
+
+
+
+----------------------------
+Danh sách loại phòng khi xóa tính theo giờ đi vẫn còn
+Tạo phiếu chi
+Type Category trả về id
+Category trả về name type category
+dịch vụ và kho cần xử lý 
+giá mẫu trả về list giá
+classify
+
+1: đang ở
+2: phòng đã được đặt
+4: phòng đã dọn
+8: phòng chưa dọn
+16: phòng đang sửa
+
+
+
+
+------- done ----------
+danh sách khách sạn

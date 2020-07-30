@@ -1,11 +1,14 @@
-import { Table, Popconfirm } from "antd";
+import { Popconfirm, Table } from "antd";
 import Axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { API_Timeout, endpoint } from "settings";
+import { toast } from "react-toastify";
+import { endpoint } from "settings";
 import ModalAddListRoom from "./components/ModalAddListRoom";
 import ModalUpdateTypeRoom from "./components/ModalUpdateTypeRoom";
+import SettingAdditional from "./SettingAdditional";
+import SettingPrice from "./SettingPrice";
 
 ManagerListRoom.propTypes = {};
 
@@ -18,6 +21,7 @@ function ManagerListRoom(props) {
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
+		include: "typePrices.priceTimes",
 	});
 
 	const [visibleUpdate, setVisibleUpdate] = useState({
@@ -43,7 +47,6 @@ function ManagerListRoom(props) {
 				"tenant-name": user.data.name,
 				"hotel-id": hotel_ID,
 			},
-			timeout: API_Timeout,
 		}).then((res) => {
 			setLoading(false);
 			res.data.data.forEach((infor, index) => {
@@ -73,7 +76,35 @@ function ManagerListRoom(props) {
 	}
 
 	function handleUpdateTypeRoom(value) {
-		console.log(value);
+		setVisibleUpdate({
+			visible: !visibleUpdate.visible,
+			detail: value,
+		});
+	}
+
+	function format_current(price) {
+		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+	}
+
+	function confirm(id) {
+		Axios({
+			method: "DELETE",
+			url: endpoint + "/tenant/hotel-manager/type-room/" + id,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		})
+			.then((res) => {
+				toast.success("Xóa thành công");
+				handleSetStatus();
+			})
+			.catch((err) => {
+				toast.error("Có lỗi xảy ra");
+			});
 	}
 
 	const columns = [
@@ -86,12 +117,31 @@ function ManagerListRoom(props) {
 				<span className="capitalize font-bold">{record}</span>
 			),
 		},
-		{ title: "Giá phòng", dataIndex: "", key: "" },
-		{ title: "Cài đặt giá", dataIndex: "", key: "" },
-		{ title: "Qui định phụ trội", dataIndex: "", key: "" },
+		{
+			title: (
+				<span className="text-left inline-block w-full ml-3">Cài đặt giá</span>
+			),
+			render: (record) => (
+				<div className="text-left">
+					<SettingPrice value={record} />
+				</div>
+			),
+		},
+		{
+			title: (
+				<span className="text-left inline-block w-full ml-10">
+					Qui định phụ trội
+				</span>
+			),
+
+			render: (record) => (
+				<div className="text-left ml-12">
+					<SettingAdditional value={record} />
+				</div>
+			),
+		},
 		{ title: "SL.G", dataIndex: "number_bed", key: "number_bed" },
 		{ title: "SL.N", dataIndex: "number_person", key: "number_person" },
-		{ title: "Ghi chú", dataIndex: "note", key: "note" },
 		{
 			title: "Thao tác",
 			width: "120px",
@@ -105,8 +155,8 @@ function ManagerListRoom(props) {
 					/>
 
 					<Popconfirm
-						title="Bạn thực sự muốn xóa khách sạn này"
-						// onConfirm={() => confirm(record.id)}
+						title="Bạn thực sự muốn xóa bản ghi này?"
+						onConfirm={() => confirm(record.id)}
 						okText="Yes"
 						cancelText="No"
 						placement="topRight"
@@ -147,6 +197,8 @@ function ManagerListRoom(props) {
 					dataSource={listTypeRoom}
 					columns={columns}
 					loading={loading}
+					scroll={{ x: true }}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,

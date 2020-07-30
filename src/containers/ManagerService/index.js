@@ -13,6 +13,7 @@ function ManagerService(props) {
 	const [loading, setLoading] = useState(false);
 	const [status, setStatus] = useState(false);
 	const [listService, setListService] = useState([]);
+	const [listCategory, setListCategory] = useState([]);
 	const [pagination, setPagination] = useState();
 	const [visible, setVisible] = useState(false);
 	const [filters, setFilter] = useState({
@@ -28,7 +29,7 @@ function ManagerService(props) {
 		const paramString = queryString.stringify(filters);
 		Axios({
 			method: "GET",
-			url: endpoint + "/tenant/service-storage/service?" + paramString,
+			url: endpoint + "/tenant/service-storage/services?" + paramString,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
@@ -48,6 +49,22 @@ function ManagerService(props) {
 			setPagination(res.data.meta.pagination.total);
 		});
 	}, [filters, status, hotel_ID]);
+
+	useEffect(() => {
+		Axios({
+			method: "GET",
+			url: endpoint + "/tenant/category/category",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		}).then((res) => {
+			setListCategory(res.data.data);
+		});
+	}, []);
 
 	function handleAddListService() {
 		setVisible(!visible);
@@ -109,6 +126,7 @@ function ManagerService(props) {
 					dataSource={listService}
 					columns={columns}
 					loading={loading}
+					bordered
 					scroll={{ x: 1100 }}
 					pagination={{
 						total: pagination,
@@ -119,8 +137,10 @@ function ManagerService(props) {
 				/>
 			</div>
 			<ModalAddService
+				listCategory={listCategory}
 				visible={visible}
 				handleAddListService={handleAddListService}
+				handleSetStatus={handleSetStatus}
 			/>
 		</div>
 	);

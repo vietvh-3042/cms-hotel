@@ -1,7 +1,7 @@
+import { ErrorMessage } from "formik";
 import PropTypes from "prop-types";
 import React from "react";
-import { FormGroup, Label, Input, FormFeedback } from "reactstrap";
-import { ErrorMessage } from "formik";
+import { FormFeedback, FormGroup, Input, Label } from "reactstrap";
 
 InputField.propTypes = {
 	field: PropTypes.object.isRequired,
@@ -9,11 +9,13 @@ InputField.propTypes = {
 
 	type: PropTypes.string,
 	label: PropTypes.string,
+	width: PropTypes.number,
 };
 
 InputField.defaultProps = {
 	type: "text",
 	label: "",
+	width: null,
 };
 
 function InputField(props) {

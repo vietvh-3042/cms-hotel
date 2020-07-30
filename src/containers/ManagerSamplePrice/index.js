@@ -1,11 +1,13 @@
-import { Table, Popconfirm } from "antd";
+import { Popconfirm, Table } from "antd";
 import Axios from "axios";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { endpoint } from "settings";
-import SettingPrice from "./SettingPrice";
+import ModalAddSamplePrice from "./components/ModalAddSamplePrice";
 import SettingAdditional from "./SettingAdditional";
+import SettingPrice from "./SettingPrice";
+import { toast } from "react-toastify";
 
 ManagerSamplePrice.propTypes = {};
 
@@ -13,11 +15,14 @@ function ManagerSamplePrice(props) {
 	const allData = [];
 	const [status, setStatus] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [visible, setVisible] = useState(false);
 	const [listSamplePrice, setListSamplePrice] = useState([]);
+	const [listTypeRoom, setListTypeRoom] = useState([]);
 	const [pagination, setPagination] = useState();
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
+		include: "typePrices.priceTimes",
 	});
 
 	const user = useSelector((state) => state.Auth.user);
@@ -49,7 +54,25 @@ function ManagerSamplePrice(props) {
 		});
 	}, [filters, status, hotel_ID]);
 
-	function handleAddPriceTime() {}
+	useEffect(() => {
+		Axios({
+			method: "GET",
+			url: endpoint + "/tenant/hotel-manager/type-room",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		}).then((res) => {
+			setListTypeRoom(res.data.data);
+		});
+	}, [hotel_ID]);
+
+	function handleAddPriceTime() {
+		setVisible(!visible);
+	}
 
 	function handleOnChange(pagination) {
 		setFilter({
@@ -58,8 +81,29 @@ function ManagerSamplePrice(props) {
 		});
 	}
 
+	function handleSetStatus() {
+		setStatus(!status);
+	}
+
 	function format_current(price) {
 		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+	}
+
+	function confirm(id) {
+		Axios({
+			method: "DELETE",
+			url: endpoint + "/tenant/hotel-manager/sample-price/" + id,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer" + user.meta.access_token,
+				"tenant-name": user.data.name,
+				"hotel-id": hotel_ID,
+			},
+		}).then((res) => {
+			toast.success("Xóa thành công");
+			handleSetStatus();
+		});
 	}
 
 	const columns = [
@@ -74,6 +118,9 @@ function ManagerSamplePrice(props) {
 				</b>
 			),
 		},
+
+		{ title: "Loại phòng" },
+
 		{
 			title: "Giá phòng",
 			key: "price_day",
@@ -93,15 +140,20 @@ function ManagerSamplePrice(props) {
 			title: "Qui định phụ trội",
 			render: (record) => <SettingAdditional />,
 		},
-		{ title: "Ghi chú", dataIndex: "note", key: "note", width: "85px" },
 		{
 			title: "Thao tác",
 			width: "95px",
 			render: (record) => (
 				<div className=" h-full flex justify-center items-center flex-wrap">
+					<img
+						src="/images/Actions/Edit.png"
+						alt="Edit"
+						className="ml-2 mr-1  cursor-pointer"
+						// onClick={() => handleUpdateTypeRoom(record)}
+					/>
 					<Popconfirm
-						title="Bạn thực sự muốn xóa khách sạn này"
-						// onConfirm={() => confirm(record.id)}
+						title="Bạn thực sự muốn xóa bản ghi này?"
+						onConfirm={() => confirm(record.id)}
 						okText="Yes"
 						cancelText="No"
 						placement="topRight"
@@ -152,6 +204,12 @@ function ManagerSamplePrice(props) {
 					onChange={handleOnChange}
 				/>
 			</div>
+			<ModalAddSamplePrice
+				listTypeRoom={listTypeRoom}
+				visible={visible}
+				handleAddPriceTime={handleAddPriceTime}
+				handleSetStatus={handleSetStatus}
+			/>
 		</div>
 	);
 }

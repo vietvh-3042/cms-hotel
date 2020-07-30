@@ -4,51 +4,43 @@ import FooterForm from "components/utility/footerForm";
 import { FastField, Field, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { endpoint } from "settings";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 
-ModalAddCategory.propTypes = {
-	handleAddListCategory: PropTypes.func,
+ModalAddClassify.propTypes = {
+	handleAddClassify: PropTypes.func,
 	handleSetStatus: PropTypes.func,
-	listTypeCategory: PropTypes.array,
 };
 
-ModalAddCategory.defaultProps = {
+ModalAddClassify.defaultProps = {
+	handleAddClassify: null,
 	handleSetStatus: null,
-	handleAddListCategory: null,
-	listTypeCategory: [],
 };
 
-function ModalAddCategory(props) {
-	const {
-		visible,
-		handleAddListCategory,
-		handleSetStatus,
-		listTypeCategory,
-	} = props;
+function ModalAddClassify(props) {
+	const { visible, handleAddClassify, handleSetStatus } = props;
 
 	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const initialValues = {
 		name: "",
-		type_category_id: "",
+		color_code: "#000001",
+		description: "",
 		note: "",
-		status: 1,
 	};
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
-		type_category_id: Yup.string().required("Không được để trống."),
 	});
 
 	function handleSubmit(data) {
 		Axios({
 			method: "POST",
-			url: endpoint + "/tenant/category/category",
+			url: endpoint + "/tenant/hotel-manager/classify",
 			data: data,
 			headers: {
 				Accept: "application/json",
@@ -60,7 +52,7 @@ function ModalAddCategory(props) {
 		})
 			.then((res) => {
 				toast.success("Tạo mới thành công");
-				handleAddListCategory();
+				handleAddClassify();
 				handleSetStatus();
 			})
 			.catch((err) => {
@@ -77,19 +69,20 @@ function ModalAddCategory(props) {
 				);
 			});
 	}
+
 	return (
 		<Modal
 			visible={visible}
-			onCancel={handleAddListCategory}
+			onCancel={handleAddClassify}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
-			width={390}
+			width={370}
 		>
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Thêm nhóm dịch vụ</span>
+					<span>Tạo Phân Loại Mới</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -97,50 +90,30 @@ function ModalAddCategory(props) {
 						validationSchema={validationSchema}
 						onSubmit={handleSubmit}
 					>
-						{({ errors, touched }) => (
+						{() => (
 							<Form>
 								<FastField
 									name="name"
 									component={InputField}
-									label="Tên:"
-									width={200}
+									label="Phân loại:"
+									width={160}
 								/>
-
-								<div className="flex mb-1 items-center">
-									<div className="LabelCo">Loại dịch vụ:</div>
-									<Field
-										as="select"
-										name="type_category_id"
-										style={{ width: 206, height: 30 }}
-									>
-										<option value="">Chọn loại dịch vụ:</option>
-										{listTypeCategory.map((value) => (
-											<option value={value.id} key={value.id}>
-												{value.name}
-											</option>
-										))}
-									</Field>
-								</div>
-
-								{errors.type_category_id && touched.type_category_id ? (
-									<div className="flex items-center">
-										<div className="LabelCo opacity-0">-----</div>
-										<div className="custom-err-form">
-											{errors.type_category_id}
-										</div>
-									</div>
-								) : null}
-
+								<FastField
+									name="description"
+									component={InputField}
+									label="Mô tả:"
+									width={160}
+								/>
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Ghi chú:</div>
 									<Field
 										as="textarea"
 										name="note"
 										rows="3"
-										style={{ width: 206 }}
+										style={{ width: 166 }}
 									/>
 								</div>
-								<FooterForm handleClick={handleAddListCategory} />
+								<FooterForm handleClick={handleAddClassify} />
 							</Form>
 						)}
 					</Formik>
@@ -149,11 +122,11 @@ function ModalAddCategory(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleAddListCategory}
+					onClick={handleAddClassify}
 				/>
 			</div>
 		</Modal>
 	);
 }
 
-export default ModalAddCategory;
+export default ModalAddClassify;

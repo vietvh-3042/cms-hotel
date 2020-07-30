@@ -4,7 +4,7 @@ import ModalCheckin from "./components/Modal/ModalCheckin";
 import ModalCheckout from "./components/Modal/ModalCheckout";
 import StatusHotel from "./components/StatusHotel";
 import ModalAddPayment from "./components/Modal/ModalAddPayment";
-import ModalAddService from "./components/Modal/ModalAddService";
+import ModalAddBill from "./components/Modal/ModalAddBill";
 
 GroupStatusHotel.propTypes = {};
 
@@ -50,7 +50,7 @@ function GroupStatusHotel(props) {
 	return (
 		<React.Fragment>
 			<div className="form-inline flex">
-				<StatusHotel quantity={0} title="Trống" background="bg-teal-500" />
+				<StatusHotel quantity={0} title="Trống" background="bg-green-600" />
 				<StatusHotel quantity={0} title="Đang ở" background="bg-pink-500" />
 				<StatusHotel
 					quantity={0}
@@ -73,7 +73,6 @@ function GroupStatusHotel(props) {
 				<button className="grey mr-2 mb-2" onClick={handleCheckout}>
 					DS Checkout
 				</button>
-				<button className="grey mr-2 mb-2">DS Khách hàng</button>
 				<Dropdown overlay={menuReceipts}>
 					<button className="dashboardButton mb-2">Tạo HD / Phiếu</button>
 				</Dropdown>
@@ -84,7 +83,7 @@ function GroupStatusHotel(props) {
 				handleCheckout={handleCheckout}
 			/>
 			<ModalAddPayment visible={visibleBill} handleAddBill={handleAddBill} />
-			<ModalAddService
+			<ModalAddBill
 				visible={visibleService}
 				handleAddService={handleAddService}
 			/>

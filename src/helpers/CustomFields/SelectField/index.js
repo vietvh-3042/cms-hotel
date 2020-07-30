@@ -1,29 +1,25 @@
 import { ErrorMessage } from "formik";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { FormFeedback, FormGroup, Input, Label } from "reactstrap";
 
-InputField.propTypes = {
+SelectField.propTypes = {
 	field: PropTypes.object.isRequired,
 	form: PropTypes.object.isRequired,
-
-	type: PropTypes.string,
 	label: PropTypes.string,
-	width: PropTypes.number,
+	array: PropTypes.array,
 };
 
-InputField.defaultProps = {
-	type: "text",
+SelectField.defaultProps = {
 	label: "",
-	width: null,
+	array: [],
 };
 
-function InputField(props) {
-	const { field, form, type, label, width } = props;
+function SelectField(props) {
+	const { field, form, label, width, array } = props;
 	const { name } = field;
 	const { errors, touched } = form;
 	const showError = errors[name] && touched[name];
-
 	return (
 		<FormGroup className="mb-2">
 			{label && (
@@ -31,15 +27,20 @@ function InputField(props) {
 					{label}
 				</Label>
 			)}
-
 			<Input
 				id={name}
 				{...field}
-				type={type}
+				type="select"
 				style={{ width: width ? width : 220, height: 24, display: "inline" }}
 				className="dashboard"
 				invalid={showError}
-			/>
+			>
+				{array.map((value) => (
+					<option value={value.id} key={value.id}>
+						{value.name}
+					</option>
+				))}
+			</Input>
 			<ErrorMessage
 				name={name}
 				component={FormFeedback}
@@ -49,4 +50,4 @@ function InputField(props) {
 	);
 }
 
-export default InputField;
+export default SelectField;

@@ -13,7 +13,7 @@ function SettingPrice(props) {
 			<div>
 				<span>♦ Một Ngày: </span>
 				{value.typePrices.data.map((value, key) => (
-					<b className="ml-2 bold" style={{ fontSize: 12 }} key={key}>
+					<b className="ml-2 bold" key={key}>
 						{format_current(value.price_day)}
 					</b>
 				))}

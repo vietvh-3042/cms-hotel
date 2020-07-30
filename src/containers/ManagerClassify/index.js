@@ -4,25 +4,27 @@ import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { endpoint } from "settings";
-import ModalAddSamplePrice from "./components/ModalAddSamplePrice";
-import SettingAdditional from "./SettingAdditional";
-import SettingPrice from "./SettingPrice";
 import { toast } from "react-toastify";
+import ModalAddClassify from "./components/ModalAddClassify";
 
-ManagerSamplePrice.propTypes = {};
+ManagerClassify.propTypes = {};
 
-function ManagerSamplePrice(props) {
+function ManagerClassify(props) {
 	const allData = [];
 	const [status, setStatus] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [visible, setVisible] = useState(false);
-	const [listSamplePrice, setListSamplePrice] = useState([]);
-	const [listTypeRoom, setListTypeRoom] = useState([]);
+	const [listClassify, setListClassify] = useState([]);
 	const [pagination, setPagination] = useState();
+	const [visible, setVisible] = useState(false);
+
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
-		include: "typePrices.priceTimes",
+	});
+
+	const [visibleUpdateClassify, setVisibleUpdateClassify] = useState({
+		detail: {},
+		visible: false,
 	});
 
 	const user = useSelector((state) => state.Auth.user);
@@ -33,7 +35,7 @@ function ManagerSamplePrice(props) {
 		const paramString = queryString.stringify(filters);
 		Axios({
 			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/sample-price?" + paramString,
+			url: endpoint + "/tenant/hotel-manager/classify?" + paramString,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
@@ -49,30 +51,10 @@ function ManagerSamplePrice(props) {
 					STT: index + 1,
 				});
 			});
-			setListSamplePrice(allData);
+			setListClassify(allData);
 			setPagination(res.data.meta.pagination.total);
 		});
 	}, [filters, status, hotel_ID]);
-
-	useEffect(() => {
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/type-room",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setListTypeRoom(res.data.data);
-		});
-	}, [hotel_ID]);
-
-	function handleAddPriceTime() {
-		setVisible(!visible);
-	}
 
 	function handleOnChange(pagination) {
 		setFilter({
@@ -81,18 +63,18 @@ function ManagerSamplePrice(props) {
 		});
 	}
 
-	function handleSetStatus() {
-		setStatus(!status);
+	function handleAddClassify() {
+		setVisible(!visible);
 	}
 
-	function format_current(price) {
-		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+	function handleSetStatus() {
+		setStatus(!status);
 	}
 
 	function confirm(id) {
 		Axios({
 			method: "DELETE",
-			url: endpoint + "/tenant/hotel-manager/sample-price/" + id,
+			url: endpoint + "/tenant/hotel-manager/classify/" + id,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
@@ -100,56 +82,41 @@ function ManagerSamplePrice(props) {
 				"tenant-name": user.data.name,
 				"hotel-id": hotel_ID,
 			},
-		}).then((res) => {
-			toast.success("Xóa thành công");
-			handleSetStatus();
-		});
+		})
+			.then((res) => {
+				toast.success("Xóa thành công");
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
-		{
-			title: "Giá mẫu",
-			width: "150px",
-			key: "name",
-			render: (record) => (
-				<b className="ml-2 bold" style={{ fontSize: 12 }}>
-					{record.name}
-				</b>
-			),
-		},
-
-		{ title: "Loại phòng" },
-
-		{
-			title: "Giá phòng",
-			key: "price_day",
-			width: "110px",
-			render: (record) => (
-				<b className="ml-2 bold" style={{ fontSize: 12 }}>
-					{format_current(record.price_day)}
-				</b>
-			),
-		},
-		{
-			title: "Cài đặt giá",
-			width: "200px",
-			render: (record) => <SettingPrice value={record} />,
-		},
-		{
-			title: "Qui định phụ trội",
-			render: (record) => <SettingAdditional />,
-		},
+		{ title: "Tên Phân Loại ", dataIndex: "name", key: "name" },
+		{ title: "Màu Sắc Đánh Dấu", dataIndex: "color_code", key: "color_code" },
+		{ title: "Mô Tả ", dataIndex: "description", key: "description" },
+		{ title: "Chi Chú ", dataIndex: "note", key: "note" },
 		{
 			title: "Thao tác",
-			width: "95px",
 			render: (record) => (
 				<div className=" h-full flex justify-center items-center flex-wrap">
 					<img
 						src="/images/Actions/Edit.png"
 						alt="Edit"
 						className="ml-2 mr-1  cursor-pointer"
-						// onClick={() => handleUpdateTypeRoom(record)}
+						// onClick={() => handleUpdateCategory(record)}
 					/>
 					<Popconfirm
 						title="Bạn thực sự muốn xóa bản ghi này?"
@@ -171,27 +138,29 @@ function ManagerSamplePrice(props) {
 
 	return (
 		<div className="onecolumn mt-2 mx-2">
-			<div className="header flex justify-between items-center">
-				<div className="h-full flex items-center">
+			<div className="header flex flex-col md:flex-row md:justify-between md:items-center">
+				<div className="h-full flex items-center group2">
 					<img
-						src="/images/Sidebar/Settings/price.png"
-						alt="list-room"
+						src="/images/Sidebar/Services/list-service.png"
+						alt="list-service"
 						className="inline ml-3"
 					/>
-					<span className="titleMainContain">Danh sách giá mẫu</span>
+					<span className="titleMainContain">Danh sách nhóm phân loại</span>
 				</div>
-				<button
-					className="dashboardButton mr-3 focus:outline-none"
-					onClick={handleAddPriceTime}
-				>
-					<span className="add"></span>
-					<span>Thêm giá mẫu</span>
-				</button>
+				<div>
+					<button
+						className="dashboardButton mr-3 focus:outline-none"
+						onClick={handleAddClassify}
+					>
+						<span className="add"></span>
+						<span>Thêm mới</span>
+					</button>
+				</div>
 			</div>
 			<div className="mt-2 mx-2">
 				<Table
 					rowKey={(record) => record.id}
-					dataSource={listSamplePrice}
+					dataSource={listClassify}
 					columns={columns}
 					loading={loading}
 					scroll={{ x: true }}
@@ -204,14 +173,13 @@ function ManagerSamplePrice(props) {
 					onChange={handleOnChange}
 				/>
 			</div>
-			<ModalAddSamplePrice
-				listTypeRoom={listTypeRoom}
+			<ModalAddClassify
 				visible={visible}
-				handleAddPriceTime={handleAddPriceTime}
+				handleAddClassify={handleAddClassify}
 				handleSetStatus={handleSetStatus}
 			/>
 		</div>
 	);
 }
 
-export default ManagerSamplePrice;
+export default ManagerClassify;

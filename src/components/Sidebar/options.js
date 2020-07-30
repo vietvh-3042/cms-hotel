@@ -152,41 +152,41 @@ const options = [
 		],
 	},
 
-	// {
-	// 	key: "7",
-	// 	label: "Khách hàng",
-	// 	icon: "/images/Sidebar/KhachHang/khachhang.png",
-	// 	children: [
-	// 		{
-	// 			key: "users",
-	// 			label: "Khách hàng đang ở",
-	// 			icon: "/images/Sidebar/KhachHang/user-hear.png",
-	// 		},
-	// 		{
-	// 			key: "users",
-	// 			label: "Khách hàng đặt phòng",
-	// 			icon: "/images/Sidebar/KhachHang/user-book.png",
-	// 		},
-	// 		{
-	// 			key: "users",
-	// 			label: "Khách hàng theo ngày",
-	// 			icon: "/images/Sidebar/KhachHang/user-day.png",
-	// 		},
-	// 		{
-	// 			key: "users",
-	// 			label: "Khách hàng để quên",
-	// 			icon: "/images/Sidebar/KhachHang/user-forget.png",
-	// 		},
-	// 		{
-	// 			key: "users",
-	// 			label: "Danh sách khách hàng",
-	// 			icon: "/images/Sidebar/KhachHang/user-forget.png",
-	// 		},
-	// 	],
-	// },
+	{
+		key: "customer",
+		label: "Khách hàng",
+		icon: "/images/Sidebar/KhachHang/khachhang.png",
+		children: [
+			// {
+			// 	key: "users",
+			// 	label: "Khách hàng đang ở",
+			// 	icon: "/images/Sidebar/KhachHang/user-hear.png",
+			// },
+			// {
+			// 	key: "users",
+			// 	label: "Khách hàng đặt phòng",
+			// 	icon: "/images/Sidebar/KhachHang/user-book.png",
+			// },
+			// {
+			// 	key: "users",
+			// 	label: "Khách hàng theo ngày",
+			// 	icon: "/images/Sidebar/KhachHang/user-day.png",
+			// },
+			// {
+			// 	key: "users",
+			// 	label: "Khách hàng để quên",
+			// 	icon: "/images/Sidebar/KhachHang/user-forget.png",
+			// },
+			{
+				key: "list-customer",
+				label: "Danh sách khách hàng",
+				icon: "/images/Sidebar/KhachHang/user-forget.png",
+			},
+		],
+	},
 
 	{
-		key: "8",
+		key: "employee",
 		label: "Nhân viên",
 		icon: "/images/Sidebar/Staff/nhanvien.png",
 		children: [
@@ -217,22 +217,17 @@ const options = [
 			// },
 		],
 	},
-	// {
-	// 	key: "9",
-	// 	label: "Hỗ trợ",
-	// 	icon: "/images/Sidebar/HoTro/hotro.png",
-	// 	children: [
-	// 		{
-	// 			key: "users",
-	// 			label: "Hướng dẫn sử dụng",
-	// 			icon: "icon-user",
-	// 		},
-	// 		{
-	// 			key: "users",
-	// 			label: "Gửi hỗ trợ",
-	// 			icon: "icon-user",
-	// 		},
-	// 	],
-	// },
+	{
+		key: "setting",
+		label: "Cài Đặt",
+		icon: "/images/Sidebar/Staff/nhanvien.png",
+		children: [
+			{
+				key: "classify",
+				label: "Nhóm Nhãn",
+				icon: "/images/Sidebar/Staff/manager-user.png",
+			},
+		],
+	},
 ];
 export default options;

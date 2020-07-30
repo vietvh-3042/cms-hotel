@@ -1,13 +1,12 @@
 import { Modal } from "antd";
-import React from "react";
-import PropTypes from "prop-types";
-import * as Yup from "yup";
-import { FastField, Form, Formik, Field } from "formik";
+import { FastField, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
+import React from "react";
+import * as Yup from "yup";
 
-ModalAddService.propTypes = {};
+ModalAddBill.propTypes = {};
 
-function ModalAddService(props) {
+function ModalAddBill(props) {
 	const { visible, handleAddService } = props;
 	const initialValues = {};
 	const validationSchema = Yup.object().shape({});
@@ -58,4 +57,4 @@ function ModalAddService(props) {
 	);
 }
 
-export default ModalAddService;
+export default ModalAddBill;

@@ -1,10 +1,9 @@
 import { Popconfirm, Table } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
 import ModalAddListRoom from "./components/ModalAddListRoom";
 import ModalUpdateTypeRoom from "./components/ModalUpdateTypeRoom";
 import SettingAdditional from "./SettingAdditional";
@@ -31,23 +30,16 @@ function ManagerListRoom(props) {
 
 	const allData = [];
 
-	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/type-room?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
+		CommonApi(
+			"GET",
+			`/tenant/hotel-manager/type-room?${paramString}`,
+			null
+		).then((res) => {
 			setLoading(false);
 			res.data.data.forEach((infor, index) => {
 				allData.push({
@@ -82,29 +74,11 @@ function ManagerListRoom(props) {
 		});
 	}
 
-	function format_current(price) {
-		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-	}
-
 	function confirm(id) {
-		Axios({
-			method: "DELETE",
-			url: endpoint + "/tenant/hotel-manager/type-room/" + id,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
-			.then((res) => {
-				toast.success("Xóa thành công");
-				handleSetStatus();
-			})
-			.catch((err) => {
-				toast.error("Có lỗi xảy ra");
-			});
+		CommonApi("DELETE", `/tenant/hotel-manager/type-room/${id}`).then((res) => {
+			toast.success("Xóa thành công");
+			handleSetStatus();
+		});
 	}
 
 	const columns = [

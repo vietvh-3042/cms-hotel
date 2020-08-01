@@ -1,10 +1,8 @@
 import { Modal } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import PropTypes from "prop-types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
 
 ModalDeleteRoom.propTypes = {
 	handleDeleteRoom: PropTypes.func,
@@ -19,21 +17,12 @@ ModalDeleteRoom.defaultProps = {
 function ModalDeleteRoom(props) {
 	const { visibleDelete, handleDeleteRoom, handleStatus } = props;
 
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
-
 	function handleDelete() {
-		Axios({
-			method: "DELETE",
-			url: endpoint + "/tenant/hotel-manager/room/" + visibleDelete.detail,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
+		CommonApi(
+			"DELETE",
+			`/tenant/hotel-manager/room/${visibleDelete.detail}`,
+			null
+		).then((res) => {
 			toast.success("Xóa thành công");
 			handleDeleteRoom();
 			handleStatus();

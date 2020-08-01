@@ -1,13 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FastField, Form, Formik, Field } from "formik";
 import { Modal } from "antd";
-import Axios from "axios";
+import FooterForm from "components/utility/footerForm";
+import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
-import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
-import * as Yup from "yup";
+import PropTypes from "prop-types";
+import React from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
 
 ModalAddGroup.propTypes = {
 	handleAddListTypeCategory: PropTypes.func,
@@ -34,36 +34,18 @@ function ModalAddGroup(props) {
 	});
 
 	function handleSubmit(data) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/acl/groups",
-			data: data,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
-			.then((res) => {
-				toast.success("Thêm mới thành công");
-				handleAddListTypeCategory();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		CommonApi(
+			"POST",
+			"/tenant/acl/groups",
+			user.meta.access_token,
+			user.data.name,
+			hotel_ID,
+			data
+		).then((res) => {
+			toast.success("Thêm mới thành công");
+			handleAddListTypeCategory();
+			handleSetStatus();
+		});
 	}
 
 	return (
@@ -103,24 +85,7 @@ function ModalAddGroup(props) {
 										style={{ width: 166 }}
 									/>
 								</div>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddListTypeCategory}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
-								</div>
+								<FooterForm handleClick={handleAddListTypeCategory} />
 							</Form>
 						)}
 					</Formik>

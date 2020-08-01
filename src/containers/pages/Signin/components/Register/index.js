@@ -5,6 +5,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import { endpoint } from "settings";
 import * as Yup from "yup";
+import { Link } from "react-router-dom";
 
 Register.propTypes = {};
 
@@ -84,9 +85,9 @@ function Register(props) {
 							/>
 
 							<div className="flex items-center justify-between">
-								<a href="#" className="text-gray-600">
+								<Link to="#" className="text-gray-600">
 									Forget Password?
-								</a>
+								</Link>
 								<button
 									type="submit"
 									className="bg-gray-800 text-gray-200  px-2 py-1 rounded"

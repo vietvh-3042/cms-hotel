@@ -23,3 +23,15 @@ export function renderHour() {
 		</option>
 	));
 }
+
+export function renderQuantity() {
+	let data = [];
+	for (let index = 1; index <= 100; index++) {
+		data.push(index);
+	}
+	return data.map((value, index) => (
+		<option value={value} key={index} className="focus:outline-none">
+			{value}
+		</option>
+	));
+}

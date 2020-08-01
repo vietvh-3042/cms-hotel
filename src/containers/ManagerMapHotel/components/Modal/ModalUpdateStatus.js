@@ -1,12 +1,11 @@
 import { Modal } from "antd";
-import Axios from "axios";
 import FooterForm from "components/utility/footerForm";
 import { Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import PropTypes from "prop-types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
+
 ModalUpdateStatus.propTypes = {
 	handleStatusRoom: PropTypes.func,
 	handleStatus: PropTypes.func,
@@ -20,8 +19,6 @@ ModalUpdateStatus.defaultProps = {
 function ModalUpdateStatus(props) {
 	const { visibleStatus, handleStatusRoom, handleStatus } = props;
 	const value = visibleStatus.detail;
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const initialValues = {
 		status: false,
@@ -29,30 +26,15 @@ function ModalUpdateStatus(props) {
 	};
 
 	function handleSubmit(data, { resetForm }) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/update-status-room/" + value.id,
-			data: {
-				status: data.status ? 8 : value.status,
-				note: data.note,
-			},
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
-			.then((res) => {
-				toast.success("Cập nhật thành công");
-				handleStatusRoom();
-				handleStatus();
-				resetForm({ status: false, note: "" });
-			})
-			.catch((err) => {
-				console.log(err.response);
-			});
+		CommonApi("POST", `/tenant/hotel-manager/update-status-room/${value.id}`, {
+			status: data.status ? 8 : value.status,
+			note: data.note,
+		}).then((res) => {
+			toast.success("Cập nhật thành công");
+			handleStatusRoom();
+			handleStatus();
+			resetForm({ status: false, note: "" });
+		});
 	}
 
 	return (

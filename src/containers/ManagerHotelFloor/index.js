@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { API_Timeout, endpoint } from "settings";
 import ModalAddFloor from "./components/ModalAddFloor";
+import CommonApi from "helpers/APIS/CommonApi";
 
 ManagerHotelFloor.propTypes = {};
 
@@ -25,34 +26,24 @@ function ManagerHotelFloor(props) {
 		page: 1,
 	});
 
-	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/floor?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-			timeout: API_Timeout,
-		}).then((res) => {
-			setLoading(false);
-			res.data.data.forEach((infor, index) => {
-				allData.push({
-					...infor,
-					STT: index + 1,
+		CommonApi("GET", `/tenant/hotel-manager/floor?${paramString}`).then(
+			(res) => {
+				setLoading(false);
+				res.data.data.forEach((infor, index) => {
+					allData.push({
+						...infor,
+						STT: index + 1,
+					});
 				});
-			});
-			setListHotelFloor(allData);
-			setPagination(res.data.meta.pagination.total);
-		});
+				setListHotelFloor(allData);
+				setPagination(res.data.meta.pagination.total);
+			}
+		);
 	}, [filters, status, hotel_ID]);
 
 	function handleOnChangePage(current, size) {
@@ -64,24 +55,12 @@ function ManagerHotelFloor(props) {
 	}
 
 	function confirm(id) {
-		Axios({
-			method: "DELETE",
-			url: endpoint + "/tenant/hotel-manager/floor-hotel/" + id,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
-			.then((res) => {
+		CommonApi("DELETE", `/tenant/hotel-manager/floor-hotel/${id}`).then(
+			(res) => {
 				toast.success("Xóa thành công");
 				handleSetStatus();
-			})
-			.catch((err) => {
-				console.log(err.response);
-			});
+			}
+		);
 	}
 
 	function handleAddFloor() {

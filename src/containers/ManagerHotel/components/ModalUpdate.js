@@ -1,13 +1,13 @@
 import { Modal } from "antd";
-import Axios from "axios";
+import FooterForm from "components/utility/footerForm";
 import { FastField, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
 import TextAreaField from "helpers/CustomFields/TextAreaField";
 import PropTypes from "prop-types";
 import React from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
 import * as Yup from "yup";
 
 ModalUpdate.propTypes = {
@@ -21,6 +21,7 @@ function ModalUpdate(props) {
 	const initialValues = visibleUpdate.detail;
 
 	const user = useSelector((state) => state.Auth.user);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
@@ -41,36 +42,18 @@ function ModalUpdate(props) {
 
 	function handleSubmit(data) {
 		const id = visibleUpdate.detail.id;
-		Axios({
-			method: "PUT",
-			url: endpoint + "/tenant/hotel-manager/hotel/" + id,
-			data: data,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-			timeout: API_Timeout,
-		})
-			.then((res) => {
-				toast.success("Cập nhật thành công");
-				handleUpdateHotel();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		CommonApi(
+			"PUT",
+			`/tenant/hotel-manager/hotel/${id}`,
+			user.meta.access_token,
+			user.data.name,
+			hotel_ID,
+			data
+		).then((res) => {
+			toast.success("Cập nhật thành công");
+			handleUpdateHotel();
+			handleSetStatus();
+		});
 	}
 
 	return (
@@ -133,24 +116,7 @@ function ModalUpdate(props) {
 									component={TextAreaField}
 									label="Ghi chú:"
 								/>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleUpdateHotel}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Sửa
-									</button>
-								</div>
+								<FooterForm handleClick={handleUpdateHotel} />
 							</Form>
 						)}
 					</Formik>

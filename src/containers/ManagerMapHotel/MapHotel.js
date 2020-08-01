@@ -1,14 +1,14 @@
 import { Menu, Spin } from "antd";
-import Axios from "axios";
 import DropdownCustom from "components/Dropdown";
+import CommonApi from "helpers/APIS/CommonApi";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { endpoint } from "settings";
+import { toast } from "react-toastify";
 import ModalAddRoom from "./components/Modal/ModalAddRoom";
 import ModalDeleteRoom from "./components/Modal/ModalDeleteRoom";
 import ModalUpdateRoom from "./components/Modal/ModalUpdateRoom";
 import ModalUpdateStatus from "./components/Modal/ModalUpdateStatus";
-import { toast } from "react-toastify";
+import ModalCheckinRoom from "./components/Modal/ModalCheckinRoom";
 
 MapHotel.propTypes = {};
 
@@ -16,8 +16,6 @@ function MapHotel(props) {
 	const [loading, setLoading] = useState(false);
 	const [detailHotel, setDetailHotel] = useState();
 	const [status, setStatus] = useState(false);
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 	const [visible, setVisible] = useState(false);
 	const [visibleUpdate, setVisibleUpdate] = useState({
 		visible: false,
@@ -33,6 +31,14 @@ function MapHotel(props) {
 		detail: {},
 	});
 
+	const [visibleCheckinRoom, setVisibleCheckinRoom] = useState({
+		visible: false,
+		detail: {},
+	});
+
+	const user = useSelector((state) => state.Auth.user);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
+
 	const menu = (
 		<Menu>
 			<Menu.Item className="text-xs" onClick={handleAddRoom}>
@@ -44,7 +50,12 @@ function MapHotel(props) {
 	function menuRoomEmpty(record) {
 		return (
 			<Menu>
-				<Menu.Item className="text-xs">Nhận Phòng</Menu.Item>
+				<Menu.Item
+					className="text-xs"
+					onClick={() => handleCheckinRoom(record)}
+				>
+					Nhận Phòng
+				</Menu.Item>
 				<Menu.Item className="text-xs" onClick={() => handleStatusRoom(record)}>
 					Cập nhật trạng thái
 				</Menu.Item>
@@ -64,7 +75,12 @@ function MapHotel(props) {
 	function menuRoomcleaned(record) {
 		return (
 			<Menu>
-				<Menu.Item className="text-xs">Nhận Phòng</Menu.Item>
+				<Menu.Item
+					className="text-xs"
+					onClick={() => handleCheckinRoom(record)}
+				>
+					Nhận Phòng
+				</Menu.Item>
 				<Menu.Item className="text-xs" onClick={() => handleClear(record.id)}>
 					Dọn phòng
 				</Menu.Item>
@@ -83,20 +99,11 @@ function MapHotel(props) {
 
 	useEffect(() => {
 		setLoading(true);
-		Axios({
-			method: "GET",
-			url:
-				endpoint +
-				"/tenant/hotel-manager/hotel/" +
-				hotel_ID +
-				"?include=floors.rooms",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		}).then((res) => {
+		CommonApi(
+			"GET",
+			`/tenant/hotel-manager/hotel/${hotel_ID}?include=floors.rooms`,
+			null
+		).then((res) => {
 			setDetailHotel(res.data.data);
 			setLoading(false);
 		});
@@ -171,19 +178,16 @@ function MapHotel(props) {
 		});
 	}
 
+	function handleCheckinRoom(record) {
+		setVisibleCheckinRoom({
+			visible: !visibleCheckinRoom.visible,
+			detail: record,
+		});
+	}
+
 	function handleClear(id) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/update-status-room/" + id,
-			data: {
-				status: 4,
-			},
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
+		CommonApi("POST", `/tenant/hotel-manager/update-status-room/${id}`, {
+			status: 4,
 		}).then((res) => {
 			toast.success("Dọn thành công");
 			handleStatus();
@@ -217,6 +221,11 @@ function MapHotel(props) {
 			<ModalUpdateStatus
 				visibleStatus={visibleStatus}
 				handleStatusRoom={handleStatusRoom}
+				handleStatus={handleStatus}
+			/>
+			<ModalCheckinRoom
+				visibleCheckinRoom={visibleCheckinRoom}
+				handleCheckinRoom={handleCheckinRoom}
 				handleStatus={handleStatus}
 			/>
 		</div>

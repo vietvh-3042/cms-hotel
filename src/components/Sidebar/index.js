@@ -1,19 +1,13 @@
-import { createFromIconfontCN } from "@ant-design/icons";
 import { Drawer, Layout, Menu } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { actCloseSideBar } from "../../redux/actions/app";
-import { siteIcon } from "../../settings";
 import Logo from "../utility/logo";
 import options from "./options";
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
-
-const MyIcon = createFromIconfontCN({
-	scriptUrl: siteIcon,
-});
 
 const stripTrailingSlash = (str) => {
 	if (str.substr(-1) === "/") {

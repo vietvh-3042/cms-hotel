@@ -1,10 +1,9 @@
 import { Popconfirm, Table } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
 import ModalAddHotel from "./components/ModalAddHotel";
 import ModalUpdate from "./components/ModalUpdate";
 
@@ -16,7 +15,6 @@ function ManagerHotel(props) {
 	const [visible, setVisible] = useState(false);
 	const [listHotel, setListHotel] = useState([]);
 	const [pagination, setPagination] = useState();
-	const [visibleLocation, setVisibleLocation] = useState(false);
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
@@ -30,20 +28,19 @@ function ManagerHotel(props) {
 	const allData = [];
 
 	const user = useSelector((state) => state.Auth.user);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/hotel?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		}).then((res) => {
+		CommonApi(
+			"GET",
+			`/tenant/hotel-manager/hotel?${paramString}`,
+			user.meta.access_token,
+			user.data.name,
+			hotel_ID,
+			null
+		).then((res) => {
 			setLoading(false);
 			res.data.data.forEach((infor, index) => {
 				allData.push({
@@ -67,42 +64,22 @@ function ManagerHotel(props) {
 		});
 	}
 
-	function handleAddLocation() {
-		setVisibleLocation(!visibleLocation);
-	}
-
 	function handleSetStatus() {
 		setStatus(!status);
 	}
 
 	function confirm(id) {
-		Axios({
-			method: "DELETE",
-			url: endpoint + "/tenant/hotel-manager/hotel/" + id,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		})
-			.then((res) => {
-				toast.success("Cập nhật thành công");
-				handleSetStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		CommonApi(
+			"DELETE",
+			`/tenant/hotel-manager/hotel/${id}`,
+			user.meta.access_token,
+			user.data.name,
+			hotel_ID,
+			null
+		).then((res) => {
+			toast.success("Cập nhật thành công");
+			handleSetStatus();
+		});
 	}
 
 	function handleOnChange(pagination) {
@@ -134,12 +111,6 @@ function ManagerHotel(props) {
 						onClick={() => handleUpdateHotel(record)}
 					/>
 
-					<img
-						src="/images/Actions/Add.png"
-						alt="Add"
-						className="mr-1  cursor-pointer"
-						onClick={handleAddLocation}
-					/>
 					<Popconfirm
 						title="Bạn thực sự muốn xóa khách sạn này"
 						onConfirm={() => confirm(record.id)}

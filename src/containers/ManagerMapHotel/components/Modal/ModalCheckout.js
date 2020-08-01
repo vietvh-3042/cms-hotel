@@ -1,10 +1,7 @@
-import React from "react";
+import { Modal, Table } from "antd";
 import PropTypes from "prop-types";
-import { Modal, Input, Table } from "antd";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useState } from "react";
-
-const { Search } = Input;
 
 ModalCheckin.propTypes = {
 	handleCheckout: PropTypes.func,

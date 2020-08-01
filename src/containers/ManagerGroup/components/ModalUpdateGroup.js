@@ -1,14 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FastField, Form, Formik, Field } from "formik";
 import { Modal } from "antd";
-import Axios from "axios";
-import InputField from "helpers/CustomFields/InputField";
-import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
-import * as Yup from "yup";
-import { useSelector } from "react-redux";
 import FooterForm from "components/utility/footerForm";
+import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
+import InputField from "helpers/CustomFields/InputField";
+import PropTypes from "prop-types";
+import React from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
 
 ModalUpdateGroup.propTypes = {
 	handleUpdateType: PropTypes.func,
@@ -22,7 +21,9 @@ ModalUpdateGroup.defaultProps = {
 
 function ModalUpdateGroup(props) {
 	const { visibleUpdateType, handleUpdateType, handleSetStatus } = props;
+
 	const user = useSelector((state) => state.Auth.user);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const initialValues = visibleUpdateType.detail;
 
@@ -32,36 +33,18 @@ function ModalUpdateGroup(props) {
 
 	function handleSubmit(data) {
 		const id = visibleUpdateType.detail.id;
-		Axios({
-			method: "PUT",
-			url: endpoint + "/tenant/acl/groups/" + id,
-			data: data,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		})
-			.then((res) => {
-				toast.success("Cập nhật thành công");
-				handleUpdateType();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				console.log(err.response);
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		CommonApi(
+			"PUT",
+			`/tenant/acl/groups/${id}`,
+			user.meta.access_token,
+			user.data.name,
+			hotel_ID,
+			data
+		).then((res) => {
+			toast.success("Cập nhật thành công");
+			handleUpdateType();
+			handleSetStatus();
+		});
 	}
 
 	return (

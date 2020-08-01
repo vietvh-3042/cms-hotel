@@ -1,13 +1,11 @@
 import { Popconfirm, Table } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { endpoint } from "settings";
+import { toast } from "react-toastify";
 import shortid from "shortid";
 import ModalAddGroup from "./components/ModalAddGroup";
 import ModalUpdateGroup from "./components/ModalUpdateGroup";
-import { toast } from "react-toastify";
 
 ManagerPaymentMethod.propTypes = {};
 
@@ -27,23 +25,11 @@ function ManagerPaymentMethod(props) {
 	});
 
 	const allData = [];
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/acl/groups?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
+		CommonApi("GET", `/tenant/acl/groups?${paramString}`).then((res) => {
 			console.log(res);
 			setLoading(false);
 			res.data.data.forEach((infor, index) => {
@@ -80,34 +66,11 @@ function ManagerPaymentMethod(props) {
 	}
 
 	function confirm(id) {
-		Axios({
-			method: "DELETE",
-			url: endpoint + "/tenant/acl/groups/" + id,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		})
-			.then((res) => {
-				toast.success("Xóa thành công");
-				handleUpdateType();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		CommonApi("DELETE", `/tenant/acl/groups/${id}`).then((res) => {
+			toast.success("Xóa thành công");
+			handleUpdateType();
+			handleSetStatus();
+		});
 	}
 
 	const columns = [

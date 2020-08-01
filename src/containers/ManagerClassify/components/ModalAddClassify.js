@@ -1,14 +1,13 @@
 import { Modal } from "antd";
-import Axios from "axios";
 import FooterForm from "components/utility/footerForm";
 import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import { endpoint } from "settings";
-import * as Yup from "yup";
 import { toast } from "react-toastify";
+import * as Yup from "yup";
 
 ModalAddClassify.propTypes = {
 	handleAddClassify: PropTypes.func,
@@ -38,36 +37,18 @@ function ModalAddClassify(props) {
 	});
 
 	function handleSubmit(data) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/classify",
-			data: data,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
-			.then((res) => {
-				toast.success("Tạo mới thành công");
-				handleAddClassify();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		CommonApi(
+			"POST",
+			"/tenant/hotel-manager/classify",
+			user.meta.access_token,
+			user.data.name,
+			hotel_ID,
+			data
+		).then((res) => {
+			toast.success("Tạo mới thành công");
+			handleAddClassify();
+			handleSetStatus();
+		});
 	}
 
 	return (

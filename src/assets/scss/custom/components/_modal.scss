@@ -28,6 +28,7 @@
 	text-align: right;
 	margin-right: 5px;
 	width: 110px;
+	font-family: "tinosbold";
 }
 
 .closeModal {
@@ -80,4 +81,9 @@
 	color: #dc3545;
 	margin-bottom: 4px;
 	font-size: 11.2px;
+}
+
+.collapseRoom,
+.ant-collapse-content-box {
+	background: #eee;
 }

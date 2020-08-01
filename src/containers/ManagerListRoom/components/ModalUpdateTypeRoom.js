@@ -1,14 +1,14 @@
 import { Modal } from "antd";
 import Axios from "axios";
+import FooterForm from "components/utility/footerForm";
 import { FastField, Field, FieldArray, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
+import { endpoint } from "settings";
 import * as Yup from "yup";
-import FooterForm from "components/utility/footerForm";
 
 ModalUpdateTypeRoom.propTypes = {
 	handleUpdateTypeRoom: PropTypes.func,

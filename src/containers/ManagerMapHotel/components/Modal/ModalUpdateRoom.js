@@ -1,13 +1,12 @@
 import { Modal } from "antd";
-import Axios from "axios";
 import FooterForm from "components/utility/footerForm";
 import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
 import * as Yup from "yup";
 
 ModalUpdateRoom.propTypes = {
@@ -26,7 +25,6 @@ function ModalUpdateRoom(props) {
 	const [listTypeRoom, setListTypeRoom] = useState([]);
 	const [listClassify, setListClassify] = useState([]);
 
-	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const initialValues = visibleUpdate.detail || "";
@@ -40,84 +38,32 @@ function ModalUpdateRoom(props) {
 
 	function handleSubmit(data) {
 		const id = data.id;
-		Axios({
-			method: "PUT",
-			url: endpoint + "/tenant/hotel-manager/room/" + id,
-			data: data,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
-			.then((res) => {
-				toast.success("Cập nhật thành công");
-				handleUpdateRoom();
-				handleStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		CommonApi("PUT", `/tenant/hotel-manager/room/${id}`, data).then((res) => {
+			toast.success("Cập nhật thành công");
+			handleUpdateRoom();
+			handleStatus();
+		});
 	}
 
 	useEffect(() => {
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/floor",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setListFloor(res.data.data);
-		});
-	}, [hotel_ID]);
-
-	useEffect(() => {
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/type-room",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setListTypeRoom(res.data.data);
-		});
-	}, [hotel_ID]);
-
-	useEffect(() => {
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/classify",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setListClassify(res.data.data);
-		});
+		async function getListFloor() {
+			CommonApi("GET", "/tenant/hotel-manager/floor", null).then((res) => {
+				setListFloor(res.data.data);
+			});
+		}
+		async function getListTypeRoom() {
+			CommonApi("GET", "/tenant/hotel-manager/type-room", null).then((res) => {
+				setListTypeRoom(res.data.data);
+			});
+		}
+		async function getListClassify() {
+			CommonApi("GET", "/tenant/hotel-manager/classify", null).then((res) => {
+				setListClassify(res.data.data);
+			});
+		}
+		getListFloor();
+		getListTypeRoom();
+		getListClassify();
 	}, [hotel_ID]);
 
 	return (

@@ -3,14 +3,11 @@ import { FastField, Form, Formik } from "formik";
 import FieldInput from "helpers/CustomFields/FieldInputBootstrap";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { setAuthState, saveLoggedUser } from "redux/actions/auth";
+import { saveLoggedUser, setAuthState } from "redux/actions/auth";
 import { endpoint } from "settings";
-import Cookies from "universal-cookie";
 import * as Yup from "yup";
-
-const cookies = new Cookies();
 
 Login.propTypes = {};
 
@@ -24,7 +21,6 @@ function Login(props) {
 	};
 	const validationSchema = Yup.object().shape({
 		user_name: Yup.string().required("Không được để trống"),
-
 		password: Yup.string().required("Không được để trống"),
 	});
 
@@ -44,7 +40,6 @@ function Login(props) {
 				history.push("/dashboard");
 			})
 			.catch((err) => {
-				console.log(err.response);
 				if (err.response.data.message) toast.error(err.response.data.message);
 				else {
 					let error = [];
@@ -90,9 +85,7 @@ function Login(props) {
 							/>
 
 							<div className="flex items-center justify-between">
-								<a href="#" className="text-gray-600">
-									Forget Password?
-								</a>
+								<Link to="#">Forget Password?</Link>
 								<button
 									type="submit"
 									className="bg-gray-800 text-gray-200  px-2 py-1 rounded"

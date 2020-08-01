@@ -10,7 +10,7 @@ FooterForm.defaultProps = {
 };
 
 function FooterForm(props) {
-	const { handleClick, update } = props;
+	const { handleClick, title } = props;
 	return (
 		<div className="flex items-center justify-end" style={{ marginRight: 45 }}>
 			<button
@@ -21,7 +21,7 @@ function FooterForm(props) {
 				Cancel
 			</button>
 			<button type="submit" className="dashboardButton focus:outline-none">
-				{update ? "Cập nhật" : "Thêm"}
+				{title ? title : "Thêm"}
 			</button>
 		</div>
 	);

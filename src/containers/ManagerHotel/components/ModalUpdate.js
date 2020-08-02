@@ -6,7 +6,6 @@ import InputField from "helpers/CustomFields/InputField";
 import TextAreaField from "helpers/CustomFields/TextAreaField";
 import PropTypes from "prop-types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
@@ -18,10 +17,7 @@ ModalUpdate.propTypes = {
 function ModalUpdate(props) {
 	const { visibleUpdate, handleUpdateHotel, handleSetStatus } = props;
 
-	const initialValues = visibleUpdate.detail;
-
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
+	const initialValues = visibleUpdate.detail || "";
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
@@ -42,14 +38,7 @@ function ModalUpdate(props) {
 
 	function handleSubmit(data) {
 		const id = visibleUpdate.detail.id;
-		CommonApi(
-			"PUT",
-			`/tenant/hotel-manager/hotel/${id}`,
-			user.meta.access_token,
-			user.data.name,
-			hotel_ID,
-			data
-		).then((res) => {
+		CommonApi("PUT", `/tenant/hotel-manager/hotel/${id}`, data).then((res) => {
 			toast.success("Cập nhật thành công");
 			handleUpdateHotel();
 			handleSetStatus();
@@ -116,7 +105,7 @@ function ModalUpdate(props) {
 									component={TextAreaField}
 									label="Ghi chú:"
 								/>
-								<FooterForm handleClick={handleUpdateHotel} />
+								<FooterForm handleClick={handleUpdateHotel} title="Cập nhật" />
 							</Form>
 						)}
 					</Formik>

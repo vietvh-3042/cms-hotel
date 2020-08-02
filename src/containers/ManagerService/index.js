@@ -1,9 +1,8 @@
 import { Table } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { endpoint } from "settings";
 import ModalAddService from "./components/ModalAddService";
 
 ManagerService.propTypes = {};
@@ -21,50 +20,34 @@ function ManagerService(props) {
 		page: 1,
 	});
 
-	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
-		setLoading(true);
-		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/service-storage/services?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setLoading(false);
-			res.data.data.forEach((infor, index) => {
-				allData.push({
-					...infor,
-					STT: index + 1,
-				});
+		async function getListService() {
+			setLoading(true);
+			const paramString = queryString.stringify(filters);
+			CommonApi("GET", `/tenant/service-storage/services?${paramString}`).then(
+				(res) => {
+					setLoading(false);
+					res.data.data.forEach((infor, index) => {
+						allData.push({
+							...infor,
+							STT: index + 1,
+						});
+					});
+					setListService(allData);
+					setPagination(res.data.meta.pagination.total);
+				}
+			);
+		}
+		async function getListCategory() {
+			CommonApi("GET", "/tenant/category/category").then((res) => {
+				setListCategory(res.data.data);
 			});
-			setListService(allData);
-			setPagination(res.data.meta.pagination.total);
-		});
+		}
+		getListService();
+		getListCategory();
 	}, [filters, status, hotel_ID]);
-
-	useEffect(() => {
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/category/category",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setListCategory(res.data.data);
-		});
-	}, []);
 
 	function handleAddListService() {
 		setVisible(!visible);

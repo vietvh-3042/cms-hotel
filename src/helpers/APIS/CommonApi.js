@@ -16,7 +16,7 @@ export default function CommonApi(method, path, body) {
 	let data = select(store.getState());
 	return Axios({
 		method: method,
-		url: `${endpoint}/${path}`,
+		url: `${endpoint}${path}`,
 		data: body,
 		headers: {
 			Accept: "application/json",
@@ -26,19 +26,20 @@ export default function CommonApi(method, path, body) {
 			"hotel-id": data.hotel_ID,
 		},
 	}).catch((err) => {
-		if (err.response.data.message) toast.error(err.response.data.message);
-		else {
-			let error = [];
-			for (let value of Object.values(err.response.data.errors)) {
-				error.push(value);
-			}
-			toast.error(
-				<React.Fragment>
-					{error.map((value, key) => (
-						<div key={key}>{value}</div>
-					))}
-				</React.Fragment>
-			);
-		}
+		console.log(err.response);
+		// if (err.response.data.message) toast.error(err.response.data.message);
+		// else {
+		// 	let error = [];
+		// 	for (let value of Object.values(err.response.data.errors)) {
+		// 		error.push(value);
+		// 	}
+		// 	toast.error(
+		// 		<React.Fragment>
+		// 			{error.map((value, key) => (
+		// 				<div key={key}>{value}</div>
+		// 			))}
+		// 		</React.Fragment>
+		// 	);
+		// }
 	});
 }

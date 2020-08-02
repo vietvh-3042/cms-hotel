@@ -1,9 +1,8 @@
 import { Popconfirm, Table, Tag } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { endpoint } from "settings";
+import { toast } from "react-toastify";
 import shortid from "shortid";
 import ModalAddPaymentMethod from "./components/ModalAddPaymentMethod";
 import ModalUpdatePaymentMethod from "./components/ModalUpdatePaymentMethod";
@@ -26,21 +25,15 @@ function ManagerPaymentMethod(props) {
 	});
 
 	const allData = [];
-	const user = useSelector((state) => state.Auth.user);
 
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/payslip-receipt/payment-method?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		}).then((res) => {
+		CommonApi(
+			"GET",
+			`/tenant/payslip-receipt/payment-method?${paramString}`,
+			null
+		).then((res) => {
 			setLoading(false);
 			res.data.data.forEach((infor, index) => {
 				allData.push({
@@ -72,6 +65,17 @@ function ManagerPaymentMethod(props) {
 		setVisibleUpdateType({
 			detail: record,
 			visible: !visibleUpdateType.visible,
+		});
+	}
+
+	function confirm(id) {
+		CommonApi(
+			"DELETE",
+			`/tenant/payslip-receipt/payment-method/${id}`,
+			null
+		).then((res) => {
+			toast.success("Xóa thành công");
+			handleSetStatus();
 		});
 	}
 
@@ -108,8 +112,8 @@ function ManagerPaymentMethod(props) {
 						onClick={() => handleUpdateType(record)}
 					/>
 					<Popconfirm
-						title="Bạn thực sự muốn xóa khách sạn này"
-						// onConfirm={() => confirm(record.id)}
+						title="Bạn thực sự muốn xóa bản ghi này"
+						onConfirm={() => confirm(record.id)}
 						okText="Yes"
 						cancelText="No"
 						placement="topRight"

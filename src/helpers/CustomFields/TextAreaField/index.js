@@ -1,8 +1,6 @@
-import { Input } from "antd";
 import PropTypes from "prop-types";
 import React from "react";
-
-const { TextArea } = Input;
+import { Field } from "formik";
 
 TextAreaField.propTypes = {
 	field: PropTypes.object.isRequired,
@@ -17,10 +15,8 @@ TextAreaField.defaultProps = {
 };
 
 function TextAreaField(props) {
-	const { field, form, label, width } = props;
+	const { field, label, width } = props;
 	const { name } = field;
-	const { errors, touched } = form;
-	const showError = errors[name] && touched[name];
 
 	return (
 		<div className="flex items-center mb-2">
@@ -29,13 +25,13 @@ function TextAreaField(props) {
 					{label}
 				</label>
 			)}
-
-			<TextArea
+			<Field
 				id={name}
 				{...field}
-				allowClear
-				autoSize={true}
-				style={{ width: width ? width : 226 }}
+				as="textarea"
+				rows="3"
+				style={{ width: width ? width : 220, display: "inline" }}
+				className="dashboard"
 			/>
 		</div>
 	);

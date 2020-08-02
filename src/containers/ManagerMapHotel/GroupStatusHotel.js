@@ -60,12 +60,12 @@ function GroupStatusHotel(props) {
 				<StatusHotel quantity={0} title="Chưa dọn" background="bg-gray-500" />
 				<StatusHotel quantity={0} title="Đang sửa" background="bg-black" />
 			</div>
-			{/* <div className="pl-1 mt-2">
-				<Dropdown overlay={menu}>
+			<div className="pl-1 mt-2">
+				{/* <Dropdown overlay={menu}>
 					<button className="dashboardButton mr-2 mb-2">
 						Khách đoàn / CTY
 					</button>
-				</Dropdown>
+				</Dropdown> */}
 
 				<button className="grey mr-2 mb-2" onClick={handleCheckin}>
 					DS Checkin
@@ -76,7 +76,7 @@ function GroupStatusHotel(props) {
 				<Dropdown overlay={menuReceipts}>
 					<button className="dashboardButton mb-2">Tạo HD / Phiếu</button>
 				</Dropdown>
-			</div> */}
+			</div>
 			<ModalCheckin visible={visibleCheckin} handleCheckin={handleCheckin} />
 			<ModalCheckout
 				visible={visibleCheckout}

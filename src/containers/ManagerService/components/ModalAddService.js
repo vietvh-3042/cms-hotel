@@ -1,13 +1,11 @@
 import { Modal } from "antd";
-import Axios from "axios";
 import FooterForm from "components/utility/footerForm";
 import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
 import * as Yup from "yup";
 
 ModalAddService.propTypes = {
@@ -29,12 +27,9 @@ function ModalAddService(props) {
 		listCategory,
 	} = props;
 
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
-
 	const initialValues = {
 		name: "",
-		category_id: "",
+		category_id: listCategory.length > 0 ? listCategory[0].id : "",
 		price: "",
 		note: "",
 	};
@@ -48,36 +43,11 @@ function ModalAddService(props) {
 	});
 
 	function handleSubmit(data) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/service-storage/services",
-			data: data,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
-			.then((res) => {
-				toast("Tạo mới thành công");
-				handleAddListService();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		CommonApi("POST", "/tenant/service-storage/services", data).then((res) => {
+			toast("Tạo mới thành công");
+			handleAddListService();
+			handleSetStatus();
+		});
 	}
 
 	return (
@@ -111,7 +81,6 @@ function ModalAddService(props) {
 								<div className="flex mb-2">
 									<div className="LabelCo">Nhóm Dịch vụ:</div>
 									<Field as="select" style={{ width: 206, height: 30 }}>
-										<option value="1">Chọn Nhóm Dịch Vụ</option>
 										{listCategory.map((value) => (
 											<option value={value.id} key={value.id}>
 												{value.name}

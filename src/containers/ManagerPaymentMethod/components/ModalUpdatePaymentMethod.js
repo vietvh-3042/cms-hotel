@@ -1,13 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FastField, Form, Formik, Field } from "formik";
 import { Modal, Switch } from "antd";
-import Axios from "axios";
+import FooterForm from "components/utility/footerForm";
+import { FastField, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
+import PropTypes from "prop-types";
+import React from "react";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
 import * as Yup from "yup";
-import { useSelector } from "react-redux";
 
 ModalUpdatePaymentMethod.propTypes = {
 	handleUpdateType: PropTypes.func,
@@ -21,7 +20,6 @@ ModalUpdatePaymentMethod.defaultProps = {
 
 function ModalUpdatePaymentMethod(props) {
 	const { visibleUpdateType, handleUpdateType, handleSetStatus } = props;
-	const user = useSelector((state) => state.Auth.user);
 
 	const initialValues = {
 		...visibleUpdateType.detail,
@@ -33,41 +31,15 @@ function ModalUpdatePaymentMethod(props) {
 	});
 
 	function handleSubmit(data) {
-		console.log(data);
 		const id = visibleUpdateType.detail.id;
-		Axios({
-			method: "PUT",
-			url: endpoint + "/tenant/payslip-receipt/payment-method/" + id,
-			data: {
-				name: data.name,
-				status: data.status ? 1 : 2,
-			},
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		})
-			.then((res) => {
-				toast.success("Thêm mới thành công");
-				handleUpdateType();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				console.log(err.response);
-				// let error = [];
-				// for (let value of Object.values(err.response.data.errors)) {
-				// 	error.push(value);
-				// }
-				// toast.error(
-				// 	<React.Fragment>
-				// 		{error.map((value, key) => (
-				// 			<div key={key}>{value}</div>
-				// 		))}
-				// 	</React.Fragment>
-				// );
-			});
+		CommonApi("PUT", `/tenant/payslip-receipt/payment-method/${id}`, {
+			name: data.name,
+			status: data.status ? 1 : 2,
+		}).then((res) => {
+			toast.success("Thêm mới thành công");
+			handleUpdateType();
+			handleSetStatus();
+		});
 	}
 
 	return (
@@ -109,24 +81,7 @@ function ModalUpdatePaymentMethod(props) {
 									/>
 								</div>
 
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleUpdateType}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Sửa
-									</button>
-								</div>
+								<FooterForm handleClick={handleUpdateType} title="Sửa" />
 							</Form>
 						)}
 					</Formik>

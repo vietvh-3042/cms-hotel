@@ -1,13 +1,12 @@
 import { Modal } from "antd";
-import Axios from "axios";
 import FooterForm from "components/utility/footerForm";
 import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
+import TextAreaField from "helpers/CustomFields/TextAreaField";
 import PropTypes from "prop-types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
 import * as Yup from "yup";
 
 ModalAddCategory.propTypes = {
@@ -30,12 +29,9 @@ function ModalAddCategory(props) {
 		listTypeCategory,
 	} = props;
 
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
-
 	const initialValues = {
 		name: "",
-		type_category_id: "",
+		type_category_id: listTypeCategory.length > 0 ? listTypeCategory[0].id : "",
 		note: "",
 		status: 1,
 	};
@@ -45,37 +41,13 @@ function ModalAddCategory(props) {
 		type_category_id: Yup.string().required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/category/category",
-			data: data,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
-			.then((res) => {
-				toast.success("Tạo mới thành công");
-				handleAddListCategory();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+	function handleSubmit(data, { resetForm }) {
+		CommonApi("POST", "/tenant/category/category", data).then((res) => {
+			toast.success("Tạo mới thành công");
+			handleAddListCategory();
+			handleSetStatus();
+			resetForm({});
+		});
 	}
 	return (
 		<Modal
@@ -89,7 +61,7 @@ function ModalAddCategory(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Thêm nhóm dịch vụ</span>
+					<span>Thêm dịch vụ</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -113,7 +85,6 @@ function ModalAddCategory(props) {
 										name="type_category_id"
 										style={{ width: 206, height: 30 }}
 									>
-										<option value="">Chọn loại dịch vụ:</option>
 										{listTypeCategory.map((value) => (
 											<option value={value.id} key={value.id}>
 												{value.name}
@@ -131,15 +102,13 @@ function ModalAddCategory(props) {
 									</div>
 								) : null}
 
-								<div className="flex mb-2 items-center">
-									<div className="LabelCo">Ghi chú:</div>
-									<Field
-										as="textarea"
-										name="note"
-										rows="3"
-										style={{ width: 206 }}
-									/>
-								</div>
+								<FastField
+									name="note"
+									component={TextAreaField}
+									label="Ghi chú:"
+									width={206}
+								/>
+
 								<FooterForm handleClick={handleAddListCategory} />
 							</Form>
 						)}

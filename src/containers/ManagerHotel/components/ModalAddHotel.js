@@ -6,7 +6,7 @@ import InputField from "helpers/CustomFields/InputField";
 import TextAreaField from "helpers/CustomFields/TextAreaField";
 import PropTypes from "prop-types";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { checkFlagHotel } from "redux/actions/app";
 import * as Yup from "yup";
@@ -19,9 +19,6 @@ ModalAddHotel.propTypes = {
 function ModalAddHotel(props) {
 	const dispatch = useDispatch();
 	const { visible, handleAddHotel, handleSetStatus } = props;
-
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const initialValues = {
 		name: "",
@@ -53,14 +50,7 @@ function ModalAddHotel(props) {
 	});
 
 	function handleSubmit(data) {
-		CommonApi(
-			"POST",
-			"/tenant/hotel-manager/hotel",
-			user.meta.access_token,
-			user.data.name,
-			hotel_ID,
-			data
-		).then((res) => {
+		CommonApi("POST", "/tenant/hotel-manager/hotel", data).then((res) => {
 			toast.success("Tạo mới thành công");
 			dispatch(checkFlagHotel());
 			handleAddHotel();

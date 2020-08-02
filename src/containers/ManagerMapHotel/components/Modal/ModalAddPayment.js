@@ -3,11 +3,12 @@ import Axios from "axios";
 import { FastField, Field, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { endpoint } from "settings";
 import * as Yup from "yup";
 import FooterForm from "components/utility/footerForm";
+import CommonApi from "helpers/APIS/CommonApi";
 
 ModalAddPayment.propTypes = {
 	handleAddBill: PropTypes.func,
@@ -19,7 +20,8 @@ ModalAddPayment.defaultProps = {
 
 function ModalAddPayment(props) {
 	const { visible, handleAddBill } = props;
-	const user = useSelector((state) => state.Auth.user);
+	const [listCategory, setListCategory] = useState([]);
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const initialValues = {
 		date_receipt: "",
@@ -64,6 +66,16 @@ function ModalAddPayment(props) {
 		// 	},
 		// });
 	}
+
+	useEffect(() => {
+		async function getListCategory() {
+			CommonApi("GET", "/tenant/category/category").then((res) => {
+				setListCategory(res.data.data);
+			});
+		}
+		getListCategory();
+	}, [hotel_ID]);
+
 	return (
 		<Modal
 			visible={visible}
@@ -128,9 +140,9 @@ function ModalAddPayment(props) {
 										name="category_id"
 										style={{ width: 206, height: 30 }}
 									>
-										<option value="">Chọn loại chi phí</option>
-										<option value="2">Đồ Dùng</option>
-										<option value="3">Điện Nước</option>
+										{listCategory.map((value) => (
+											<option value={value.id}>{value.name}</option>
+										))}
 									</Field>
 								</div>
 

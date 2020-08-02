@@ -1,13 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FastField, Form, Formik, Field } from "formik";
 import { Modal, Switch } from "antd";
-import Axios from "axios";
+import FooterForm from "components/utility/footerForm";
+import { FastField, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
+import PropTypes from "prop-types";
+import React from "react";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
 import * as Yup from "yup";
-import { useSelector } from "react-redux";
 
 ModalAddPaymentMethod.propTypes = {
 	handleAddListTypeCategory: PropTypes.func,
@@ -21,7 +20,6 @@ ModalAddPaymentMethod.defaultProps = {
 
 function ModalAddPaymentMethod(props) {
 	const { visible, handleAddListTypeCategory, handleSetStatus } = props;
-	const user = useSelector((state) => state.Auth.user);
 
 	const initialValues = {
 		name: "",
@@ -33,39 +31,14 @@ function ModalAddPaymentMethod(props) {
 	});
 
 	function handleSubmit(data) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/payslip-receipt/payment-method",
-			data: {
-				...data,
-				status: data.status ? 1 : 2,
-			},
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		})
-			.then((res) => {
-				toast.success("Thêm mới thành công");
-				handleAddListTypeCategory();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				console.log(err.response);
-				// let error = [];
-				// for (let value of Object.values(err.response.data.errors)) {
-				// 	error.push(value);
-				// }
-				// toast.error(
-				// 	<React.Fragment>
-				// 		{error.map((value, key) => (
-				// 			<div key={key}>{value}</div>
-				// 		))}
-				// 	</React.Fragment>
-				// );
-			});
+		CommonApi("POST", "/tenant/payslip-receipt/payment-method", {
+			...data,
+			status: data.status ? 1 : 2,
+		}).then((res) => {
+			toast.success("Thêm mới thành công");
+			handleAddListTypeCategory();
+			handleSetStatus();
+		});
 	}
 
 	return (
@@ -105,24 +78,7 @@ function ModalAddPaymentMethod(props) {
 										onChange={(checked) => setFieldValue("status", checked)}
 									/>
 								</div>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddListTypeCategory}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
-								</div>
+								<FooterForm handleClick={handleAddListTypeCategory} />
 							</Form>
 						)}
 					</Formik>

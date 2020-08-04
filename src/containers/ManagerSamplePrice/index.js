@@ -1,13 +1,13 @@
 import { Popconfirm, Table } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { endpoint } from "settings";
+import { toast } from "react-toastify";
 import ModalAddSamplePrice from "./components/ModalAddSamplePrice";
 import SettingAdditional from "./SettingAdditional";
 import SettingPrice from "./SettingPrice";
-import { toast } from "react-toastify";
+import ModalUpdateTypeRoom from "./components/ModalUpdateTypeRoom";
 
 ManagerSamplePrice.propTypes = {};
 
@@ -22,53 +22,44 @@ function ManagerSamplePrice(props) {
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
-		include: "typePrices.priceTimes",
+		include: "priceTimes",
 	});
 
-	const user = useSelector((state) => state.Auth.user);
+	const [visibleUpdate, setVisibleUpdate] = useState({
+		visible: false,
+		detail: {},
+	});
+
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
-		setLoading(true);
-		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/sample-price?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setLoading(false);
-			res.data.data.forEach((infor, index) => {
-				allData.push({
-					...infor,
-					STT: index + 1,
+		async function getListSamplePrice() {
+			setLoading(true);
+			const paramString = queryString.stringify(filters);
+			CommonApi(
+				"GET",
+				`/tenant/hotel-manager/sample-price?${paramString}`,
+				null
+			).then((res) => {
+				setLoading(false);
+				res.data.data.forEach((infor, index) => {
+					allData.push({
+						...infor,
+						STT: index + 1,
+					});
 				});
+				setListSamplePrice(allData);
+				setPagination(res.data.meta.pagination.total);
 			});
-			setListSamplePrice(allData);
-			setPagination(res.data.meta.pagination.total);
-		});
+		}
+		async function getListTypeRoom() {
+			CommonApi("GET", "/tenant/hotel-manager/type-room", null).then((res) => {
+				setListTypeRoom(res.data.data);
+			});
+		}
+		getListSamplePrice();
+		getListTypeRoom();
 	}, [filters, status, hotel_ID]);
-
-	useEffect(() => {
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/type-room",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setListTypeRoom(res.data.data);
-		});
-	}, [hotel_ID]);
 
 	function handleAddPriceTime() {
 		setVisible(!visible);
@@ -90,19 +81,18 @@ function ManagerSamplePrice(props) {
 	}
 
 	function confirm(id) {
-		Axios({
-			method: "DELETE",
-			url: endpoint + "/tenant/hotel-manager/sample-price/" + id,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			toast.success("Xóa thành công");
-			handleSetStatus();
+		CommonApi("DELETE", `/tenant/hotel-manager/sample-price/${id}`).then(
+			(res) => {
+				toast.success("Xóa thành công");
+				handleSetStatus();
+			}
+		);
+	}
+
+	function handleUpdateSamplePrice(value) {
+		setVisibleUpdate({
+			visible: !visibleUpdate.visible,
+			detail: value,
 		});
 	}
 
@@ -119,7 +109,16 @@ function ManagerSamplePrice(props) {
 			),
 		},
 
-		{ title: "Loại phòng" },
+		{
+			title: "Loại phòng",
+			render: (record) => {
+				for (var i = 0; i < listTypeRoom.length; i++) {
+					if (listTypeRoom[i].id === record.type_room_id) {
+						return listTypeRoom[i].name;
+					}
+				}
+			},
+		},
 
 		{
 			title: "Giá phòng",
@@ -138,7 +137,7 @@ function ManagerSamplePrice(props) {
 		},
 		{
 			title: "Qui định phụ trội",
-			render: (record) => <SettingAdditional />,
+			render: (record) => <SettingAdditional value={record} />,
 		},
 		{
 			title: "Thao tác",
@@ -149,7 +148,7 @@ function ManagerSamplePrice(props) {
 						src="/images/Actions/Edit.png"
 						alt="Edit"
 						className="ml-2 mr-1  cursor-pointer"
-						// onClick={() => handleUpdateTypeRoom(record)}
+						onClick={() => handleUpdateSamplePrice(record)}
 					/>
 					<Popconfirm
 						title="Bạn thực sự muốn xóa bản ghi này?"
@@ -208,6 +207,12 @@ function ManagerSamplePrice(props) {
 				listTypeRoom={listTypeRoom}
 				visible={visible}
 				handleAddPriceTime={handleAddPriceTime}
+				handleSetStatus={handleSetStatus}
+			/>
+			<ModalUpdateTypeRoom
+				listTypeRoom={listTypeRoom}
+				visibleUpdate={visibleUpdate}
+				handleUpdateSamplePrice={handleUpdateSamplePrice}
 				handleSetStatus={handleSetStatus}
 			/>
 		</div>

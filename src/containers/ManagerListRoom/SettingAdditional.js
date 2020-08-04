@@ -17,7 +17,7 @@ function SettingAdditional(props) {
 					{value.priceTimes.data.map((val, key) => {
 						if (val.group_price_time_id === 2)
 							return (
-								<div className="ml-3 text-sm">
+								<div className="ml-3 text-sm" key={key}>
 									<span>{`• Giờ thứ ${val.time}:`}</span>
 									<b className="ml-2 bold" style={{ fontSize: 12 }}>
 										{format_current(val.amount)}
@@ -39,7 +39,7 @@ function SettingAdditional(props) {
 					{value.priceTimes.data.map((val, key) => {
 						if (val.group_price_time_id === 4)
 							return (
-								<div className="ml-3 text-sm">
+								<div className="ml-3 text-sm" key={key}>
 									<span>{`• Giờ thứ ${val.time}:`}</span>
 									<b className="ml-2 bold" style={{ fontSize: 12 }}>
 										{format_current(val.amount)}
@@ -61,7 +61,7 @@ function SettingAdditional(props) {
 					{value.priceTimes.data.map((val, key) => {
 						if (val.group_price_time_id === 8)
 							return (
-								<div className="ml-3 text-sm">
+								<div className="ml-3 text-sm" key={key}>
 									<span>{`• Giờ thứ ${val.time}:`}</span>
 									<b className="ml-2 bold" style={{ fontSize: 12 }}>
 										{format_current(val.amount)}
@@ -83,7 +83,7 @@ function SettingAdditional(props) {
 					{value.priceTimes.data.map((val, key) => {
 						if (val.group_price_time_id === 16)
 							return (
-								<div className="ml-3 text-sm">
+								<div className="ml-3 text-sm" key={key}>
 									<span>{`• Giờ thứ ${val.time}:`}</span>
 									<b className="ml-2 bold" style={{ fontSize: 12 }}>
 										{format_current(val.amount)}
@@ -101,13 +101,11 @@ function SettingAdditional(props) {
 			{value.typePrices.data.map((value, key) => (
 				<div className="text-sm" key={key}>
 					<span>♦ </span>
-					<b className="text-red-600">
-						Phụ trội quá số lượng người ở - Extra Bed
-					</b>
+					<b className="text-red-600">Phụ trội quá số lượng người ở - Extra Bed</b>
 					{value.priceTimes.data.map((val, key) => {
 						if (val.group_price_time_id === 32)
 							return (
-								<div className="ml-3 text-sm">
+								<div className="ml-3 text-sm" key={key}>
 									<span>{`• Người thứ ${val.time}:`}</span>
 									<b className="ml-2 bold" style={{ fontSize: 12 }}>
 										{format_current(val.amount)}

@@ -26,24 +26,17 @@ function SettingPrice(props) {
 				<span className="bold" style={{ fontSize: 12 }}>
 					Tính theo giờ:
 				</span>
-				<div className="ml-3">
-					<span>• Giờ thứ 1:</span>
-					<b className="ml-2 bold" style={{ fontSize: 12 }}>
-						{format_current(50000)}
-					</b>
-				</div>
-				<div className="ml-3">
-					<span>• Giờ thứ 1:</span>
-					<b className="ml-2 bold" style={{ fontSize: 12 }}>
-						{format_current(70000)}
-					</b>
-				</div>
-				<div className="ml-3">
-					<span>• Giờ thứ 1:</span>
-					<b className="ml-2 bold" style={{ fontSize: 12 }}>
-						{format_current(90000)}
-					</b>
-				</div>
+				{value.priceTimes.data.map((val, key) => {
+					if (val.group_price_time_id === 1)
+						return (
+							<div className="ml-3" key={key}>
+								<span>{`• Giờ thứ ${val.time}:`}</span>
+								<b className="ml-2 bold" style={{ fontSize: 12 }}>
+									{format_current(val.amount)}
+								</b>
+							</div>
+						);
+				})}
 			</div>
 		</React.Fragment>
 	);

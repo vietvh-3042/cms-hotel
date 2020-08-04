@@ -19,11 +19,11 @@ const options = [
 				label: "Quản lý Lầu/Tầng",
 				icon: "/images/Sidebar/Hotel/sub-hotel.png",
 			},
-			{
-				key: "hotel-diary",
-				label: "Nhật ký sử dụng",
-				icon: "/images/Sidebar/Hotel/hotel-nhatki.png",
-			},
+			// {
+			// 	key: "hotel-diary",
+			// 	label: "Nhật ký sử dụng",
+			// 	icon: "/images/Sidebar/Hotel/hotel-nhatki.png",
+			// },
 		],
 	},
 

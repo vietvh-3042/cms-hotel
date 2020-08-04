@@ -1,14 +1,12 @@
 import { DatePicker, Modal } from "antd";
-import Axios from "axios";
+import FooterForm from "components/utility/footerForm";
 import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { endpoint } from "settings";
 import * as Yup from "yup";
-import FooterForm from "components/utility/footerForm";
-import CommonApi from "helpers/APIS/CommonApi";
 
 ModalAddPayment.propTypes = {
 	handleAddBill: PropTypes.func,
@@ -21,6 +19,7 @@ ModalAddPayment.defaultProps = {
 function ModalAddPayment(props) {
 	const { visible, handleAddBill } = props;
 	const [listCategory, setListCategory] = useState([]);
+	const [listPaymentMethod, setListPaymentMethod] = useState([]);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const initialValues = {
@@ -36,9 +35,7 @@ function ModalAddPayment(props) {
 		date_receipt: Yup.string().required("Không được để trống"),
 		payment_method_id: Yup.string().required("Không được để trống"),
 		content: Yup.string().required("Không được để trống"),
-		amount: Yup.number()
-			.typeError("Phải là số")
-			.required("Không được để trống."),
+		amount: Yup.number().typeError("Phải là số").required("Không được để trống."),
 		category_id: Yup.string().required("Không được để trống"),
 	});
 
@@ -73,7 +70,13 @@ function ModalAddPayment(props) {
 				setListCategory(res.data.data);
 			});
 		}
+		async function getListPaymentMethod() {
+			CommonApi("GET", "/tenant/payslip-receipt/payment-method").then((res) =>
+				setListPaymentMethod(res.data.data)
+			);
+		}
 		getListCategory();
+		getListPaymentMethod();
 	}, [hotel_ID]);
 
 	return (
@@ -160,19 +163,17 @@ function ModalAddPayment(props) {
 										name="payment_method_id"
 										style={{ width: 206, height: 30 }}
 									>
-										<option value="">Chọn phương thức thanh toán</option>
-										<option value="1">Tiền Mặt</option>
-										<option value="2">Chuyển Khoản</option>
-										<option value="3">Thẻ Tín Dụng</option>
+										{listPaymentMethod.map((value) => (
+											<option value={value.id}>{value.name}</option>
+										))}
+
 									</Field>
 								</div>
 
 								{errors.payment_method_id && touched.payment_method_id ? (
 									<div className="flex items-center">
 										<div className="LabelCo opacity-0">-----</div>
-										<div className="custom-err-form">
-											{errors.payment_method_id}
-										</div>
+										<div className="custom-err-form">{errors.payment_method_id}</div>
 									</div>
 								) : null}
 
@@ -189,12 +190,7 @@ function ModalAddPayment(props) {
 								</div>
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Ghi chú:</div>
-									<Field
-										as="textarea"
-										name="note"
-										rows="3"
-										style={{ width: 206 }}
-									/>
+									<Field as="textarea" name="note" rows="3" style={{ width: 206 }} />
 								</div>
 								<FooterForm handleClick={handleAddBill} />
 							</Form>

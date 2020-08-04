@@ -36,10 +36,7 @@ function FiledArrayCustom(props) {
 
 	return (
 		<fieldset className="mb-3" style={{ border: "1px solid #d0d0d0" }}>
-			<legend
-				className="groupHour w-280 mx-auto"
-				onClick={() => push(keyArray)}
-			>
+			<legend className="groupHour w-280 mx-auto" onClick={() => push(keyArray)}>
 				<div className="flex">
 					<img src="/images/Common/add16.png" alt="add" className="mr-2" />
 					<span>{label}</span>
@@ -60,7 +57,6 @@ function FiledArrayCustom(props) {
 					<span className="mx-1">:</span>
 					<Field
 						name={`${name}.${index}.amount`}
-						type="text"
 						className="focus:outline-none font-extrabold"
 						style={{ width: 150 }}
 					/>

@@ -170,7 +170,7 @@ function ModalUpdateRoom(props) {
 										style={{ width: 196 }}
 									/>
 								</div>
-								<FooterForm handleClick={handleUpdateRoom} update />
+								<FooterForm handleClick={handleUpdateRoom} title="Cập nhật" />
 							</Form>
 						)}
 					</Formik>

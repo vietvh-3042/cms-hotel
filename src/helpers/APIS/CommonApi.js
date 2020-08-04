@@ -26,6 +26,7 @@ export default function CommonApi(method, path, body) {
 			"hotel-id": data.hotel_ID,
 		},
 	}).catch((err) => {
+		console.log(err.message);
 		console.log(err.response);
 		// if (err.response.data.message) toast.error(err.response.data.message);
 		// else {

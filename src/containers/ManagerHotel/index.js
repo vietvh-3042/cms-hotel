@@ -2,14 +2,16 @@ import { Popconfirm, Table } from "antd";
 import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { checkFlagHotel } from "redux/actions/app";
 import ModalAddHotel from "./components/ModalAddHotel";
 import ModalUpdate from "./components/ModalUpdate";
 
 ManagerHotel.propTypes = {};
 
 function ManagerHotel(props) {
+	const dispatch = useDispatch();
 	const [status, setStatus] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [visible, setVisible] = useState(false);
@@ -27,8 +29,6 @@ function ManagerHotel(props) {
 
 	const allData = [];
 
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
 		setLoading(true);
@@ -36,9 +36,6 @@ function ManagerHotel(props) {
 		CommonApi(
 			"GET",
 			`/tenant/hotel-manager/hotel?${paramString}`,
-			user.meta.access_token,
-			user.data.name,
-			hotel_ID,
 			null
 		).then((res) => {
 			setLoading(false);
@@ -72,12 +69,10 @@ function ManagerHotel(props) {
 		CommonApi(
 			"DELETE",
 			`/tenant/hotel-manager/hotel/${id}`,
-			user.meta.access_token,
-			user.data.name,
-			hotel_ID,
 			null
 		).then((res) => {
-			toast.success("Cập nhật thành công");
+			toast.success("Xóa thành công");
+			dispatch(checkFlagHotel());
 			handleSetStatus();
 		});
 	}
@@ -101,13 +96,13 @@ function ManagerHotel(props) {
 		{ title: "Ghi chú", dataIndex: "note", key: "note", width: "15%" },
 		{
 			title: "Thao tác",
-			width: "120px",
+			width: "8%",
 			render: (record) => (
-				<div className=" h-full flex justify-center items-center flex-wrap">
+				<div className=" h-full flex items-center flex-wrap">
 					<img
 						src="/images/Actions/Edit.png"
 						alt="Edit"
-						className="ml-2 mr-1  cursor-pointer"
+						className="mr-1  cursor-pointer"
 						onClick={() => handleUpdateHotel(record)}
 					/>
 

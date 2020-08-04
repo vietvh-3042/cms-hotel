@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 import ModalFlexibleCustom from "./ModalFlexibleCustom";
+import { toast } from "react-toastify";
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -36,26 +37,19 @@ function ModalCheckinRoom(props) {
 
 	const value = visibleCheckinRoom.detail;
 
-	const [infoRoom, setinfoRoom] = useState({});
+	const [infoTypeRoom, setInforTypeRoom] = useState({});
 	const [listTypeCheckin, setListTypeCheckin] = useState([]);
 	const [listPaymentMethod, setListPaymentMethod] = useState([]);
-	const [listTypeRoom, setListTypeRoom] = useState([]);
 	const [listNational, setListNational] = useState([]);
+	const [flexibleCustom, setFlexibleCustom] = useState();
 	const [visibleCustom, setVisibleCustom] = useState({
 		visible: false,
 		detail: {},
+		callBack: {},
 	});
-
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
-		async function getListSamplePrice() {
-			CommonApi(
-				"GET",
-				"/tenant/hotel-manager/type-room?include=typePrices",
-				null
-			).then((res) => setListTypeRoom(res.data.data));
-		}
 		async function getInfoRoom() {
 			if (value.type_room_id) {
 				CommonApi(
@@ -63,17 +57,15 @@ function ModalCheckinRoom(props) {
 					`/tenant/hotel-manager/type-room/${value.type_room_id}?include=typePrices`,
 					+null
 				).then((res) => {
-					setinfoRoom(res.data.data);
+					setInforTypeRoom(res.data.data);
 				});
-			} else return setinfoRoom({});
+			} else return setInforTypeRoom({});
 		}
-
 		async function getListTypeCheckin() {
 			CommonApi("GET", "/tenant/checkin-manager/type-checkin").then((res) =>
 				setListTypeCheckin(res.data.data)
 			);
 		}
-
 		async function getListPaymentMethod() {
 			CommonApi(
 				"GET",
@@ -86,7 +78,6 @@ function ModalCheckinRoom(props) {
 				setListNational(res.data.data)
 			);
 		}
-		getListSamplePrice();
 		getInfoRoom();
 		getListTypeCheckin();
 		getListPaymentMethod();
@@ -96,27 +87,27 @@ function ModalCheckinRoom(props) {
 	const find = listNational.find((x) => x.nation_code === "VN");
 
 	const initialValues = {
+		name: "",
+		note: "",
+		address: "",
+		note_payment: "",
+		note_diagram: "",
+		identity_code: "",
+		prepayment: 100000,
+		room_id: value.id,
+		number_people_in_room: "",
+		nation_id: find ? find.id : "",
 		type_price_id: value.type_room_id,
-		price_check_in: !_.isEmpty(infoRoom)
-			? infoRoom.typePrices.data[0].price_day
-			: "",
 		date_in: moment(date).format("DD/MM/YYYY"),
 		time_in: moment(time).format(format),
 		date_out_temp: moment(date).format("DD/MM/YYYY"),
 		time_out_temp: moment(time).format(format),
-		prepayment: 100000,
-		number_people_in_room: "",
+		price_check_in: !_.isEmpty(infoTypeRoom)
+			? infoTypeRoom.typePrices.data[0].price_day
+			: "",
 		type_check_in_id: listTypeCheckin.length > 0 ? listTypeCheckin[0].id : "",
-		note_diagram: "",
-		note: "",
-		room_id: value.id,
-		name: "",
-		identity_code: "",
-		address: "",
-		nation_id: find ? find.id : "",
 		payment_method_id:
 			listPaymentMethod.length > 0 ? listPaymentMethod[0].id : "",
-		note_payment: "",
 	};
 
 	const validationSchema = Yup.object().shape({
@@ -128,17 +119,19 @@ function ModalCheckinRoom(props) {
 
 	function handleSubmit(data) {
 		let body = {
-			price_check_in: data.price_check_in,
+			type_check_in_id: 1,
+			note: data.note,
+			room_id: data.room_id,
 			date_in: data.date_in,
 			time_in: data.time_in,
+			price_check_in: data.price_check_in,
+			type_price_id: data.type_price_id,
 			date_out_temp: data.date_out_temp,
 			time_out_temp: data.time_out_temp,
 			prepayment: data.prepayment,
-			number_people_in_room: data.number_people_in_room,
-			type_check_in_id: 1,
 			note_diagram: data.note_diagram,
-			note: data.note,
-			room_id: data.room_id,
+			number_people_in_room: data.number_people_in_room,
+			service: JSON.stringify({ data: allData }),
 			customer: JSON.stringify({
 				data: [
 					{
@@ -149,6 +142,7 @@ function ModalCheckinRoom(props) {
 					},
 				],
 			}),
+
 			deposit: JSON.stringify({
 				data: [
 					{
@@ -159,12 +153,16 @@ function ModalCheckinRoom(props) {
 					},
 				],
 			}),
-			service: JSON.stringify({ data: allData }),
-			type_price_id: data.type_price_id,
-			flexible_prices_for_customers: JSON.stringify({ data: [] }),
+			flexible_prices_for_customers: JSON.stringify({
+				data: [flexibleCustom],
+			}),
 		};
-
-		CommonApi("POST", "/tenant/checkin-manager/checkin", body);
+		console.log(JSON.stringify(body));
+		CommonApi("POST", "/tenant/checkin-manager/checkin", body).then((res) => {
+			toast.success("Đặt phòng thành công");
+			// handleCheckinRoom({});
+			// handleStatus();
+		});
 	}
 
 	function handleAddCheckinService() {
@@ -176,25 +174,24 @@ function ModalCheckinRoom(props) {
 		// });
 	}
 
-	function handleOnChange(value, setFieldValue) {
-		const price = listTypeRoom.find((x) => x.id === value);
-		setFieldValue("type_price_id", value);
-		setFieldValue("price_check_in", price.typePrices.data[0].price_day);
-	}
-
-	function handleOpenFlexibleCustom(price) {
+	function handleOpenFlexibleCustom(inforRoom, setFieldValue) {
 		setVisibleCustom({
 			visible: !visibleCustom.visible,
-			detail: price,
+			detail: {
+				inforRoom,
+			},
+			callBack: setFieldValue,
 		});
 	}
 
-	function getFlexiblePriceCustom(value) {
+	function getFlexiblePriceCustom(value, setFieldValue) {
 		setVisibleCustom({
 			visible: !visibleCustom.visible,
 			detail: {},
 		});
-		console.log(value);
+		setFieldValue("price_check_in", value.price_day);
+		setFieldValue("type_price_id", value.type_price_id);
+		setFlexibleCustom(value);
 	}
 
 	const columns = [
@@ -244,7 +241,7 @@ function ModalCheckinRoom(props) {
 												/>
 												<i
 													className="fas fa-pencil-alt cursor-pointer"
-													onClick={() => handleOpenFlexibleCustom(infoRoom)}
+													onClick={() => handleOpenFlexibleCustom(value, setFieldValue)}
 												/>
 											</div>
 											<div className="flex mb-1">

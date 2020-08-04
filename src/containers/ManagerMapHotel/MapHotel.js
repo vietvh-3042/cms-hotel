@@ -50,10 +50,7 @@ function MapHotel(props) {
 	function menuRoomEmpty(record) {
 		return (
 			<Menu>
-				<Menu.Item
-					className="text-xs"
-					onClick={() => handleCheckinRoom(record)}
-				>
+				<Menu.Item className="text-xs" onClick={() => handleCheckinRoom(record)}>
 					Nhận Phòng
 				</Menu.Item>
 				<Menu.Item className="text-xs" onClick={() => handleStatusRoom(record)}>
@@ -62,10 +59,7 @@ function MapHotel(props) {
 				<Menu.Item className="text-xs" onClick={() => handleUpdateRoom(record)}>
 					Chỉnh sửa
 				</Menu.Item>
-				<Menu.Item
-					className="text-xs"
-					onClick={() => handleDeleteRoom(record.id)}
-				>
+				<Menu.Item className="text-xs" onClick={() => handleDeleteRoom(record.id)}>
 					Xóa phòng
 				</Menu.Item>
 			</Menu>
@@ -75,10 +69,7 @@ function MapHotel(props) {
 	function menuRoomcleaned(record) {
 		return (
 			<Menu>
-				<Menu.Item
-					className="text-xs"
-					onClick={() => handleCheckinRoom(record)}
-				>
+				<Menu.Item className="text-xs" onClick={() => handleCheckinRoom(record)}>
 					Nhận Phòng
 				</Menu.Item>
 				<Menu.Item className="text-xs" onClick={() => handleClear(record.id)}>
@@ -87,10 +78,7 @@ function MapHotel(props) {
 				<Menu.Item className="text-xs" onClick={() => handleUpdateRoom(record)}>
 					Chỉnh sửa
 				</Menu.Item>
-				<Menu.Item
-					className="text-xs"
-					onClick={() => handleDeleteRoom(record.id)}
-				>
+				<Menu.Item className="text-xs" onClick={() => handleDeleteRoom(record.id)}>
 					Xóa phòng
 				</Menu.Item>
 			</Menu>
@@ -123,6 +111,16 @@ function MapHotel(props) {
 					</div>
 					<div className="col-span-7 md:col-span-6 grid grid-cols-3 md:grid-cols-6 gap-2">
 						{val.rooms.data.map((value, key) => {
+							if (value.status === 2)
+								return (
+									<DropdownCustom
+										key={key}
+										className="h-20 bg-red-600 flex items-center font-bold 
+									text-white justify-center hover:bg-red-700 cursor-pointer"
+										menu={() => menuRoomEmpty(value)}
+										name={value.name}
+									/>
+								);
 							if (value.status === 4)
 								return (
 									<DropdownCustom

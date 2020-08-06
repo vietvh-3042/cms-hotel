@@ -65,8 +65,8 @@ function ManagerService(props) {
 
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
-		{ title: "Tên dịch vụ", dataIndex: "", key: "" },
-		{ title: "Giá bán", dataIndex: "", key: "" },
+		{ title: "Tên dịch vụ", dataIndex: "name", key: "name" },
+		{ title: "Giá bán", dataIndex: "price", key: "price" },
 		{ title: "SL.tồn Đầu kỳ(1)", dataIndex: "", key: "" },
 		{
 			title: "Đã nhập Trong kỳ(2)",

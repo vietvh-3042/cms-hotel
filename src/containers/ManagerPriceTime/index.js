@@ -1,10 +1,8 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import { Table, Popconfirm } from "antd";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { Popconfirm, Table } from "antd";
 import Axios from "axios";
 import queryString from "query-string";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { endpoint } from "settings";
 
 ManagerPriceTime.propTypes = {};
@@ -59,6 +57,10 @@ function ManagerPriceTime(props) {
 			...filters,
 			page: pagination.current,
 		});
+	}
+
+	function handleSetStatus() {
+		setStatus(!status);
 	}
 
 	const columns = [

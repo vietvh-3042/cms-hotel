@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 
 FooterForm.propTypes = {
 	handleClick: PropTypes.func,
+	title: PropTypes.string,
 };
 
 FooterForm.defaultProps = {
 	handleClick: null,
+	title: "",
 };
 
 function FooterForm(props) {

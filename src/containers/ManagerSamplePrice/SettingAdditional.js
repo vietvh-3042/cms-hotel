@@ -14,7 +14,7 @@ function SettingAdditional(props) {
 				<span>♦ </span>
 				<b className="text-red-600">Phụ trội quá giờ Checkout ở ngày </b>
 				{value.priceTimes.data.map((val, key) => {
-					if (val.group_price_time_id === 2)
+					if (val.group_price_time_id === 2) {
 						return (
 							<div className="ml-3 text-sm" key={key}>
 								<span>{`• Giờ thứ ${val.time}:`}</span>
@@ -23,6 +23,7 @@ function SettingAdditional(props) {
 								</b>
 							</div>
 						);
+					} else return;
 				})}
 				<div className="ml-3">
 					<span>• Quá qui định trên sẽ tính thành 1 ngày.</span>

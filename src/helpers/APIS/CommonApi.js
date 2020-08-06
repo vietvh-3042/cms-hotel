@@ -1,8 +1,6 @@
 import Axios from "axios";
-import React from "react";
-import { toast } from "react-toastify";
-import { endpoint } from "settings";
 import { store } from "redux/store";
+import { endpoint } from "settings";
 
 function select(state) {
 	return {
@@ -25,22 +23,5 @@ export default function CommonApi(method, path, body) {
 			"tenant-name": data.name,
 			"hotel-id": data.hotel_ID,
 		},
-	}).catch((err) => {
-		console.log(err.message);
-		console.log(err.response);
-		// if (err.response.data.message) toast.error(err.response.data.message);
-		// else {
-		// 	let error = [];
-		// 	for (let value of Object.values(err.response.data.errors)) {
-		// 		error.push(value);
-		// 	}
-		// 	toast.error(
-		// 		<React.Fragment>
-		// 			{error.map((value, key) => (
-		// 				<div key={key}>{value}</div>
-		// 			))}
-		// 		</React.Fragment>
-		// 	);
-		// }
 	});
 }

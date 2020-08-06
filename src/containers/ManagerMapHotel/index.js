@@ -18,8 +18,6 @@ function ManagerMapHotel(props) {
 				{!hotel_ID ? (
 					<React.Fragment>
 						<Empty />
-						{/* test */}
-						<GroupStatusHotel />
 					</React.Fragment>
 				) : (
 					<React.Fragment>

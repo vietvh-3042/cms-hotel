@@ -1,21 +1,20 @@
-import { Collapse, DatePicker, Modal, Select, Table, TimePicker } from "antd";
+import { Collapse, DatePicker, Modal, TimePicker } from "antd";
 import FooterForm from "components/utility/footerForm";
 import { FastField, Field, Form, Formik } from "formik";
 import CommonApi from "helpers/APIS/CommonApi";
-import { renderQuantity } from "helpers/Common/CommonRoom";
 import InputField from "helpers/CustomFields/InputField";
 import TextAreaField from "helpers/CustomFields/TextAreaField";
-import _ from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import * as Yup from "yup";
-import ModalFlexibleCustom from "./ModalFlexibleCustom";
 import { toast } from "react-toastify";
+import * as Yup from "yup";
+import CheckinCustomer from "../Checkin/CheckinCustomer";
+import CheckinService from "../Checkin/CheckinService";
+import ModalFlexibleCustom from "./ModalFlexibleCustom";
 
 const { Panel } = Collapse;
-const { Option } = Select;
 
 const date = new Date();
 const time = date.getTime();
@@ -32,40 +31,37 @@ ModalCheckinRoom.defaultProps = {
 };
 
 function ModalCheckinRoom(props) {
-	const allData = [];
+	let allCustomer = [];
+
 	const { visibleCheckinRoom, handleCheckinRoom, handleStatus } = props;
+	const { detail } = visibleCheckinRoom;
 
-	const value = visibleCheckinRoom.detail;
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
-	const [infoTypeRoom, setInforTypeRoom] = useState({});
-	const [listTypeCheckin, setListTypeCheckin] = useState([]);
+	const [listSamplePriceDefault, setListSamplePriceDefault] = useState([]);
+
 	const [listPaymentMethod, setListPaymentMethod] = useState([]);
-	const [listNational, setListNational] = useState([]);
+
+	const [listCustomerDefault, setCustomerDefault] = useState([]);
+
 	const [flexibleCustom, setFlexibleCustom] = useState();
+
 	const [visibleCustom, setVisibleCustom] = useState({
 		visible: false,
 		detail: {},
+		samplePrice: {},
 		callBack: {},
 	});
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
-		async function getInfoRoom() {
-			if (value.type_room_id) {
-				CommonApi(
-					"GET",
-					`/tenant/hotel-manager/type-room/${value.type_room_id}?include=typePrices`,
-					+null
-				).then((res) => {
-					setInforTypeRoom(res.data.data);
-				});
-			} else return setInforTypeRoom({});
+		async function getSamplePriceDefault() {
+			CommonApi(
+				"GET",
+				"/tenant/hotel-manager/sample-price?type=1&include=typeRoom.typePrices.priceTimes",
+				null
+			).then((res) => setListSamplePriceDefault(res.data.data));
 		}
-		async function getListTypeCheckin() {
-			CommonApi("GET", "/tenant/checkin-manager/type-checkin").then((res) =>
-				setListTypeCheckin(res.data.data)
-			);
-		}
+
 		async function getListPaymentMethod() {
 			CommonApi(
 				"GET",
@@ -73,76 +69,72 @@ function ModalCheckinRoom(props) {
 				null
 			).then((res) => setListPaymentMethod(res.data.data));
 		}
-		async function getNational() {
-			CommonApi("GET", "/tenant/nation-manager/nations", null).then((res) =>
-				setListNational(res.data.data)
+
+		async function getCustomerDefault() {
+			CommonApi("GET", "/tenant/customer-manager/customer?litmit=1").then((res) =>
+				setCustomerDefault(res.data.data)
 			);
 		}
-		getInfoRoom();
-		getListTypeCheckin();
+		getSamplePriceDefault();
 		getListPaymentMethod();
-		getNational();
-	}, [hotel_ID, value]);
+		getCustomerDefault();
+	}, [hotel_ID]);
 
-	const find = listNational.find((x) => x.nation_code === "VN");
+	//find infor sample price by type room id
+	const result = findSamplePriceDefaultByTypeRoom(detail);
 
 	const initialValues = {
-		name: "",
-		note: "",
-		address: "",
-		note_payment: "",
-		note_diagram: "",
-		identity_code: "",
-		prepayment: 100000,
-		room_id: value.id,
-		number_people_in_room: "",
-		nation_id: find ? find.id : "",
-		type_price_id: value.type_room_id,
+		//infor room
+		price_check_in: result ? result.price_day : "",
+		type_price_id: result ? result.id : "",
 		date_in: moment(date).format("DD/MM/YYYY"),
 		time_in: moment(time).format(format),
 		date_out_temp: moment(date).format("DD/MM/YYYY"),
 		time_out_temp: moment(time).format(format),
-		price_check_in: !_.isEmpty(infoTypeRoom)
-			? infoTypeRoom.typePrices.data[0].price_day
-			: "",
-		type_check_in_id: listTypeCheckin.length > 0 ? listTypeCheckin[0].id : "",
+		prepayment: 100000,
 		payment_method_id:
 			listPaymentMethod.length > 0 ? listPaymentMethod[0].id : "",
+		note_payment: "",
+		note_diagram: "",
+		note: "",
 	};
 
 	const validationSchema = Yup.object().shape({
-		number_people_in_room: Yup.string().required("Không được để trống."),
-		identity_code: Yup.string().required("Không được để trống."),
-		name: Yup.string().required("Không được để trống."),
-		address: Yup.string().required("Không được để trống."),
+		price_check_in: Yup.string().required("Không được để trống."),
+		prepayment: Yup.number()
+			.typeError("Phải là số")
+			.required("Không được để trống."),
+		payment_method_id: Yup.string().required("Không được để trống."),
 	});
 
 	function handleSubmit(data) {
 		let body = {
-			type_check_in_id: 1,
-			note: data.note,
-			room_id: data.room_id,
+			price_check_in: data.price_check_in,
 			date_in: data.date_in,
 			time_in: data.time_in,
-			price_check_in: data.price_check_in,
-			type_price_id: data.type_price_id,
 			date_out_temp: data.date_out_temp,
 			time_out_temp: data.time_out_temp,
 			prepayment: data.prepayment,
+			number_people_in_room: allCustomer.length > 0 ? allCustomer.length : 1,
+			type_check_in_id: 1,
 			note_diagram: data.note_diagram,
-			number_people_in_room: data.number_people_in_room,
-			service: JSON.stringify({ data: allData }),
-			customer: JSON.stringify({
-				data: [
-					{
-						name: data.name,
-						identity_code: data.identity_code,
-						address: data.address,
-						nation_id: data.nation_id,
-					},
-				],
-			}),
-
+			note: data.note,
+			room_id: detail.id,
+			customer:
+				allCustomer.length > 0
+					? JSON.stringify({
+							data: allCustomer,
+					  })
+					: JSON.stringify({
+							data: [
+								{
+									name: listCustomerDefault[0].name,
+									identity_code: listCustomerDefault[0].identity_code,
+									address: listCustomerDefault[0].address,
+									nation_id: listCustomerDefault[0].nation_id,
+								},
+							],
+					  }),
 			deposit: JSON.stringify({
 				data: [
 					{
@@ -153,33 +145,39 @@ function ModalCheckinRoom(props) {
 					},
 				],
 			}),
+			service: JSON.stringify({ data: [] }),
+			type_price_id: data.type_price_id,
 			flexible_prices_for_customers: JSON.stringify({
 				data: [flexibleCustom],
 			}),
 		};
-		console.log(JSON.stringify(body));
-		CommonApi("POST", "/tenant/checkin-manager/checkin", body).then((res) => {
-			toast.success("Đặt phòng thành công");
-			// handleCheckinRoom({});
-			// handleStatus();
-		});
+		CommonApi("POST", "/tenant/checkin-manager/checkin", body)
+			.then((res) => {
+				toast.success("Đặt phòng thành công");
+				handleCheckinRoom({});
+				handleStatus();
+			})
+			.catch((err) => console.log(err.response));
 	}
 
-	function handleAddCheckinService() {
-		// allData.push({
-		// 	name,
-		// 	quantity,
-		// 	amount,
-		// 	price: quantity * amount,
-		// });
+	function findSamplePriceDefaultByTypeRoom(value) {
+		if (value) {
+			const result = listSamplePriceDefault.find(
+				(x) => x.type_room_id === value.type_room_id
+			);
+			if (result) return result;
+		}
 	}
 
-	function handleOpenFlexibleCustom(inforRoom, setFieldValue) {
+	function getCustomer(value) {
+		allCustomer = [...value];
+	}
+
+	function handleOpenFlexibleCustom(detail, samplePrice, setFieldValue) {
 		setVisibleCustom({
 			visible: !visibleCustom.visible,
-			detail: {
-				inforRoom,
-			},
+			detail: detail,
+			samplePrice: samplePrice,
 			callBack: setFieldValue,
 		});
 	}
@@ -194,19 +192,10 @@ function ModalCheckinRoom(props) {
 		setFlexibleCustom(value);
 	}
 
-	const columns = [
-		{ title: "STT", dataIndex: "STT", key: "STT" },
-		{ title: "Tên dịch vụ", dataIndex: "name", key: "name" },
-		{ title: "Số lượng", dataIndex: "quantity", key: "quantity" },
-		{ title: "Đơn giá", dataIndex: "amount", key: "amount" },
-		{ title: "Thành tiền", dataIndex: "price", key: "price" },
-		{ title: "Thao tác" },
-	];
-
 	return (
 		<Modal
 			visible={visibleCheckinRoom.visible}
-			onCancel={handleCheckinRoom}
+			onCancel={() => handleCheckinRoom({})}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
@@ -215,7 +204,7 @@ function ModalCheckinRoom(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>{`Nhận Phòng ${value.name}`}</span>
+					<span>{`Nhận ${detail.name}`}</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -224,8 +213,8 @@ function ModalCheckinRoom(props) {
 						onSubmit={handleSubmit}
 						enableReinitialize
 					>
-						{({ setFieldValue, values }) => (
-							<Form>
+						{({ setFieldValue }) => (
+							<Form name="mainForm">
 								<fieldset className="mb-3" style={{ border: "1px solid #d0d0d0" }}>
 									<legend className="groupHour w-280 ml-3">
 										<span>Thông tin đăng ký - Phòng Đơn</span>
@@ -241,7 +230,9 @@ function ModalCheckinRoom(props) {
 												/>
 												<i
 													className="fas fa-pencil-alt cursor-pointer"
-													onClick={() => handleOpenFlexibleCustom(value, setFieldValue)}
+													onClick={() =>
+														handleOpenFlexibleCustom(detail, result, setFieldValue)
+													}
 												/>
 											</div>
 											<div className="flex mb-1">
@@ -298,28 +289,6 @@ function ModalCheckinRoom(props) {
 													/>
 												</div>
 											</div>
-											<div className="flex mb-1 items-center">
-												<div className="LabelCo">Loại Checkin:</div>
-												<Field
-													as="select"
-													name="type_check_in_id"
-													style={{ width: 249, height: 30 }}
-												>
-													{listTypeCheckin.map((value) => (
-														<option value={value.id} key={value.id}>
-															{value.name}
-														</option>
-													))}
-												</Field>
-											</div>
-											<FastField
-												name="number_people_in_room"
-												component={InputField}
-												label="Số lượng người:"
-												width={213}
-											/>
-										</div>
-										<div className="w-6/12">
 											<FastField
 												name="prepayment"
 												component={InputField}
@@ -340,6 +309,8 @@ function ModalCheckinRoom(props) {
 													))}
 												</Field>
 											</div>
+										</div>
+										<div className="w-6/12">
 											<FastField
 												name="note_payment"
 												component={TextAreaField}
@@ -352,7 +323,6 @@ function ModalCheckinRoom(props) {
 												label="Ghi sơ đồ:"
 												width={230}
 											/>
-
 											<FastField
 												name="note"
 												component={TextAreaField}
@@ -362,93 +332,20 @@ function ModalCheckinRoom(props) {
 										</div>
 									</div>
 								</fieldset>
+
 								<Collapse className="mt-3 collapseRoom" defaultActiveKey={["2"]}>
 									<Panel header="Thêm dịch vụ" key="1" className="text-xs black">
-										<div className="grid grid-cols-7 mb-2">
-											<div className="col-span-4">
-												<div className="flex mb-1 items-center">
-													<div className="LabelCo">Dịch vụ:</div>
-													<Field
-														as="select"
-														name="floor_id"
-														style={{ width: 226, height: 30 }}
-													>
-														<option>1</option>
-													</Field>
-												</div>
-											</div>
-											<div className="col-span-2">
-												<div className="flex mb-1 items-center">
-													<div className="LabelCo">Số lượng:</div>
-													<Field
-														as="select"
-														name="floor_id"
-														style={{ width: 226, height: 30 }}
-													>
-														{renderQuantity()}
-													</Field>
-												</div>
-											</div>
-											<div className="col-span-1 flex items-center justify-center">
-												<button
-													className="dashboardButton focus:outline-none"
-													onClick={handleAddCheckinService}
-												>
-													Thêm
-												</button>
-											</div>
-										</div>
-										<Table
-											dataSource={allData}
-											columns={columns}
-											bordered
-											scroll={{ x: true }}
-										/>
+										<CheckinService />
 									</Panel>
 									<Panel header="Thông tin khách hàng" key="2" className="text-xs black">
-										<div className="grid grid-cols-2">
-											<FastField
-												name="identity_code"
-												component={InputField}
-												label="CMND/Passport:"
-												width={190}
-											/>
-											<FastField
-												name="name"
-												component={InputField}
-												label="Tên khách hàng:"
-												width={190}
-											/>
-											<FastField
-												name="address"
-												component={InputField}
-												label="Địa chỉ:"
-												width={190}
-											/>
-											<div className="flex mb-1 items-center">
-												<div className="LabelCo">Quốc tịch:</div>
-												<Select
-													name="nation_id"
-													showSearch
-													value={values.nation_id}
-													filterOption={(input, option) =>
-														option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-													}
-													style={{ width: 196, height: 30 }}
-													onChange={(newValue) => setFieldValue("nation_id", newValue)}
-												>
-													{listNational.map((value) => (
-														<Option value={value.id} key={value.id}>
-															{value.name}
-														</Option>
-													))}
-												</Select>
-											</div>
-										</div>
+										<CheckinCustomer getCustomer={getCustomer} />
 									</Panel>
 								</Collapse>
 								<div className="mt-3">
-									<FooterForm handleClick={handleCheckinRoom} title="Nhận Phòng" />
+									<FooterForm
+										handleClick={() => handleCheckinRoom({})}
+										title="Nhận Phòng"
+									/>
 								</div>
 							</Form>
 						)}
@@ -458,7 +355,7 @@ function ModalCheckinRoom(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleCheckinRoom}
+					onClick={() => handleCheckinRoom({})}
 				/>
 			</div>
 			<ModalFlexibleCustom

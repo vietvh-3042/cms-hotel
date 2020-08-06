@@ -42,11 +42,11 @@ const options = [
 				label: "Danh sách giá mẫu",
 				icon: "/images/Sidebar/Settings/price.png",
 			},
-			{
-				key: "price-time",
-				label: "Giá theo thời điểm",
-				icon: "/images/Sidebar/Settings/price.png",
-			},
+			// {
+			// 	key: "price-time",
+			// 	label: "Giá theo thời điểm",
+			// 	icon: "/images/Sidebar/Settings/price.png",
+			// },
 		],
 	},
 
@@ -220,12 +220,12 @@ const options = [
 	{
 		key: "setting",
 		label: "Cài Đặt",
-		icon: "/images/Sidebar/Staff/nhanvien.png",
+		icon: "/images/Sidebar/Staff/shift-history.png",
 		children: [
 			{
 				key: "classify",
 				label: "Nhóm Nhãn",
-				icon: "/images/Sidebar/Staff/manager-user.png",
+				icon: "/images/Sidebar/Staff/shift-history.png",
 			},
 		],
 	},

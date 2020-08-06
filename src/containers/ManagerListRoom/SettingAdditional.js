@@ -24,6 +24,7 @@ function SettingAdditional(props) {
 									</b>
 								</div>
 							);
+						else return;
 					})}
 
 					<div className="ml-3">

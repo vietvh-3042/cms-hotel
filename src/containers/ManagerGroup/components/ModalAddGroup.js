@@ -34,18 +34,26 @@ function ModalAddGroup(props) {
 	});
 
 	function handleSubmit(data) {
-		CommonApi(
-			"POST",
-			"/tenant/acl/groups",
-			user.meta.access_token,
-			user.data.name,
-			hotel_ID,
-			data
-		).then((res) => {
-			toast.success("Thêm mới thành công");
-			handleAddListTypeCategory();
-			handleSetStatus();
-		});
+		CommonApi("POST", "/tenant/acl/groups", data)
+			.then((res) => {
+				toast.success("Thêm mới thành công");
+				handleAddListTypeCategory();
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+
+					toast.error(
+						<React.Fragment>
+							{error.map((value, key) => (
+								<div key={key}>{value}</div>
+							))}
+						</React.Fragment>
+					);
+				}
+			});
 	}
 
 	return (
@@ -78,12 +86,7 @@ function ModalAddGroup(props) {
 								/>
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Ghi chú:</div>
-									<Field
-										as="textarea"
-										name="note"
-										rows="3"
-										style={{ width: 166 }}
-									/>
+									<Field as="textarea" name="note" rows="3" style={{ width: 166 }} />
 								</div>
 								<FooterForm handleClick={handleAddListTypeCategory} />
 							</Form>

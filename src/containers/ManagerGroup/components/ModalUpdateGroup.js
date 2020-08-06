@@ -33,18 +33,26 @@ function ModalUpdateGroup(props) {
 
 	function handleSubmit(data) {
 		const id = visibleUpdateType.detail.id;
-		CommonApi(
-			"PUT",
-			`/tenant/acl/groups/${id}`,
-			user.meta.access_token,
-			user.data.name,
-			hotel_ID,
-			data
-		).then((res) => {
-			toast.success("Cập nhật thành công");
-			handleUpdateType();
-			handleSetStatus();
-		});
+		CommonApi("PUT", `/tenant/acl/groups/${id}`, data)
+			.then((res) => {
+				toast.success("Cập nhật thành công");
+				handleUpdateType();
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+
+					toast.error(
+						<React.Fragment>
+							{error.map((value, key) => (
+								<div key={key}>{value}</div>
+							))}
+						</React.Fragment>
+					);
+				}
+			});
 	}
 
 	return (
@@ -78,12 +86,7 @@ function ModalUpdateGroup(props) {
 								/>
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Ghi chú:</div>
-									<Field
-										as="textarea"
-										name="note"
-										rows="3"
-										style={{ width: 166 }}
-									/>
+									<Field as="textarea" name="note" rows="3" style={{ width: 166 }} />
 								</div>
 								<FooterForm handleClick={handleUpdateType} update />
 							</Form>

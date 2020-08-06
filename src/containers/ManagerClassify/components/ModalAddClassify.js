@@ -37,18 +37,26 @@ function ModalAddClassify(props) {
 	});
 
 	function handleSubmit(data) {
-		CommonApi(
-			"POST",
-			"/tenant/hotel-manager/classify",
-			user.meta.access_token,
-			user.data.name,
-			hotel_ID,
-			data
-		).then((res) => {
-			toast.success("Tạo mới thành công");
-			handleAddClassify();
-			handleSetStatus();
-		});
+		CommonApi("POST", "/tenant/hotel-manager/classify", data)
+			.then((res) => {
+				toast.success("Tạo mới thành công");
+				handleAddClassify();
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+
+					toast.error(
+						<React.Fragment>
+							{error.map((value, key) => (
+								<div key={key}>{value}</div>
+							))}
+						</React.Fragment>
+					);
+				}
+			});
 	}
 
 	return (
@@ -87,12 +95,7 @@ function ModalAddClassify(props) {
 								/>
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Ghi chú:</div>
-									<Field
-										as="textarea"
-										name="note"
-										rows="3"
-										style={{ width: 166 }}
-									/>
+									<Field as="textarea" name="note" rows="3" style={{ width: 166 }} />
 								</div>
 								<FooterForm handleClick={handleAddClassify} />
 							</Form>

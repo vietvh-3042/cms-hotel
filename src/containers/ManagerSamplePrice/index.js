@@ -22,6 +22,7 @@ function ManagerSamplePrice(props) {
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
+		type: 2,
 		include: "priceTimes",
 	});
 

@@ -21,6 +21,20 @@ xóa tầng lầu
 
 
 
+type:
+1: mặc định
+4:thời điểm
+2:giá mẫu
+
+service: 
+is_entered: được quản lý nhâp xuất kho 1 có 2 không
+
+
+
+
+fllor sửa xóa
+khách hàng list ra
+classify sửa xóa
 
 ------- done ----------
 danh sách khách sạn

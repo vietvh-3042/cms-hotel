@@ -38,11 +38,29 @@ function ModalUpdateRoom(props) {
 
 	function handleSubmit(data) {
 		const id = data.id;
-		CommonApi("PUT", `/tenant/hotel-manager/room/${id}`, data).then((res) => {
-			toast.success("Cập nhật thành công");
-			handleUpdateRoom();
-			handleStatus();
-		});
+		CommonApi("PUT", `/tenant/hotel-manager/room/${id}`, data)
+			.then((res) => {
+				toast.success("Cập nhật thành công");
+				handleUpdateRoom();
+				handleStatus();
+			})
+			.catch((err) => {
+				if (err.response.data.message) toast.error(err.response.data.message);
+				else {
+					let error = [];
+					for (let value of Object.values(err.response.data.errors)) {
+						error.push(value);
+
+						toast.error(
+							<React.Fragment>
+								{error.map((value, key) => (
+									<div key={key}>{value}</div>
+								))}
+							</React.Fragment>
+						);
+					}
+				}
+			});
 	}
 
 	useEffect(() => {
@@ -97,11 +115,7 @@ function ModalUpdateRoom(props) {
 								/>
 								<div className="flex mb-1 items-center">
 									<div className="LabelCo">Tầng dãy:</div>
-									<Field
-										as="select"
-										name="floor_id"
-										style={{ width: 196, height: 30 }}
-									>
+									<Field as="select" name="floor_id" style={{ width: 196, height: 30 }}>
 										{listFloor.map((value) => (
 											<option value={value.id} key={value.id}>
 												{value.name}
@@ -163,12 +177,7 @@ function ModalUpdateRoom(props) {
 
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Ghi chú:</div>
-									<Field
-										as="textarea"
-										name="note"
-										rows="3"
-										style={{ width: 196 }}
-									/>
+									<Field as="textarea" name="note" rows="3" style={{ width: 196 }} />
 								</div>
 								<FooterForm handleClick={handleUpdateRoom} title="Cập nhật" />
 							</Form>

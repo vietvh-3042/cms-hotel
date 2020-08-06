@@ -1,7 +1,7 @@
 import { Modal } from "antd";
-import Axios from "axios";
 import FooterForm from "components/utility/footerForm";
 import { FastField, FieldArray, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import { renderHour, renderPerson } from "helpers/Common/CommonRoom";
 import FiledArrayCustom from "helpers/CustomFields/FiledArray";
 import InputField from "helpers/CustomFields/InputField";
@@ -10,7 +10,6 @@ import PropTypes from "prop-types";
 import React from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
 import * as Yup from "yup";
 
 ModalAddSamplePrice.propTypes = {
@@ -84,25 +83,32 @@ function ModalAddSamplePrice(props) {
 			number_room_available: 1,
 			position: 1,
 		};
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/sample-price",
-			data: JSON.stringify(convert),
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
+		CommonApi(
+			"POST",
+			"/tenant/hotel-manager/sample-price",
+			JSON.stringify(convert)
+		)
 			.then((res) => {
 				toast.success("Tạo mới thành công");
 				handleAddPriceTime();
 				handleSetStatus();
 			})
 			.catch((err) => {
-				console.log(err.response);
+				if (err.response.data.message) toast.error(err.response.data.message);
+				else {
+					let error = [];
+					for (let value of Object.values(err.response.data.errors)) {
+						error.push(value);
+
+						toast.error(
+							<React.Fragment>
+								{error.map((value, key) => (
+									<div key={key}>{value}</div>
+								))}
+							</React.Fragment>
+						);
+					}
+				}
 			});
 	}
 

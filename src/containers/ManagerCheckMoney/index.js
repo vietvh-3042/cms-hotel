@@ -19,20 +19,6 @@ function ManagerCheckMoney(props) {
 					/>
 					<span className="titleMainContain">Thống kê tài khoản</span>
 				</div>
-				<div className="group3">
-					<Tooltip placement="top" title="In thông tin Dịch vụ & Kho hiện tại">
-						<button className="grey mr-2">
-							<span className="print" />
-							<span>Print</span>
-						</button>
-					</Tooltip>
-					<Tooltip placement="top" title="Tải về Excel dữ liệu">
-						<button className="grey mr-2">
-							<span className="excel" />
-							<span>Xuất File</span>
-						</button>
-					</Tooltip>
-				</div>
 			</div>
 			<div className="mt-2 mx-2">
 				<Table bordered hover responsive size="sm">

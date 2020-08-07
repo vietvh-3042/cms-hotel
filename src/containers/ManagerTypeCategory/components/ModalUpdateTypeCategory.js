@@ -1,13 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FastField, Form, Formik, Field } from "formik";
 import { Modal } from "antd";
-import Axios from "axios";
+import FooterForm from "components/utility/footerForm";
+import { FastField, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
+import PropTypes from "prop-types";
+import React from "react";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
 import * as Yup from "yup";
-import { useSelector } from "react-redux";
 
 ModalUpdateTypeCategory.propTypes = {
 	handleUpdateType: PropTypes.func,
@@ -21,48 +20,23 @@ ModalUpdateTypeCategory.defaultProps = {
 
 function ModalUpdateTypeCategory(props) {
 	const { visibleUpdateType, handleUpdateType, handleSetStatus } = props;
-	const user = useSelector((state) => state.Auth.user);
 
-	const initialValues = visibleUpdateType.detail;
-	console.log(initialValues);
+	const initialValues = visibleUpdateType.detail || "";
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
 	});
 
 	function handleSubmit(data) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/category/type-category",
-			data: {
-				...data,
-				status: 1,
-			},
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		})
-			.then((res) => {
-				toast.success("Thêm mới thành công");
-				handleUpdateType();
-				handleSetStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		const id = visibleUpdateType.detail.id;
+		CommonApi("PUT", `/tenant/category/type-category/${id}`, {
+			...data,
+			status: 1,
+		}).then((res) => {
+			toast.success("Cập nhật thành công");
+			handleUpdateType();
+			handleSetStatus();
+		});
 	}
 
 	return (
@@ -94,24 +68,7 @@ function ModalUpdateTypeCategory(props) {
 									label="Tên loại:"
 									width={160}
 								/>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleUpdateType}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
-								</div>
+								<FooterForm handleClick={handleUpdateType} title="Cập nhật" />
 							</Form>
 						)}
 					</Formik>

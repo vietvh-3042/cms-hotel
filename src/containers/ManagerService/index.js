@@ -1,9 +1,8 @@
 import { Table } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { endpoint } from "settings";
 import ModalAddService from "./components/ModalAddService";
 
 ManagerService.propTypes = {};
@@ -13,6 +12,7 @@ function ManagerService(props) {
 	const [loading, setLoading] = useState(false);
 	const [status, setStatus] = useState(false);
 	const [listService, setListService] = useState([]);
+	const [listCategory, setListCategory] = useState([]);
 	const [pagination, setPagination] = useState();
 	const [visible, setVisible] = useState(false);
 	const [filters, setFilter] = useState({
@@ -20,33 +20,33 @@ function ManagerService(props) {
 		page: 1,
 	});
 
-	const user = useSelector((state) => state.Auth.user);
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	useEffect(() => {
-		setLoading(true);
-		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/service-storage/service?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setLoading(false);
-			res.data.data.forEach((infor, index) => {
-				allData.push({
-					...infor,
-					STT: index + 1,
-				});
+		async function getListService() {
+			setLoading(true);
+			const paramString = queryString.stringify(filters);
+			CommonApi("GET", `/tenant/service-storage/services?${paramString}`).then(
+				(res) => {
+					setLoading(false);
+					res.data.data.forEach((infor, index) => {
+						allData.push({
+							...infor,
+							STT: index + 1,
+						});
+					});
+					setListService(allData);
+					setPagination(res.data.meta.pagination.total);
+				}
+			);
+		}
+		async function getListCategory() {
+			CommonApi("GET", "/tenant/category/category").then((res) => {
+				setListCategory(res.data.data);
 			});
-			setListService(allData);
-			setPagination(res.data.meta.pagination.total);
-		});
+		}
+		getListService();
+		getListCategory();
 	}, [filters, status, hotel_ID]);
 
 	function handleAddListService() {
@@ -65,8 +65,8 @@ function ManagerService(props) {
 
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
-		{ title: "Tên dịch vụ", dataIndex: "", key: "" },
-		{ title: "Giá bán", dataIndex: "", key: "" },
+		{ title: "Tên dịch vụ", dataIndex: "name", key: "name" },
+		{ title: "Giá bán", dataIndex: "price", key: "price" },
 		{ title: "SL.tồn Đầu kỳ(1)", dataIndex: "", key: "" },
 		{
 			title: "Đã nhập Trong kỳ(2)",
@@ -109,6 +109,7 @@ function ManagerService(props) {
 					dataSource={listService}
 					columns={columns}
 					loading={loading}
+					bordered
 					scroll={{ x: 1100 }}
 					pagination={{
 						total: pagination,
@@ -119,8 +120,10 @@ function ManagerService(props) {
 				/>
 			</div>
 			<ModalAddService
+				listCategory={listCategory}
 				visible={visible}
 				handleAddListService={handleAddListService}
+				handleSetStatus={handleSetStatus}
 			/>
 		</div>
 	);

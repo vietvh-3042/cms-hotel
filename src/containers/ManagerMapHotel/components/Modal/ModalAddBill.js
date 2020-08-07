@@ -1,23 +1,14 @@
 import { Modal } from "antd";
-import React from "react";
-import PropTypes from "prop-types";
-import * as Yup from "yup";
-import { FastField, Form, Formik, Field } from "formik";
+import { FastField, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
+import React from "react";
+import * as Yup from "yup";
 
-ModalAddBill.propTypes = {
-	handleAddBill: PropTypes.func,
-};
-
-ModalAddBill.defaultProps = {
-	handleAddBill: null,
-};
+ModalAddBill.propTypes = {};
 
 function ModalAddBill(props) {
-	const { visible, handleAddBill } = props;
-	const initialValues = {
-		toggle: false,
-	};
+	const { visible, handleAddService } = props;
+	const initialValues = {};
 	const validationSchema = Yup.object().shape({});
 
 	function handleSubmit(data) {
@@ -26,16 +17,16 @@ function ModalAddBill(props) {
 	return (
 		<Modal
 			visible={visible}
-			onCancel={handleAddBill}
+			onCancel={handleAddService}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
-			width={390}
+			width={800}
 		>
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Thêm Phiếu Chi Phí</span>
+					<span>Thêm Hóa Đơn</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -43,74 +34,14 @@ function ModalAddBill(props) {
 						validationSchema={validationSchema}
 						onSubmit={handleSubmit}
 					>
-						{({ values }) => (
+						{() => (
 							<Form>
 								<FastField
 									name="name"
 									component={InputField}
-									label="Diễn giải chi phí:"
+									label="Khách hàng:"
 									width={200}
 								/>
-								<FastField
-									name="name"
-									component={InputField}
-									label="Số tiền:"
-									width={200}
-								/>
-								<div className="flex mb-2 items-center">
-									<div className="LabelCo">Loại chi phí:</div>
-									<Field as="select" style={{ width: 206, height: 30 }}>
-										<option value="1">Chọn loại chi phí</option>
-										<option value="2">Đồ Dùng</option>
-										<option value="3">Điện Nước</option>
-									</Field>
-								</div>
-								<div className="flex mb-2 items-center">
-									<div className="LabelCo">Chi tiết:</div>
-									<Field as="select" style={{ width: 206, height: 30 }}>
-										<option value="1">Tiền Mặt</option>
-										<option value="2">Chuyển Khoản</option>
-										<option value="3">Thẻ Tín Dụng</option>
-									</Field>
-								</div>
-								<FastField
-									name="name"
-									component={InputField}
-									label="Người nhận:"
-									width={200}
-								/>
-								<div className="flex mb-2 items-center">
-									<div className="LabelCo">Trạng thái:</div>
-									<Field type="checkbox" name="toggle" />
-									<span>Đã thanh toán</span>
-								</div>
-								<div className="flex mb-2 items-center">
-									<div className="LabelCo">Ghi chú:</div>
-									<Field
-										as="textarea"
-										name="123"
-										rows="3"
-										style={{ width: 206 }}
-									/>
-								</div>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddBill}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
-								</div>
 							</Form>
 						)}
 					</Formik>
@@ -119,7 +50,7 @@ function ModalAddBill(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleAddBill}
+					onClick={handleAddService}
 				/>
 			</div>
 		</Modal>

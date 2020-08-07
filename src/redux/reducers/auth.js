@@ -6,12 +6,12 @@ import {
 } from "../actions/constants";
 
 const init = {
-	loggedIn: true, /// finish false
+	loggedIn: false, /// finish false
 	refreshToken: null,
-	user: {
-		data: { name: "vuhongviet" }, // init state
-		meta: { access_token: "" }, /// init state
-	},
+	// user: {
+	// 	data: { name: "vuhongviet" }, // init state
+	// 	meta: { access_token: "" }, /// init state
+	// },
 };
 
 export default (state = init, { type, payload }) => {

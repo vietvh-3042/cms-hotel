@@ -48,15 +48,17 @@
 	padding: 3px 6px;
 	color: #7e7e7e;
 	white-space: nowrap;
-	font-size: 12px;
-	text-align: center;
+	font-size: 14px;
+	text-align: left;
 	border: 1px solid #dee2e6;
 	font-family: "robotobold";
 }
 
 .ant-table-tbody > tr > td {
-	font-size: 12px;
-	text-align: center;
+	font-size: 13px;
+	text-align: left;
+	font-family: "robotblack";
+	opacity: 0.9;
 }
 
 .row_info {

@@ -1,13 +1,11 @@
 import { Modal } from "antd";
-import Axios from "axios";
 import { FastField, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
 import TextAreaField from "helpers/CustomFields/TextAreaField";
 import PropTypes from "prop-types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
 import * as Yup from "yup";
 
 ModalAddFloor.propTypes = {
@@ -23,9 +21,6 @@ ModalAddFloor.defaultProps = {
 function ModalAddFloor(props) {
 	const { visible, handleAddFloor, handleSetStatus } = props;
 
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
-
 	const initialValues = {
 		name: "",
 		number_room: "",
@@ -40,21 +35,9 @@ function ModalAddFloor(props) {
 	});
 
 	function handleSubmit(data) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/floor",
-			data: {
-				...data,
-				show_diagram: 2,
-			},
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-			timeout: API_Timeout,
+		CommonApi("POST", "/tenant/hotel-manager/floor", {
+			...data,
+			show_diagram: 2,
 		})
 			.then((res) => {
 				toast.success("Thêm mới thành công");
@@ -62,7 +45,17 @@ function ModalAddFloor(props) {
 				handleSetStatus();
 			})
 			.catch((err) => {
-				console.log(err.response);
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
 			});
 	}
 
@@ -117,10 +110,7 @@ function ModalAddFloor(props) {
 									>
 										Cancel
 									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
+									<button type="submit" className="dashboardButton focus:outline-none">
 										Thêm
 									</button>
 								</div>

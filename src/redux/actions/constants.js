@@ -28,3 +28,7 @@ export const DRAWER_CLOSE = "DRAWER_CLOSE";
 export const SAVE_LIST_HOTEL = "SAVE_LIST_HOTEL";
 export const SAVE_HOTEL_ID = "SAVE_HOTEL_ID";
 export const CHECK_FLAG_HOTEL = "CHECK_FLAG_HOTEL";
+
+// Payment Method
+
+export const SAVE_PAYMENT_METHOD = "SAVE_PAYMENT_METHOD";

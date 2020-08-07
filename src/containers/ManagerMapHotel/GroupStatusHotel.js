@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import ModalCheckin from "./components/Modal/ModalCheckin";
 import ModalCheckout from "./components/Modal/ModalCheckout";
 import StatusHotel from "./components/StatusHotel";
+import ModalAddPayment from "./components/Modal/ModalAddPayment";
 import ModalAddBill from "./components/Modal/ModalAddBill";
-import ModalAddService from "./components/Modal/ModalAddService";
 
 GroupStatusHotel.propTypes = {};
 
@@ -50,13 +50,8 @@ function GroupStatusHotel(props) {
 	return (
 		<React.Fragment>
 			<div className="form-inline flex">
-				<StatusHotel quantity={0} title="Trống" background="bg-teal-500" />
+				<StatusHotel quantity={0} title="Trống" background="bg-green-600" />
 				<StatusHotel quantity={0} title="Đang ở" background="bg-pink-500" />
-				<StatusHotel
-					quantity={0}
-					title="Chờ khách"
-					background="bg-orange-500"
-				/>
 				<StatusHotel
 					quantity={0}
 					title="Chờ khách"
@@ -66,11 +61,11 @@ function GroupStatusHotel(props) {
 				<StatusHotel quantity={0} title="Đang sửa" background="bg-black" />
 			</div>
 			<div className="pl-1 mt-2">
-				<Dropdown overlay={menu}>
+				{/* <Dropdown overlay={menu}>
 					<button className="dashboardButton mr-2 mb-2">
 						Khách đoàn / CTY
 					</button>
-				</Dropdown>
+				</Dropdown> */}
 
 				<button className="grey mr-2 mb-2" onClick={handleCheckin}>
 					DS Checkin
@@ -78,7 +73,6 @@ function GroupStatusHotel(props) {
 				<button className="grey mr-2 mb-2" onClick={handleCheckout}>
 					DS Checkout
 				</button>
-				<button className="grey mr-2 mb-2">DS Khách hàng</button>
 				<Dropdown overlay={menuReceipts}>
 					<button className="dashboardButton mb-2">Tạo HD / Phiếu</button>
 				</Dropdown>
@@ -88,8 +82,8 @@ function GroupStatusHotel(props) {
 				visible={visibleCheckout}
 				handleCheckout={handleCheckout}
 			/>
-			<ModalAddBill visible={visibleBill} handleAddBill={handleAddBill} />
-			<ModalAddService
+			<ModalAddPayment visible={visibleBill} handleAddBill={handleAddBill} />
+			<ModalAddBill
 				visible={visibleService}
 				handleAddService={handleAddService}
 			/>

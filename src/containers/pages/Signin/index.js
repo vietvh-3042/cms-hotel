@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import { Link } from "react-router-dom";
 
 Signin.propTypes = {};
 
@@ -10,7 +11,9 @@ function Signin(props) {
 		<header className=" bg-cover border-t-2 border-blue-600 h-screen bg-signin">
 			<div className="content px-8 py-2">
 				<nav className="flex items-center justify-between">
-					<h2 className="text-gray-200 font-bold text-2xl ">Home</h2>
+					<h2 className="text-gray-200 font-bold text-2xl ">
+						<Link to="/">Home</Link>
+					</h2>
 					<div className="auth flex items-center">
 						<button
 							className="bg-transparent text-gray-200  p-2 rounded border border-gray-300 mr-4 hover:bg-gray-100 hover:text-gray-700"

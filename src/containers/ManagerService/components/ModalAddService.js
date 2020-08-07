@@ -1,25 +1,54 @@
 import { Modal } from "antd";
-import PropTypes from "prop-types";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
-import Axios from "axios";
-import { FastField, Form, Formik, Field } from "formik";
+import FooterForm from "components/utility/footerForm";
+import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
-import TextAreaField from "helpers/CustomFields/TextAreaField";
+import PropTypes from "prop-types";
+import React from "react";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
 
 ModalAddService.propTypes = {
 	handleAddListService: PropTypes.func,
+	handleSetStatus: PropTypes.func,
+	listCategory: PropTypes.array,
 };
 ModalAddService.defaultProps = {
 	handleAddListService: null,
+	handleSetStatus: null,
+	listCategory: [],
 };
 
 function ModalAddService(props) {
-	const { visible, handleAddListService } = props;
+	const {
+		visible,
+		handleAddListService,
+		handleSetStatus,
+		listCategory,
+	} = props;
 
-	function handleSubmit(data) {}
+	const initialValues = {
+		name: "",
+		category_id: listCategory.length > 0 ? listCategory[0].id : "",
+		price: "",
+		note: "",
+	};
+
+	const validationSchema = Yup.object().shape({
+		name: Yup.string().required("Không được để trống."),
+		category_id: Yup.string().required("Không được để trống."),
+		price: Yup.number()
+			.typeError("Phải là số")
+			.required("Không được để trống."),
+	});
+
+	function handleSubmit(data) {
+		CommonApi("POST", "/tenant/service-storage/services", data).then((res) => {
+			toast("Tạo mới thành công");
+			handleAddListService();
+			handleSetStatus();
+		});
+	}
 
 	return (
 		<Modal
@@ -36,8 +65,12 @@ function ModalAddService(props) {
 					<span>Thêm một dịch vụ mới</span>
 				</div>
 				<div className="modal_content">
-					<Formik onSubmit={handleSubmit}>
-						{() => (
+					<Formik
+						initialValues={initialValues}
+						validationSchema={validationSchema}
+						onSubmit={handleSubmit}
+					>
+						{({ errors, touched }) => (
 							<Form>
 								<FastField
 									name="name"
@@ -48,41 +81,37 @@ function ModalAddService(props) {
 								<div className="flex mb-2">
 									<div className="LabelCo">Nhóm Dịch vụ:</div>
 									<Field as="select" style={{ width: 206, height: 30 }}>
-										<option value="1">Chọn Nhóm Dịch Vụ</option>
-										<option value="2">Đồ Uống</option>
-										<option value="3">Đồ Ăn</option>
+										{listCategory.map((value) => (
+											<option value={value.id} key={value.id}>
+												{value.name}
+											</option>
+										))}
 									</Field>
 								</div>
+
+								{errors.category_id && touched.category_id ? (
+									<div className="flex items-center">
+										<div className="LabelCo opacity-0">-----</div>
+										<div className="custom-err-form">{errors.category_id}</div>
+									</div>
+								) : null}
+
 								<FastField
 									name="name"
 									component={InputField}
 									label="Giá bán:"
 									width={200}
 								/>
-								<FastField
-									name="note"
-									component={TextAreaField}
-									label="Ghi chú:"
-									width={206}
-								/>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddListService}
-									>
-										Cancel
-									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
-										Thêm
-									</button>
+								<div className="flex mb-2 items-center">
+									<div className="LabelCo">Ghi chú:</div>
+									<Field
+										as="textarea"
+										name="note"
+										rows="3"
+										style={{ width: 206 }}
+									/>
 								</div>
+								<FooterForm handleClick={handleAddListService} />
 							</Form>
 						)}
 					</Formik>

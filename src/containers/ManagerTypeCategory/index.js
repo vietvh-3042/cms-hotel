@@ -1,10 +1,8 @@
 import { Popconfirm, Table } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { endpoint } from "settings";
-import shortid from "shortid";
+import { toast } from "react-toastify";
 import ModalAddTypeCategory from "./components/ModalAddTypeCategory";
 import ModalUpdateTypeCategory from "./components/ModalUpdateTypeCategory";
 
@@ -26,21 +24,15 @@ function ManagerTypeCategory(props) {
 	});
 
 	const allData = [];
-	const user = useSelector((state) => state.Auth.user);
 
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/category/type-category?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
-		}).then((res) => {
+		CommonApi(
+			"GET",
+			`/tenant/category/type-category?${paramString}`,
+			null
+		).then((res) => {
 			setLoading(false);
 			res.data.data.forEach((infor, index) => {
 				allData.push({
@@ -75,13 +67,20 @@ function ManagerTypeCategory(props) {
 		});
 	}
 
+	function confirm(id) {
+		CommonApi("DELETE", `/tenant/category/type-category/${id}`).then((res) => {
+			toast.success("Xóa thành công");
+			handleSetStatus();
+		});
+	}
+
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
 		{ title: "Tên", dataIndex: "name", key: "name" },
 		{
 			title: "Thao tác",
 			render: (record) => (
-				<div className=" h-full flex justify-center items-center flex-wrap">
+				<div className=" h-full flex items-center flex-wrap">
 					<img
 						src="/images/Actions/Edit.png"
 						alt="Edit"
@@ -89,8 +88,8 @@ function ManagerTypeCategory(props) {
 						onClick={() => handleUpdateType(record)}
 					/>
 					<Popconfirm
-						title="Bạn thực sự muốn xóa khách sạn này"
-						// onConfirm={() => confirm(record.id)}
+						title="Bạn thực sự muốn xóa bản ghi này?"
+						onConfirm={() => confirm(record.id)}
 						okText="Yes"
 						cancelText="No"
 						placement="topRight"
@@ -126,11 +125,12 @@ function ManagerTypeCategory(props) {
 			</div>
 			<div className="mt-2 mx-2">
 				<Table
-					rowKey={(record) => shortid.generate()}
+					rowKey={(record) => record.id}
 					dataSource={listTypeCategory}
 					columns={columns}
 					loading={loading}
 					scroll={{ x: true }}
+					bordered
 					pagination={{
 						total: pagination,
 						pageSize: filters.limit,

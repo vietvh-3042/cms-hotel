@@ -44,7 +44,7 @@ function ModalCheckinRoom(props) {
 
 	const [listCustomerDefault, setCustomerDefault] = useState([]);
 
-	const [flexibleCustom, setFlexibleCustom] = useState();
+	const [flexibleCustom, setFlexibleCustom] = useState([]);
 
 	const [visibleCustom, setVisibleCustom] = useState({
 		visible: false,
@@ -148,9 +148,10 @@ function ModalCheckinRoom(props) {
 			service: JSON.stringify({ data: [] }),
 			type_price_id: data.type_price_id,
 			flexible_prices_for_customers: JSON.stringify({
-				data: [flexibleCustom],
+				data: flexibleCustom,
 			}),
 		};
+
 		CommonApi("POST", "/tenant/checkin-manager/checkin", body)
 			.then((res) => {
 				toast.success("Đặt phòng thành công");
@@ -227,6 +228,7 @@ function ModalCheckinRoom(props) {
 													component={InputField}
 													label="Giá:"
 													width={220}
+													visible={true}
 												/>
 												<i
 													className="fas fa-pencil-alt cursor-pointer"

@@ -29,18 +29,14 @@ function ManagerRevenue(props) {
 						<tr>
 							<th className="w-3 sorting_disabled align-middle">STT</th>
 							<th className="w-3 sorting_disabled align-middle">Mã HĐ</th>
-							<th className="w-3 sorting_disabled align-middle">
-								Tên khách hàng
-							</th>
+							<th className="w-3 sorting_disabled align-middle">Tên khách hàng</th>
 							<th className="w-3 sorting_disabled align-middle">Vào lúc</th>
 							<th className="w-3 sorting_disabled align-middle">Trả lúc</th>
 							<th className="w-3 sorting_disabled align-middle">K.khác</th>
 							<th className="w-3 sorting_disabled align-middle">Tổng cộng</th>
 							<th className="w-3 sorting_disabled align-middle">T.toán</th>
 							<th className="w-3 sorting_disabled align-middle">Trạng thái</th>
-							<th className="w-3 sorting_disabled align-middle">
-								Hình thức TT
-							</th>
+							<th className="w-3 sorting_disabled align-middle">Hình thức TT</th>
 							<th className="w-3 sorting_disabled align-middle">NV Checkin</th>
 							<th className="w-3 sorting_disabled align-middle">NV Checkout</th>
 						</tr>
@@ -49,23 +45,13 @@ function ManagerRevenue(props) {
 						<tr>
 							<td className="centertext text-center align-middle">1</td>
 							<td className="centertext text-center align-middle">201</td>
-							<td className="centertext text-center align-middle bold">
-								Khách lẻ
-							</td>
-							<td className="centertext text-center align-middle">
-								12/07/2020 15:34
-							</td>
-							<td className="centertext text-center align-middle">
-								12/07/2020 15:34
-							</td>
+							<td className="centertext text-center align-middle bold">Khách lẻ</td>
+							<td className="centertext text-center align-middle">12/07/2020 15:34</td>
+							<td className="centertext text-center align-middle">12/07/2020 15:34</td>
 							<td className="centertext text-center align-middle">0</td>
-							<td className="centertext text-center align-middle bold">
-								220000
-							</td>
+							<td className="centertext text-center align-middle bold">220000</td>
 							<td className="centertext text-center align-middle">220000</td>
-							<td className="centertext text-center align-middle">
-								Đã thanh toán
-							</td>
+							<td className="centertext text-center align-middle">Đã thanh toán</td>
 							<td className="centertext text-center align-middle">Tiền Mặt</td>
 							<td className="centertext text-center align-middle">Admin</td>
 							<td className="centertext text-center align-middle">Admin</td>

@@ -59,15 +59,13 @@ function ModalFlexibleCustom(props) {
 									const priceTimes = value.priceTimes.data;
 									let data = priceTimes.filter((x) => x.group_price_time_id === id);
 									result.push(data);
-									return;
-								}
-							}
+									return null;
+								} else return null;
+							} else return null;
 						});
 					}
 				}
-			} else {
-				return [];
-			}
+			} else return [];
 		}
 		return result[0];
 	}
@@ -210,7 +208,6 @@ function ModalFlexibleCustom(props) {
 						enableReinitialize
 					>
 						{({ values, setFieldValue }) => {
-							console.log(values);
 							return (
 								<Form>
 									<div className="flex">

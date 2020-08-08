@@ -1,13 +1,19 @@
 import { ConnectedRouter } from "connected-react-router";
 import ManagerBill from "containers/ManagerBill";
 import ManagerBusinessResult from "containers/ManagerBusinessResult";
+import ManagerCategory from "containers/ManagerCategory";
 import ManagerCheckMoney from "containers/ManagerCheckMoney";
+import ManagerClassify from "containers/ManagerClassify";
+import ManagerCustomer from "containers/ManagerCustomer";
+import ManagerEmployee from "containers/ManagerEmployee";
+import ManagerGroup from "containers/ManagerGroup";
 import ManagerHotel from "containers/ManagerHotel";
 import ManagerHotelDiary from "containers/ManagerHotelDiary";
 import ManagerHotelFloor from "containers/ManagerHotelFloor";
 import ManagerListRoom from "containers/ManagerListRoom";
 import ManagerMapHotel from "containers/ManagerMapHotel";
 import ManagerPayment from "containers/ManagerPayment";
+import ManagerPaymentMethod from "containers/ManagerPaymentMethod";
 import ManagerPriceTime from "containers/ManagerPriceTime";
 import ManagerReceipts from "containers/ManagerReceipts";
 import ManagerRecentRevenue from "containers/ManagerRecentRevenue";
@@ -17,6 +23,7 @@ import ManagerSamplePrice from "containers/ManagerSamplePrice";
 import ManagerService from "containers/ManagerService";
 import ManagerWarehousing from "containers/ManagerService/components/ManagerWarehousing";
 import ManagerStatisticalService from "containers/ManagerStatisticalService";
+import ManagerTypeCategory from "containers/ManagerTypeCategory";
 import Home from "containers/pages/Home";
 import NotFound from "containers/pages/NotFound";
 import Signin from "containers/pages/Signin";
@@ -25,21 +32,8 @@ import { useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 
-import Cookies from "universal-cookie";
-import ManagerCategory from "containers/ManagerCategory";
-import ManagerTypeCategory from "containers/ManagerTypeCategory";
-import ManagerPaymentMethod from "containers/ManagerPaymentMethod";
-import ManagerGroup from "containers/ManagerGroup";
-import ManagerEmployee from "containers/ManagerEmployee";
-import ManagerCustomer from "containers/ManagerCustomer";
-import ManagerClassify from "containers/ManagerClassify";
-
-const cookies = new Cookies();
-
-let tenantName = cookies.get("tenant-name");
-
 function PublicRoutes(props) {
-	const { history, cookies } = props;
+	const { history } = props;
 	const isLoggedIn = useSelector((state) => state.Auth.loggedIn);
 	return (
 		<ConnectedRouter history={history}>

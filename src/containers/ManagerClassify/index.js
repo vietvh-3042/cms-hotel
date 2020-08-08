@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { endpoint } from "settings";
 import { toast } from "react-toastify";
 import ModalAddClassify from "./components/ModalAddClassify";
+import CommonApi from "helpers/APIS/CommonApi";
 
 ManagerClassify.propTypes = {};
 
@@ -33,27 +34,19 @@ function ManagerClassify(props) {
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/classify?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setLoading(false);
-			res.data.data.forEach((infor, index) => {
-				allData.push({
-					...infor,
-					STT: index + 1,
+		CommonApi("GET", `/tenant/hotel-manager/classify?${paramString}`).then(
+			(res) => {
+				setLoading(false);
+				res.data.data.forEach((infor, index) => {
+					allData.push({
+						...infor,
+						STT: index + 1,
+					});
 				});
-			});
-			setListClassify(allData);
-			setPagination(res.data.meta.pagination.total);
-		});
+				setListClassify(allData);
+				setPagination(res.data.meta.pagination.total);
+			}
+		);
 	}, [filters, status, hotel_ID]);
 
 	function handleOnChange(pagination) {

@@ -124,7 +124,7 @@ function ModalUpdateTypeRoom(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Thêm loại phòng</span>
+					<span>Sửa loại phòng</span>
 				</div>
 				<div className="modal_content">
 					<Formik

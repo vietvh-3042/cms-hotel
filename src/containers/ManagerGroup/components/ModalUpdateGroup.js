@@ -5,7 +5,6 @@ import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
@@ -21,9 +20,6 @@ ModalUpdateGroup.defaultProps = {
 
 function ModalUpdateGroup(props) {
 	const { visibleUpdateType, handleUpdateType, handleSetStatus } = props;
-
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const initialValues = visibleUpdateType.detail;
 

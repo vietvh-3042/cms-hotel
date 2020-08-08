@@ -66,7 +66,6 @@ function ModalUpdate(props) {
 						enableReinitialize
 						validationSchema={validationSchema}
 						onSubmit={handleSubmit}
-						enableReinitialize
 					>
 						{() => (
 							<Form>

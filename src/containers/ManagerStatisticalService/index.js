@@ -1,6 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
 import { Tooltip } from "antd";
+import React from "react";
 import { Table } from "reactstrap";
 
 ManagerStatisticalService.propTypes = {};
@@ -34,9 +33,7 @@ function ManagerStatisticalService(props) {
 							<th className="w-3 sorting_disabled align-middle">Giá Bán</th>
 							<th className="w-3 sorting_disabled align-middle">Số lượng</th>
 							<th className="w-3 sorting_disabled align-middle">Số tiền</th>
-							<th className="w-3 sorting_disabled align-middle">
-								Thuộc HĐ hoặc Room
-							</th>
+							<th className="w-3 sorting_disabled align-middle">Thuộc HĐ hoặc Room</th>
 							<th className="w-3 sorting_disabled align-middle">Tạo bởi</th>
 							<th className="w-3 sorting_disabled align-middle">Loại DV</th>
 						</tr>

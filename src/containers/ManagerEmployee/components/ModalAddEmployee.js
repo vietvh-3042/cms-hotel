@@ -37,7 +37,6 @@ function ModalAddEmployee(props) {
 		work_date_at: "",
 		group_id: listGroup.length > 0 ? `${listGroup[0].id}` : "",
 		email: "",
-		name: "",
 		user_name: "",
 		phone: "",
 	};
@@ -46,9 +45,7 @@ function ModalAddEmployee(props) {
 		name: Yup.string().required("Không được để trống."),
 		user_name: Yup.string().required("Không được để trống."),
 		password: Yup.string().required("Không được để trống."),
-		phone: Yup.number()
-			.typeError("Phải là số")
-			.required("Không được để trống."),
+		phone: Yup.number().typeError("Phải là số").required("Không được để trống."),
 		email: Yup.string()
 			.email("Email không đúng định dạng")
 			.required("Không được để trống."),
@@ -122,21 +119,11 @@ function ModalAddEmployee(props) {
 									<div className="LabelCo">Giới tính:</div>
 									<div style={{ width: 200 }} className="flex items-center">
 										<label className="mb-0 mr-3">
-											<Field
-												type="radio"
-												name="gender"
-												value={1}
-												className="mr-1"
-											/>
+											<Field type="radio" name="gender" value={1} className="mr-1" />
 											<span>Nam</span>
 										</label>
 										<label className="mb-0">
-											<Field
-												type="radio"
-												name="gender"
-												value={2}
-												className="mr-1"
-											/>
+											<Field type="radio" name="gender" value={2} className="mr-1" />
 											<span>Nữ</span>
 										</label>
 									</div>
@@ -169,11 +156,7 @@ function ModalAddEmployee(props) {
 								/>
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Phân quyền:</div>
-									<Field
-										as="select"
-										name="group_id"
-										style={{ width: 206, height: 30 }}
-									>
+									<Field as="select" name="group_id" style={{ width: 206, height: 30 }}>
 										{listGroup.map((value) => (
 											<option value={value.id} key={value.id}>
 												{value.name}
@@ -210,9 +193,7 @@ function ModalAddEmployee(props) {
 										name="birthday"
 										format="DD/MM/YYYY"
 										style={{ width: 206 }}
-										onChange={(date, dateString) =>
-											setFieldValue("birthday", dateString)
-										}
+										onChange={(date, dateString) => setFieldValue("birthday", dateString)}
 									/>
 								</div>
 								<div className="flex mb-2 items-center">

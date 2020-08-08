@@ -16,17 +16,15 @@ const date = new Date();
 ModalAddEmployee.propTypes = {
 	handleAddListCustomer: PropTypes.func,
 	handleSetStatus: PropTypes.func,
-	listGroup: PropTypes.array,
 };
 
 ModalAddEmployee.defaultProps = {
 	handleAddListCustomer: null,
 	handleSetStatus: null,
-	listGroup: [],
 };
 
 function ModalAddEmployee(props) {
-	const { visible, handleAddListCustomer, handleSetStatus, listGroup } = props;
+	const { visible, handleAddListCustomer, handleSetStatus } = props;
 
 	const [listNational, setListNational] = useState([]);
 

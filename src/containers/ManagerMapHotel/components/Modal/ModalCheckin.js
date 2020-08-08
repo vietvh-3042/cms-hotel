@@ -15,7 +15,7 @@ ModalCheckin.defaultProps = {
 
 function ModalCheckin(props) {
 	const { visible, handleCheckin } = props;
-	const [loading, setLoading] = useState(true);
+	const [loading] = useState(true);
 
 	const view = useSelector((state) => state.App.view);
 

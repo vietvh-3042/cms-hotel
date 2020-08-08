@@ -9,18 +9,26 @@ import ModalDeleteRoom from "./components/Modal/ModalDeleteRoom";
 import ModalUpdateRoom from "./components/Modal/ModalUpdateRoom";
 import ModalUpdateStatus from "./components/Modal/ModalUpdateStatus";
 import ModalCheckinRoom from "./components/Modal/ModalCheckinRoom";
+import ModalCheckoutRoom from "./components/Modal/ModalCheckoutRoom";
 
 MapHotel.propTypes = {};
 
 function MapHotel(props) {
 	const [loading, setLoading] = useState(false);
+
 	const [detailHotel, setDetailHotel] = useState();
+
 	const [status, setStatus] = useState(false);
+
 	const [visible, setVisible] = useState(false);
+
+	const hotel_ID = useSelector((state) => state.App.hotel_ID);
+
 	const [visibleUpdate, setVisibleUpdate] = useState({
 		visible: false,
 		detail: {},
 	});
+
 	const [visibleDelete, setVisibleDelete] = useState({
 		visible: false,
 		detail: {},
@@ -36,8 +44,10 @@ function MapHotel(props) {
 		detail: {},
 	});
 
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
+	const [visibleCheckoutRoom, setVisibleCheckoutRoom] = useState({
+		visible: false,
+		detail: {},
+	});
 
 	const menu = (
 		<Menu>
@@ -61,6 +71,16 @@ function MapHotel(props) {
 				</Menu.Item>
 				<Menu.Item className="text-xs" onClick={() => handleDeleteRoom(record.id)}>
 					Xóa phòng
+				</Menu.Item>
+			</Menu>
+		);
+	}
+
+	function menuRoomPePeople(record) {
+		return (
+			<Menu>
+				<Menu.Item className="text-xs" onClick={() => handleCheckoutRoom(record)}>
+					Trả Phòng
 				</Menu.Item>
 			</Menu>
 		);
@@ -117,11 +137,11 @@ function MapHotel(props) {
 										key={key}
 										className="h-20 bg-red-600 flex items-center font-bold 
 									text-white justify-center hover:bg-red-700 cursor-pointer"
-										menu={() => menuRoomEmpty(value)}
+										menu={() => menuRoomPePeople(value)}
 										name={value.name}
 									/>
 								);
-							if (value.status === 4)
+							else if (value.status === 4)
 								return (
 									<DropdownCustom
 										key={key}
@@ -131,7 +151,7 @@ function MapHotel(props) {
 										name={value.name}
 									/>
 								);
-							if (value.status === 8)
+							else if (value.status === 8)
 								return (
 									<DropdownCustom
 										key={key}
@@ -141,6 +161,7 @@ function MapHotel(props) {
 										name={value.name}
 									/>
 								);
+							else return null;
 						})}
 					</div>
 				</div>
@@ -192,6 +213,12 @@ function MapHotel(props) {
 		});
 	}
 
+	function handleCheckoutRoom() {
+		setVisibleCheckoutRoom({
+			visible: !visibleCheckoutRoom.visible,
+		});
+	}
+
 	return (
 		<div className="mt-3 pl-1">
 			{loading ? (
@@ -224,6 +251,11 @@ function MapHotel(props) {
 			<ModalCheckinRoom
 				visibleCheckinRoom={visibleCheckinRoom}
 				handleCheckinRoom={handleCheckinRoom}
+				handleStatus={handleStatus}
+			/>
+			<ModalCheckoutRoom
+				visibleCheckoutRoom={visibleCheckoutRoom}
+				handleCheckoutRoom={handleCheckoutRoom}
 				handleStatus={handleStatus}
 			/>
 		</div>

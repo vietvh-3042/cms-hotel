@@ -23,7 +23,7 @@ function SettingAdditional(props) {
 								</b>
 							</div>
 						);
-					} else return;
+					} else return null;
 				})}
 				<div className="ml-3">
 					<span>• Quá qui định trên sẽ tính thành 1 ngày.</span>
@@ -43,6 +43,7 @@ function SettingAdditional(props) {
 								</b>
 							</div>
 						);
+					else return null;
 				})}
 				<div className="ml-3">
 					<span>• Quá qui định trên sẽ tính thành 1 ngày.</span>
@@ -62,6 +63,7 @@ function SettingAdditional(props) {
 								</b>
 							</div>
 						);
+					else return null;
 				})}
 				<div className="ml-3">
 					<span>• Quá qui định trên sẽ tính thành 1 ngày.</span>
@@ -81,6 +83,7 @@ function SettingAdditional(props) {
 								</b>
 							</div>
 						);
+					else return null;
 				})}
 				<div className="ml-3">
 					<span>• Quá qui định trên sẽ tính thành 1 ngày.</span>
@@ -100,6 +103,7 @@ function SettingAdditional(props) {
 								</b>
 							</div>
 						);
+					else return null;
 				})}
 			</div>
 		</React.Fragment>

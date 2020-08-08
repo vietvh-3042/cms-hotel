@@ -24,7 +24,7 @@ function SettingAdditional(props) {
 									</b>
 								</div>
 							);
-						else return;
+						else return null;
 					})}
 
 					<div className="ml-3">
@@ -47,6 +47,7 @@ function SettingAdditional(props) {
 									</b>
 								</div>
 							);
+						else return null;
 					})}
 
 					<div className="ml-3">
@@ -69,6 +70,7 @@ function SettingAdditional(props) {
 									</b>
 								</div>
 							);
+						else return null;
 					})}
 
 					<div className="ml-3">
@@ -91,6 +93,7 @@ function SettingAdditional(props) {
 									</b>
 								</div>
 							);
+						else return null;
 					})}
 
 					<div className="ml-3">
@@ -113,6 +116,7 @@ function SettingAdditional(props) {
 									</b>
 								</div>
 							);
+						else return null;
 					})}
 
 					<div className="ml-3">

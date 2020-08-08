@@ -1,4 +1,4 @@
-import { Modal, Select, DatePicker } from "antd";
+import { DatePicker, Modal, Select } from "antd";
 import FooterForm from "components/utility/footerForm";
 import { FastField, Form, Formik } from "formik";
 import CommonApi from "helpers/APIS/CommonApi";
@@ -7,7 +7,6 @@ import TextAreaField from "helpers/CustomFields/TextAreaField";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
@@ -29,7 +28,6 @@ ModalAddReceipt.defaultProps = {
 
 function ModalAddReceipt(props) {
 	const { visible, handleAddReceipt, handleSetStatus } = props;
-	const user = useSelector((state) => state.Auth.user);
 
 	const [listPaymentMethod, setListPaymentMethod] = useState([]);
 
@@ -99,25 +97,25 @@ function ModalAddReceipt(props) {
 			guest_name: find ? find.name : "",
 		};
 		console.log(body);
-		// CommonApi("POST", "/tenant/payslip-receipt/receipt", body)
-		// 	.then((res) => {
-		// 		toast.success("Tạo mới thành công");
-		// 		handleAddReceipt();
-		// 		handleSetStatus();
-		// 	})
-		// 	.catch((err) => {
-		// 		let error = [];
-		// 		for (let value of Object.values(err.response.data.errors)) {
-		// 			error.push(value);
-		// 		}
-		// 		toast.error(
-		// 			<React.Fragment>
-		// 				{error.map((value, key) => (
-		// 					<div key={key}>{value}</div>
-		// 				))}
-		// 			</React.Fragment>
-		// 		);
-		// 	});
+		CommonApi("POST", "/tenant/payslip-receipt/receipt", body)
+			.then((res) => {
+				toast.success("Tạo mới thành công");
+				handleAddReceipt();
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	return (

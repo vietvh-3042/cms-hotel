@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 
 const { Option } = Select;
-const date = new Date();
 
 ModalUpdateReceipt.propTypes = {
 	handleUpdateReceipt: PropTypes.func,

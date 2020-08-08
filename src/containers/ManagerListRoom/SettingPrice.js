@@ -31,7 +31,7 @@ function SettingPrice(props) {
 					<span>♦</span>
 					<span className="bold" style={{ fontSize: 12 }}>
 						Tính theo giờ:
-						</span>
+					</span>
 					{value.priceTimes.data.map((val, key) => {
 						if (val.group_price_time_id === 1)
 							return (
@@ -42,8 +42,8 @@ function SettingPrice(props) {
 									</b>
 								</div>
 							);
+						else return null;
 					})}
-
 				</div>
 			))}
 		</React.Fragment>

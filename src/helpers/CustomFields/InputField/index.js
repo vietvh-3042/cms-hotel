@@ -10,16 +10,19 @@ InputField.propTypes = {
 	type: PropTypes.string,
 	label: PropTypes.string,
 	width: PropTypes.number,
+	height: PropTypes.number,
+	visible: PropTypes.bool,
 };
 
 InputField.defaultProps = {
 	type: "text",
 	label: "",
 	width: null,
+	visible: false,
 };
 
 function InputField(props) {
-	const { field, form, type, label, width } = props;
+	const { field, form, type, label, width, visible } = props;
 	const { name } = field;
 	const { errors, touched } = form;
 	const showError = errors[name] && touched[name];
@@ -37,14 +40,11 @@ function InputField(props) {
 				{...field}
 				type={type}
 				style={{ width: width ? width : 220, height: 24, display: "inline" }}
+				disabled={visible}
 				className="dashboard"
 				invalid={showError}
 			/>
-			<ErrorMessage
-				name={name}
-				component={FormFeedback}
-				className="custom-err"
-			/>
+			<ErrorMessage name={name} component={FormFeedback} className="custom-err" />
 		</FormGroup>
 	);
 }

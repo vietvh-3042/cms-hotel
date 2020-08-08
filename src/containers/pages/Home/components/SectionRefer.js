@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 let arrayData = [
 	{ id: 1, linkImg: "refer_1.gif" },
@@ -26,17 +26,12 @@ function SectionRefer(props) {
 					<div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div className="module module-refer">
 							<div className="module-header">
-								<h2 className="title light">
-									Tham khảo hình ảnh của PM Maamul
-								</h2>
+								<h2 className="title light">Tham khảo hình ảnh của PM Maamul</h2>
 							</div>
 							<div className="module-content">
 								<div className="row">
 									{arrayData.map((value) => (
-										<div
-											key={value.id}
-											className="col-xs-6 col-sm-6 col-md-4 col-lg-3"
-										>
+										<div key={value.id} className="col-xs-6 col-sm-6 col-md-4 col-lg-3">
 											<div className="item">
 												<img
 													className="item-img__link"
@@ -47,9 +42,9 @@ function SectionRefer(props) {
 										</div>
 									))}
 									<div className="view">
-										<a className="view__link">
+										<Link to="/" className="view__link">
 											<i className="fas fa-chevron-down"></i>
-										</a>
+										</Link>
 									</div>
 								</div>
 							</div>

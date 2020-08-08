@@ -36,6 +36,7 @@ function SettingPrice(props) {
 								</b>
 							</div>
 						);
+					else return null;
 				})}
 			</div>
 		</React.Fragment>

@@ -8,7 +8,6 @@ import InputField from "helpers/CustomFields/InputField";
 import SelectField from "helpers/CustomFields/SelectField";
 import PropTypes from "prop-types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
@@ -26,9 +25,6 @@ ModalAddSamplePrice.defaultProps = {
 
 function ModalAddSamplePrice(props) {
 	const { visible, handleAddPriceTime, handleSetStatus, listTypeRoom } = props;
-
-	const user = useSelector((state) => state.Auth.user);
-	const hotel_ID = useSelector((state) => state.App.hotel_ID);
 
 	const initialValues = {
 		type_room_id: listTypeRoom.length > 0 ? `${listTypeRoom[0].id}` : "",

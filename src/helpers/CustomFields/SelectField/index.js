@@ -1,6 +1,6 @@
 import { ErrorMessage } from "formik";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React from "react";
 import { FormFeedback, FormGroup, Input, Label } from "reactstrap";
 
 SelectField.propTypes = {
@@ -41,11 +41,7 @@ function SelectField(props) {
 					</option>
 				))}
 			</Input>
-			<ErrorMessage
-				name={name}
-				component={FormFeedback}
-				className="custom-err"
-			/>
+			<ErrorMessage name={name} component={FormFeedback} className="custom-err" />
 		</FormGroup>
 	);
 }

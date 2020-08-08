@@ -1,13 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FastField, Form, Formik, Field } from "formik";
 import { Modal } from "antd";
 import Axios from "axios";
+import { FastField, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
-import { toast } from "react-toastify";
-import { API_Timeout, endpoint } from "settings";
-import * as Yup from "yup";
+import PropTypes from "prop-types";
+import React from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { endpoint } from "settings";
+import * as Yup from "yup";
 
 ModalAddTypeCategory.propTypes = {
 	handleAddListTypeCategory: PropTypes.func,
@@ -21,6 +21,7 @@ ModalAddTypeCategory.defaultProps = {
 
 function ModalAddTypeCategory(props) {
 	const { visible, handleAddListTypeCategory, handleSetStatus } = props;
+
 	const user = useSelector((state) => state.Auth.user);
 
 	const initialValues = {
@@ -105,10 +106,7 @@ function ModalAddTypeCategory(props) {
 									>
 										Cancel
 									</button>
-									<button
-										type="submit"
-										className="dashboardButton focus:outline-none"
-									>
+									<button type="submit" className="dashboardButton focus:outline-none">
 										Thêm
 									</button>
 								</div>

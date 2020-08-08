@@ -1,20 +1,24 @@
 import { Popconfirm, Table } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { endpoint } from "settings";
 
 ManagerPriceTime.propTypes = {};
 
 function ManagerPriceTime(props) {
 	const allData = [];
-	const [status, setStatus] = useState(false);
+
+	const [status] = useState(false);
+
 	const [loading, setLoading] = useState(false);
+
 	const [listPriceTime, setListPriceTime] = useState([]);
+
 	const [pagination, setPagination] = useState();
-	const user = useSelector((state) => state.Auth.user);
+
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
+
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
@@ -23,27 +27,19 @@ function ManagerPriceTime(props) {
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		Axios({
-			method: "GET",
-			url: endpoint + "/tenant/hotel-manager/price-time?" + paramString,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		}).then((res) => {
-			setLoading(false);
-			res.data.data.forEach((infor, index) => {
-				allData.push({
-					...infor,
-					STT: index + 1,
+		CommonApi("GET", `/tenant/hotel-manager/price-time?${paramString}`).then(
+			(res) => {
+				setLoading(false);
+				res.data.data.forEach((infor, index) => {
+					allData.push({
+						...infor,
+						STT: index + 1,
+					});
 				});
-			});
-			setListPriceTime(allData);
-			setPagination(res.data.meta.pagination.total);
-		});
+				setListPriceTime(allData);
+				setPagination(res.data.meta.pagination.total);
+			}
+		);
 	}, [filters, status, hotel_ID]);
 
 	function format_current(price) {
@@ -57,10 +53,6 @@ function ManagerPriceTime(props) {
 			...filters,
 			page: pagination.current,
 		});
-	}
-
-	function handleSetStatus() {
-		setStatus(!status);
 	}
 
 	const columns = [

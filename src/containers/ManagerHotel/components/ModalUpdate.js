@@ -38,11 +38,25 @@ function ModalUpdate(props) {
 
 	function handleSubmit(data) {
 		const id = visibleUpdate.detail.id;
-		CommonApi("PUT", `/tenant/hotel-manager/hotel/${id}`, data).then((res) => {
-			toast.success("Cập nhật thành công");
-			handleUpdateHotel();
-			handleSetStatus();
-		});
+		CommonApi("PUT", `/tenant/hotel-manager/hotel/${id}`, data)
+			.then((res) => {
+				toast.success("Cập nhật thành công");
+				handleUpdateHotel();
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	return (

@@ -49,13 +49,28 @@ function ModalAddHotel(props) {
 		website: Yup.string().required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
-		CommonApi("POST", "/tenant/hotel-manager/hotel", data).then((res) => {
-			toast.success("Tạo mới thành công");
-			dispatch(checkFlagHotel());
-			handleAddHotel();
-			handleSetStatus();
-		});
+	function handleSubmit(data, { resetForm }) {
+		CommonApi("POST", "/tenant/hotel-manager/hotel", data)
+			.then((res) => {
+				toast.success("Tạo mới thành công");
+				dispatch(checkFlagHotel());
+				handleAddHotel();
+				resetForm({});
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	return (
@@ -80,43 +95,15 @@ function ModalAddHotel(props) {
 					>
 						{() => (
 							<Form>
-								<FastField
-									name="name"
-									component={InputField}
-									label="Tên khách sạn:"
-								/>
-								<FastField
-									name="total_floor"
-									component={InputField}
-									label="Số lầu:"
-								/>
-								<FastField
-									name="total_room"
-									component={InputField}
-									label="Số phòng:"
-								/>
-								<FastField
-									name="address"
-									component={InputField}
-									label="Địa chỉ:"
-								/>
-								<FastField
-									name="province"
-									component={InputField}
-									label="Thành phố:"
-								/>
+								<FastField name="name" component={InputField} label="Tên khách sạn:" />
+								<FastField name="total_floor" component={InputField} label="Số lầu:" />
+								<FastField name="total_room" component={InputField} label="Số phòng:" />
+								<FastField name="address" component={InputField} label="Địa chỉ:" />
+								<FastField name="province" component={InputField} label="Thành phố:" />
 								<FastField name="phone" component={InputField} label="Phone:" />
 								<FastField name="email" component={InputField} label="Email:" />
-								<FastField
-									name="website"
-									component={InputField}
-									label="Website:"
-								/>
-								<FastField
-									name="note"
-									component={TextAreaField}
-									label="Ghi chú:"
-								/>
+								<FastField name="website" component={InputField} label="Website:" />
+								<FastField name="note" component={TextAreaField} label="Ghi chú:" />
 								<FooterForm handleClick={handleAddHotel} />
 							</Form>
 						)}

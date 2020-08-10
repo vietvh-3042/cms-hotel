@@ -49,7 +49,7 @@ function ModalAddSamplePrice(props) {
 			.required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
+	function handleSubmit(data, { resetForm }) {
 		let convert = {
 			...data,
 			price_by_hour: JSON.stringify({
@@ -87,25 +87,39 @@ function ModalAddSamplePrice(props) {
 			.then((res) => {
 				toast.success("Tạo mới thành công");
 				handleAddPriceTime();
+				resetForm({});
 				handleSetStatus();
 			})
 			.catch((err) => {
-				if (err.response.data.message) toast.error(err.response.data.message);
-				else {
-					let error = [];
-					for (let value of Object.values(err.response.data.errors)) {
-						error.push(value);
-
-						toast.error(
-							<React.Fragment>
-								{error.map((value, key) => (
-									<div key={key}>{value}</div>
-								))}
-							</React.Fragment>
-						);
-					}
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
 				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
 			});
+		// .catch((err) => {
+		// 	if (err.response.data.message) toast.error(err.response.data.message);
+		// 	else {
+		// 		let error = [];
+		// 		for (let value of Object.values(err.response.data.errors)) {
+		// 			error.push(value);
+
+		// 			toast.error(
+		// 				<React.Fragment>
+		// 					{error.map((value, key) => (
+		// 						<div key={key}>{value}</div>
+		// 					))}
+		// 				</React.Fragment>
+		// 			);
+		// 		}
+		// 	}
+		// });
 	}
 
 	return (

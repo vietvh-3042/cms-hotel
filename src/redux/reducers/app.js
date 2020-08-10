@@ -9,6 +9,8 @@ import {
 	CHECK_FLAG_HOTEL,
 } from "../actions/constants";
 
+const dateout = new Date();
+
 const initState = {
 	collapsed: window.innerWidth > 1220 ? false : true,
 	visibleSideBar: false,
@@ -17,6 +19,7 @@ const initState = {
 	flag: false,
 	// height: window.innerHeight,
 	view: getView(window.innerWidth),
+	datePreview: dateout.setDate(dateout.getDate() + 1),
 };
 export default function appReducer(state = initState, action) {
 	switch (action.type) {

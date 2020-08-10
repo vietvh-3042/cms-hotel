@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Modal, Switch } from "antd";
 import Axios from "axios";
 import { FastField, Form, Formik } from "formik";
 import InputField from "helpers/CustomFields/InputField";
@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { endpoint } from "settings";
 import * as Yup from "yup";
+import CommonApi from "helpers/APIS/CommonApi";
+import FooterForm from "components/utility/footerForm";
 
 ModalAddTypeCategory.propTypes = {
 	handleAddListTypeCategory: PropTypes.func,
@@ -26,29 +28,21 @@ function ModalAddTypeCategory(props) {
 
 	const initialValues = {
 		name: "",
+		status: true,
 	};
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/category/type-category",
-			data: {
-				...data,
-				status: 1,
-			},
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
+	function handleSubmit(data, { resetForm }) {
+		CommonApi("POST", "/tenant/category/type-category", {
+			...data,
+			status: data.status ? 1 : 2,
 		})
 			.then((res) => {
 				toast.success("Thêm mới thành công");
+				resetForm({});
 				handleAddListTypeCategory();
 				handleSetStatus();
 			})
@@ -87,7 +81,7 @@ function ModalAddTypeCategory(props) {
 						validationSchema={validationSchema}
 						onSubmit={handleSubmit}
 					>
-						{() => (
+						{({ values, setFieldValue }) => (
 							<Form>
 								<FastField
 									name="name"
@@ -95,21 +89,16 @@ function ModalAddTypeCategory(props) {
 									label="Tên loại:"
 									width={160}
 								/>
-								<div
-									className="flex items-center justify-end"
-									style={{ marginRight: 45 }}
-								>
-									<button
-										type="button"
-										className="submit_cancel_Building focus:outline-none"
-										onClick={handleAddListTypeCategory}
-									>
-										Cancel
-									</button>
-									<button type="submit" className="dashboardButton focus:outline-none">
-										Thêm
-									</button>
+								<div className="flex mb-2 items-center">
+									<div className="LabelCo">Status:</div>
+									<Switch
+										defaultChecked={values.status ? true : false}
+										checkedChildren="Active"
+										unCheckedChildren="UnActive"
+										onChange={(checked) => setFieldValue("status", checked)}
+									/>
 								</div>
+								<FooterForm handleClick={handleAddListTypeCategory} />
 							</Form>
 						)}
 					</Formik>

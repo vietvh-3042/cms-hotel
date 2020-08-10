@@ -1,0 +1,36 @@
+@media print {
+	.PrintSection {
+		padding: 40px !important;
+		width: 768px;
+		height: 840px;
+		margin: 0 auto;
+	}
+
+	.text-checkin-pdf {
+		font-family: Helvetica, Arial, "lucida grande", tahoma, verdana, arial,
+			sans-serif;
+		font-size: 16px;
+		color: #2a2a2a;
+		margin-right: 5px;
+		width: 90px;
+		text-align: right;
+		display: inline-block;
+	}
+
+	.text-title {
+		color: #2a2a2a;
+		font-weight: 800;
+		text-align: center;
+		text-transform: uppercase;
+		margin-bottom: 24px;
+		font-size: 32px;
+	}
+
+	.footer-pdf {
+		font-weight: 900;
+		text-transform: capitalize;
+		font-size: 20px;
+		color: #2a2a2a;
+		text-align: center;
+	}
+}

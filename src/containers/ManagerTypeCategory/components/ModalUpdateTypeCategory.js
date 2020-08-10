@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Modal, Switch } from "antd";
 import FooterForm from "components/utility/footerForm";
 import { FastField, Form, Formik } from "formik";
 import CommonApi from "helpers/APIS/CommonApi";
@@ -21,7 +21,10 @@ ModalUpdateTypeCategory.defaultProps = {
 function ModalUpdateTypeCategory(props) {
 	const { visibleUpdateType, handleUpdateType, handleSetStatus } = props;
 
-	const initialValues = visibleUpdateType.detail || "";
+	const initialValues = {
+		...visibleUpdateType.detail,
+		status: visibleUpdateType.detail.status === 1 ? true : false,
+	};
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
@@ -31,18 +34,32 @@ function ModalUpdateTypeCategory(props) {
 		const id = visibleUpdateType.detail.id;
 		CommonApi("PUT", `/tenant/category/type-category/${id}`, {
 			...data,
-			status: 1,
-		}).then((res) => {
-			toast.success("Cập nhật thành công");
-			handleUpdateType();
-			handleSetStatus();
-		});
+			status: data.status ? 1 : 2,
+		})
+			.then((res) => {
+				toast.success("Cập nhật thành công");
+				handleUpdateType({});
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	return (
 		<Modal
 			visible={visibleUpdateType.visible}
-			onCancel={handleUpdateType}
+			onCancel={() => handleUpdateType({})}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
@@ -51,7 +68,7 @@ function ModalUpdateTypeCategory(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Thêm loại danh mục</span>
+					<span>Cập nhật loại danh mục</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -60,7 +77,7 @@ function ModalUpdateTypeCategory(props) {
 						validationSchema={validationSchema}
 						onSubmit={handleSubmit}
 					>
-						{() => (
+						{({ values, setFieldValue }) => (
 							<Form>
 								<FastField
 									name="name"
@@ -68,7 +85,16 @@ function ModalUpdateTypeCategory(props) {
 									label="Tên loại:"
 									width={160}
 								/>
-								<FooterForm handleClick={handleUpdateType} title="Cập nhật" />
+								<div className="flex mb-2 items-center">
+									<div className="LabelCo">Status:</div>
+									<Switch
+										defaultChecked={values.status ? true : false}
+										checkedChildren="Active"
+										unCheckedChildren="UnActive"
+										onChange={(checked) => setFieldValue("status", checked)}
+									/>
+								</div>
+								<FooterForm handleClick={() => handleUpdateType({})} title="Cập nhật" />
 							</Form>
 						)}
 					</Formik>
@@ -77,7 +103,7 @@ function ModalUpdateTypeCategory(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleUpdateType}
+					onClick={() => handleUpdateType({})}
 				/>
 			</div>
 		</Modal>

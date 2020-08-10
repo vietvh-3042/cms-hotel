@@ -1,12 +1,11 @@
 import { Popconfirm, Table } from "antd";
-import Axios from "axios";
+import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { endpoint } from "settings";
 import { toast } from "react-toastify";
 import ModalAddClassify from "./components/ModalAddClassify";
-import CommonApi from "helpers/APIS/CommonApi";
+import ModalUpdateClassify from "./components/ModalUpdateClassify";
 
 ManagerClassify.propTypes = {};
 
@@ -64,35 +63,18 @@ function ManagerClassify(props) {
 		setStatus(!status);
 	}
 
+	function handleUpdateClassify(record) {
+		setVisibleUpdateClassify({
+			visible: !visibleUpdateClassify.visible,
+			detail: record,
+		});
+	}
+
 	function confirm(id) {
-		Axios({
-			method: "DELETE",
-			url: endpoint + "/tenant/hotel-manager/classify/" + id,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
-			.then((res) => {
-				toast.success("Xóa thành công");
-				handleSetStatus();
-			})
-			.catch((err) => {
-				let error = [];
-				for (let value of Object.values(err.response.data.errors)) {
-					error.push(value);
-				}
-				toast.error(
-					<React.Fragment>
-						{error.map((value, key) => (
-							<div key={key}>{value}</div>
-						))}
-					</React.Fragment>
-				);
-			});
+		CommonApi("DELETE", `/tenant/hotel-manager/classify/${id}`).then((res) => {
+			toast.success("Xóa thành công");
+			handleSetStatus();
+		});
 	}
 
 	const columns = [
@@ -109,7 +91,7 @@ function ManagerClassify(props) {
 						src="/images/Actions/Edit.png"
 						alt="Edit"
 						className="ml-2 mr-1  cursor-pointer"
-						// onClick={() => handleUpdateCategory(record)}
+						onClick={() => handleUpdateClassify(record)}
 					/>
 					<Popconfirm
 						title="Bạn thực sự muốn xóa bản ghi này?"
@@ -169,6 +151,11 @@ function ManagerClassify(props) {
 			<ModalAddClassify
 				visible={visible}
 				handleAddClassify={handleAddClassify}
+				handleSetStatus={handleSetStatus}
+			/>
+			<ModalUpdateClassify
+				visibleUpdateClassify={visibleUpdateClassify}
+				handleUpdateClassify={handleUpdateClassify}
 				handleSetStatus={handleSetStatus}
 			/>
 		</div>

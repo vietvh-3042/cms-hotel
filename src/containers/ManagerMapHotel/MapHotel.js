@@ -10,6 +10,7 @@ import ModalUpdateRoom from "./components/Modal/ModalUpdateRoom";
 import ModalUpdateStatus from "./components/Modal/ModalUpdateStatus";
 import ModalCheckinRoom from "./components/Modal/ModalCheckinRoom";
 import ModalCheckoutRoom from "./components/Modal/ModalCheckoutRoom";
+import _ from "lodash";
 
 MapHotel.propTypes = {};
 
@@ -109,7 +110,7 @@ function MapHotel(props) {
 		setLoading(true);
 		CommonApi(
 			"GET",
-			`/tenant/hotel-manager/hotel/${hotel_ID}?include=floors.rooms`,
+			`/tenant/hotel-manager/hotel/${hotel_ID}?include=floors.rooms.checkin`,
 			null
 		).then((res) => {
 			setDetailHotel(res.data.data);
@@ -131,7 +132,7 @@ function MapHotel(props) {
 					</div>
 					<div className="col-span-7 md:col-span-6 grid grid-cols-3 md:grid-cols-6 gap-2">
 						{val.rooms.data.map((value, key) => {
-							if (value.status === 2)
+							if (value.status === 2 || value.status === 1)
 								return (
 									<DropdownCustom
 										key={key}
@@ -213,9 +214,11 @@ function MapHotel(props) {
 		});
 	}
 
-	function handleCheckoutRoom() {
+	function handleCheckoutRoom(record) {
+		const checkin_id = !_.isEmpty(record) ? record.checkin.data[0].id : "";
 		setVisibleCheckoutRoom({
 			visible: !visibleCheckoutRoom.visible,
+			detail: checkin_id,
 		});
 	}
 

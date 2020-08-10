@@ -8,7 +8,11 @@ ManagerPayment.propTypes = {};
 
 function ManagerPayment(props) {
 	const [visible, setVisible] = useState(false);
+
+	const [status, setStatus] = useState(false);
+
 	const [visibleUpdate, setVisibleUpdate] = useState(false);
+
 	function handleAddPayment() {
 		setVisible(!visible);
 	}
@@ -20,6 +24,9 @@ function ManagerPayment(props) {
 	function format_current(price) {
 		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 	}
+
+	function handleStatus() {}
+
 	return (
 		<div className="onecolumn mt-2 mx-2">
 			<div className="header flex justify-between items-center">
@@ -53,17 +60,11 @@ function ManagerPayment(props) {
 						<tr>
 							<th className="w-3 sorting_disabled align-middle">STT</th>
 							<th className="w-3 sorting_disabled align-middle">Mã phiếu</th>
-							<th className="w-3 sorting_disabled align-middle">
-								Ngày chứng từ
-							</th>
+							<th className="w-3 sorting_disabled align-middle">Ngày chứng từ</th>
 							<th className="w-3 sorting_disabled align-middle">Này tạo</th>
-							<th className="w-3 sorting_disabled align-middle">
-								Diễn giải chi phí
-							</th>
+							<th className="w-3 sorting_disabled align-middle">Diễn giải chi phí</th>
 							<th className="w-3 sorting_disabled align-middle">Số tiền</th>
-							<th className="w-3 sorting_disabled align-middle">
-								Loại chi phí
-							</th>
+							<th className="w-3 sorting_disabled align-middle">Loại chi phí</th>
 							<th className="w-3 sorting_disabled align-middle">Người nhận</th>
 							<th className="w-3 sorting_disabled align-middle">Tạo bởi</th>
 							<th className="w-3 sorting_disabled align-middle">Ghi chú</th>
@@ -74,12 +75,8 @@ function ManagerPayment(props) {
 						<tr className="row_info">
 							<td className="centertext text-center align-middle">1</td>
 							<td className="centertext text-center align-middle">PC000001</td>
-							<td className="centertext text-center align-middle">
-								12/07/2020 12:33
-							</td>
-							<td className="centertext text-center align-middle">
-								12/07/2020 12:33
-							</td>
+							<td className="centertext text-center align-middle">12/07/2020 12:33</td>
+							<td className="centertext text-center align-middle">12/07/2020 12:33</td>
 							<td className="centertext text-center align-middle">
 								Nhập kho [10 Nước Suối ][10 x 10,000]
 								<span style={{ color: "red" }}> [Không tính khi Giao Ca]</span>
@@ -89,9 +86,7 @@ function ManagerPayment(props) {
 							</td>
 							<td className="centertext text-center align-middle"></td>
 							<td className="centertext text-center align-middle"></td>
-							<td className="centertext text-center align-middle">
-								hotel123456
-							</td>
+							<td className="centertext text-center align-middle">hotel123456</td>
 							<td className="centertext text-center align-middle"></td>
 							<td className="pt-2 align-middle">
 								<div className=" h-full flex items-center justify-center flex-wrap">
@@ -124,12 +119,8 @@ function ManagerPayment(props) {
 						<tr className="row_nopay">
 							<td className="centertext text-center align-middle">2</td>
 							<td className="centertext text-center align-middle">PC000002</td>
-							<td className="centertext text-center align-middle">
-								12/07/2020 12:33
-							</td>
-							<td className="centertext text-center align-middle">
-								12/07/2020 12:33
-							</td>
+							<td className="centertext text-center align-middle">12/07/2020 12:33</td>
+							<td className="centertext text-center align-middle">12/07/2020 12:33</td>
 							<td className="centertext text-center align-middle">
 								Nhập kho [10 Nước Suối ][10 x 10,000]
 								<span style={{ color: "red" }}> [Không tính khi Giao Ca]</span>
@@ -139,9 +130,7 @@ function ManagerPayment(props) {
 							</td>
 							<td className="centertext text-center align-middle"></td>
 							<td className="centertext text-center align-middle"></td>
-							<td className="centertext text-center align-middle">
-								hotel123456
-							</td>
+							<td className="centertext text-center align-middle">hotel123456</td>
 							<td className="centertext text-center align-middle"></td>
 							<td className="pt-2 align-middle">
 								<div className=" h-full flex items-center justify-center flex-wrap">

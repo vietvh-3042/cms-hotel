@@ -20,12 +20,7 @@ ModalAddService.defaultProps = {
 };
 
 function ModalAddService(props) {
-	const {
-		visible,
-		handleAddListService,
-		handleSetStatus,
-		listCategory,
-	} = props;
+	const { visible, handleAddListService, handleSetStatus, listCategory } = props;
 
 	const initialValues = {
 		name: "",
@@ -37,17 +32,30 @@ function ModalAddService(props) {
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
 		category_id: Yup.string().required("Không được để trống."),
-		price: Yup.number()
-			.typeError("Phải là số")
-			.required("Không được để trống."),
+		price: Yup.number().typeError("Phải là số").required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
-		CommonApi("POST", "/tenant/service-storage/services", data).then((res) => {
-			toast("Tạo mới thành công");
-			handleAddListService();
-			handleSetStatus();
-		});
+	function handleSubmit(data, { resetForm }) {
+		CommonApi("POST", "/tenant/service-storage/services", data)
+			.then((res) => {
+				toast.success("Tạo mới thành công");
+				resetForm({});
+				handleAddListService();
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	return (
@@ -62,7 +70,7 @@ function ModalAddService(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-update"></span>
-					<span>Thêm một dịch vụ mới</span>
+					<span>Thêm dịch vụ</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -80,7 +88,11 @@ function ModalAddService(props) {
 								/>
 								<div className="flex mb-2">
 									<div className="LabelCo">Nhóm Dịch vụ:</div>
-									<Field as="select" style={{ width: 206, height: 30 }}>
+									<Field
+										as="select"
+										name="category_id"
+										style={{ width: 206, height: 30 }}
+									>
 										{listCategory.map((value) => (
 											<option value={value.id} key={value.id}>
 												{value.name}
@@ -97,19 +109,14 @@ function ModalAddService(props) {
 								) : null}
 
 								<FastField
-									name="name"
+									name="price"
 									component={InputField}
 									label="Giá bán:"
 									width={200}
 								/>
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Ghi chú:</div>
-									<Field
-										as="textarea"
-										name="note"
-										rows="3"
-										style={{ width: 206 }}
-									/>
+									<Field as="textarea" name="note" rows="3" style={{ width: 206 }} />
 								</div>
 								<FooterForm handleClick={handleAddListService} />
 							</Form>

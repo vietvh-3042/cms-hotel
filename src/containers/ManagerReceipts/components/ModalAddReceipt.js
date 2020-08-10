@@ -90,17 +90,17 @@ function ModalAddReceipt(props) {
 		bill_id: Yup.string().required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
+	function handleSubmit(data, { resetForm }) {
 		const find = listEmployee.find((x) => x.id === data.employee_id);
 		let body = {
 			...data,
 			guest_name: find ? find.name : "",
 		};
-		console.log(body);
 		CommonApi("POST", "/tenant/payslip-receipt/receipt", body)
 			.then((res) => {
 				toast.success("Tạo mới thành công");
 				handleAddReceipt();
+				resetForm({});
 				handleSetStatus();
 			})
 			.catch((err) => {

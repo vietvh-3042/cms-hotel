@@ -259,12 +259,6 @@ function ModalCheckoutRoom(props) {
 												{inforCheckout ? inforCheckout.room.type_room : ""}
 											</span>
 										</div>
-										<div className="checkout-item justify-center">
-											<span className="text-checkin">Giá:</span>
-											<span className="text-bold text-checkin text-value">
-												{format_current(values.price_room)}
-											</span>
-										</div>
 										<div className="split col-span-2"></div>
 									</div>
 

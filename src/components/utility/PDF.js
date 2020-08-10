@@ -60,6 +60,7 @@ function PDF(props) {
 				<div className="text-title ">
 					{inforCheckout ? `Hóa Đơn ${inforCheckout.room.name} (tạm tính)` : ""}
 				</div>
+				<div className="text-title-name">Khách sạn HaNoi Hotel</div>
 				<div className="grid grid-cols-2 mb-2 row-gap-2">
 					{/* infor hoa don */}
 					<div className="checkout-item justify-start">
@@ -106,12 +107,7 @@ function PDF(props) {
 							{inforCheckout ? inforCheckout.room.type_room : ""}
 						</span>
 					</div>
-					<div className="checkout-item justify-end">
-						<span className="text-checkin-pdf">Giá:</span>
-						<span className="text-bold text-checkin-pdf text-value">
-							{format_current(inforCheckout ? inforCheckout.room.price_room : "")}
-						</span>
-					</div>
+
 					<div className="split col-span-2"></div>
 				</div>
 				<div className="grid grid-cols-2 mb-2">

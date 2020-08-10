@@ -17,13 +17,20 @@
 		display: inline-block;
 	}
 
-	.text-title {
+	.text-title,
+	.text-title-name {
 		color: #2a2a2a;
 		font-weight: 800;
 		text-align: center;
 		text-transform: uppercase;
 		margin-bottom: 24px;
 		font-size: 32px;
+	}
+
+	.text-title-name {
+		font-size: 28px;
+		font-family: Helvetica, Arial, "lucida grande", tahoma, verdana, arial,
+			sans-serif;
 	}
 
 	.footer-pdf {

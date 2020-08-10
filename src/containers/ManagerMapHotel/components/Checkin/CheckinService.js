@@ -42,7 +42,7 @@ function CheckinService(props) {
 	}, [check]);
 
 	function handleAddService(data) {
-		const find = listService.find((x) => x.id === data.service_id);
+		const find = listService.find((x) => x.id == data.service_id);
 		setListUserService(
 			listUserService.concat({
 				service_id: find.id,

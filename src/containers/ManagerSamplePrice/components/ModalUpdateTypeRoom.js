@@ -100,11 +100,25 @@ function ModalUpdateTypeRoom(props) {
 			"PUT",
 			`/tenant/hotel-manager/sample-price/${id}`,
 			JSON.stringify(convert)
-		).then((res) => {
-			toast.success("Cập nhật thành công");
-			handleUpdateSamplePrice({});
-			handleSetStatus();
-		});
+		)
+			.then((res) => {
+				toast.success("Cập nhật thành công");
+				handleUpdateSamplePrice({});
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	return (

@@ -70,11 +70,11 @@ const options = [
 				label: "Danh sách dịch vụ",
 				icon: "/images/Sidebar/Services/list-service.png",
 			},
-			{
-				key: "statistical-service",
-				label: "Thống kê DV đã bán",
-				icon: "/images/Sidebar/Services/statistical.png",
-			},
+			// {
+			// 	key: "statistical-service",
+			// 	label: "Thống kê DV đã bán",
+			// 	icon: "/images/Sidebar/Services/statistical.png",
+			// },
 		],
 	},
 
@@ -86,43 +86,43 @@ const options = [
 			{
 				key: "paymentMethod",
 				label: "Phương thức thanh toán",
-				icon: "/images/Sidebar/TienChi/receipts.png",
+				icon: "/images/Sidebar/TienChi/debt.png",
 			},
 			{
 				key: "receipts",
 				label: "Quản lý phiếu thu",
 				icon: "/images/Sidebar/TienChi/receipts.png",
 			},
-			{
-				key: "payment",
-				label: "Quản lý phiếu chi",
-				icon: "/images/Sidebar/TienChi/payment.png",
-			},
+			// {
+			// 	key: "payment",
+			// 	label: "Quản lý phiếu chi",
+			// 	icon: "/images/Sidebar/TienChi/payment.png",
+			// },
 		],
 	},
 
-	{
-		key: "revenue",
-		label: "Doanh thu",
-		icon: "/images/Sidebar/DoanhThu/doanhthu.png",
-		children: [
-			{
-				key: "revenue",
-				label: "Doanh thu chi tiết",
-				icon: "/images/Sidebar/DoanhThu/details-sale.png",
-			},
-			{
-				key: "room-sales",
-				label: "Doanh thu bán phòng",
-				icon: "/images/Sidebar/DoanhThu/room-sale.png",
-			},
-			{
-				key: "recent-revenue",
-				label: "Doanh thu gần đây",
-				icon: "/images/Sidebar/DoanhThu/analysis.png",
-			},
-		],
-	},
+	// {
+	// 	key: "revenue",
+	// 	label: "Doanh thu",
+	// 	icon: "/images/Sidebar/DoanhThu/doanhthu.png",
+	// 	children: [
+	// 		{
+	// 			key: "revenue",
+	// 			label: "Doanh thu chi tiết",
+	// 			icon: "/images/Sidebar/DoanhThu/details-sale.png",
+	// 		},
+	// 		{
+	// 			key: "room-sales",
+	// 			label: "Doanh thu bán phòng",
+	// 			icon: "/images/Sidebar/DoanhThu/room-sale.png",
+	// 		},
+	// 		{
+	// 			key: "recent-revenue",
+	// 			label: "Doanh thu gần đây",
+	// 			icon: "/images/Sidebar/DoanhThu/analysis.png",
+	// 		},
+	// 	],
+	// },
 
 	{
 		key: "bill",
@@ -131,19 +131,19 @@ const options = [
 		children: [
 			{
 				key: "list-bill",
-				label: "Doanh sách hóa đơn",
+				label: "Danh sách hóa đơn",
 				icon: "/images/Sidebar/ThongKe/bill.png",
 			},
-			{
-				key: "check-money",
-				label: "Kiểm tra $ tài khoản",
-				icon: "/images/Sidebar/ThongKe/checkout.png",
-			},
-			{
-				key: "business-result",
-				label: "Kết quả kinh doanh",
-				icon: "/images/Sidebar/ThongKe/business-result.png",
-			},
+			// {
+			// 	key: "check-money",
+			// 	label: "Kiểm tra $ tài khoản",
+			// 	icon: "/images/Sidebar/ThongKe/checkout.png",
+			// },
+			// {
+			// 	key: "business-result",
+			// 	label: "Kết quả kinh doanh",
+			// 	icon: "/images/Sidebar/ThongKe/business-result.png",
+			// },
 			// {
 			// 	key: "users",
 			// 	label: "Báo cáo",
@@ -220,7 +220,7 @@ const options = [
 	{
 		key: "setting",
 		label: "Cài Đặt",
-		icon: "/images/Sidebar/Staff/shift-history.png",
+		icon: "/images/Sidebar/Settings/classify.png",
 		children: [
 			{
 				key: "classify",

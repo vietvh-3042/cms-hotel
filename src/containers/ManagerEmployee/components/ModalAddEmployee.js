@@ -1,14 +1,12 @@
-import { DatePicker, Modal } from "antd";
-import Axios from "axios";
+import { DatePicker, Modal, Switch } from "antd";
+import FooterForm from "components/utility/footerForm";
 import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
 import PropTypes from "prop-types";
 import React from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
 import * as Yup from "yup";
-import FooterForm from "components/utility/footerForm";
 
 ModalAddEmployee.propTypes = {
 	handleAddListEmployee: PropTypes.func,
@@ -24,7 +22,6 @@ ModalAddEmployee.defaultProps = {
 
 function ModalAddEmployee(props) {
 	const { visible, handleAddListEmployee, handleSetStatus, listGroup } = props;
-	const user = useSelector((state) => state.Auth.user);
 
 	const initialValues = {
 		name: "",
@@ -33,7 +30,7 @@ function ModalAddEmployee(props) {
 		identity_code: "",
 		birthday: "",
 		address: "",
-		gender: 1,
+		gender: true,
 		work_date_at: "",
 		group_id: listGroup.length > 0 ? `${listGroup[0].id}` : "",
 		email: "",
@@ -54,20 +51,14 @@ function ModalAddEmployee(props) {
 			.required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/acl/employees",
-			data: data,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
+	function handleSubmit(data, { resetForm }) {
+		CommonApi("POST", "/tenant/acl/employees", {
+			...data,
+			gender: data.gender ? 1 : 2,
 		})
 			.then((res) => {
 				toast.success("Tạo mới thành công");
+				resetForm({});
 				handleAddListEmployee();
 				handleSetStatus();
 			})
@@ -117,16 +108,12 @@ function ModalAddEmployee(props) {
 
 								<div className="flex mb-2 items-center">
 									<div className="LabelCo">Giới tính:</div>
-									<div style={{ width: 200 }} className="flex items-center">
-										<label className="mb-0 mr-3">
-											<Field type="radio" name="gender" value={1} className="mr-1" />
-											<span>Nam</span>
-										</label>
-										<label className="mb-0">
-											<Field type="radio" name="gender" value={2} className="mr-1" />
-											<span>Nữ</span>
-										</label>
-									</div>
+									<Switch
+										defaultChecked={values.gender ? true : false}
+										checkedChildren="Nam"
+										unCheckedChildren="Nữ"
+										onChange={(checked) => setFieldValue("gender", checked)}
+									/>
 								</div>
 
 								<FastField

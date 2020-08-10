@@ -30,10 +30,11 @@ function ModalAddGroup(props) {
 		name: Yup.string().required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
+	function handleSubmit(data, { resetForm }) {
 		CommonApi("POST", "/tenant/acl/groups", data)
 			.then((res) => {
 				toast.success("Thêm mới thành công");
+				resetForm({});
 				handleAddListTypeCategory();
 				handleSetStatus();
 			})
@@ -41,7 +42,6 @@ function ModalAddGroup(props) {
 				let error = [];
 				for (let value of Object.values(err.response.data.errors)) {
 					error.push(value);
-
 					toast.error(
 						<React.Fragment>
 							{error.map((value, key) => (

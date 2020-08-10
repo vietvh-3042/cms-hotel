@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { endpoint } from "settings";
 import * as Yup from "yup";
+import CommonApi from "helpers/APIS/CommonApi";
 
 ModalAddListRoom.propTypes = {
 	handleAddListRoom: PropTypes.func,
@@ -57,7 +58,7 @@ function ModalAddListRoom(props) {
 			.required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
+	function handleSubmit(data, { resetForm }) {
 		let convert = {
 			...data,
 			price_by_hour: JSON.stringify({
@@ -87,26 +88,25 @@ function ModalAddListRoom(props) {
 			number_room_available: 1,
 			position: 1,
 		};
-
-		Axios({
-			method: "POST",
-			url: endpoint + "/tenant/hotel-manager/type-room",
-			data: JSON.stringify(convert),
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-				"hotel-id": hotel_ID,
-			},
-		})
+		CommonApi("POST", "/tenant/hotel-manager/type-room", JSON.stringify(convert))
 			.then((res) => {
 				toast.success("Tạo mới thành công");
 				handleAddListRoom();
+				resetForm({});
 				handleSetStatus();
 			})
 			.catch((err) => {
-				console.log(err.response);
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
 			});
 	}
 

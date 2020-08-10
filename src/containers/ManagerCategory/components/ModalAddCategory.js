@@ -42,12 +42,26 @@ function ModalAddCategory(props) {
 	});
 
 	function handleSubmit(data, { resetForm }) {
-		CommonApi("POST", "/tenant/category/category", data).then((res) => {
-			toast.success("Tạo mới thành công");
-			handleAddListCategory();
-			handleSetStatus();
-			resetForm({});
-		});
+		CommonApi("POST", "/tenant/category/category", data)
+			.then((res) => {
+				toast.success("Tạo mới thành công");
+				handleAddListCategory();
+				handleSetStatus();
+				resetForm({});
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 	return (
 		<Modal
@@ -61,7 +75,7 @@ function ModalAddCategory(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Thêm dịch vụ</span>
+					<span>Thêm nhóm dịch vụ</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -96,9 +110,7 @@ function ModalAddCategory(props) {
 								{errors.type_category_id && touched.type_category_id ? (
 									<div className="flex items-center">
 										<div className="LabelCo opacity-0">-----</div>
-										<div className="custom-err-form">
-											{errors.type_category_id}
-										</div>
+										<div className="custom-err-form">{errors.type_category_id}</div>
 									</div>
 								) : null}
 

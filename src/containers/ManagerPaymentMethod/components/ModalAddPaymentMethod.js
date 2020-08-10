@@ -30,15 +30,30 @@ function ModalAddPaymentMethod(props) {
 		name: Yup.string().required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
+	function handleSubmit(data, { resetForm }) {
 		CommonApi("POST", "/tenant/payslip-receipt/payment-method", {
 			...data,
 			status: data.status ? 1 : 2,
-		}).then((res) => {
-			toast.success("Thêm mới thành công");
-			handleAddListTypeCategory();
-			handleSetStatus();
-		});
+		})
+			.then((res) => {
+				toast.success("Thêm mới thành công");
+				handleAddListTypeCategory();
+				resetForm({});
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	return (

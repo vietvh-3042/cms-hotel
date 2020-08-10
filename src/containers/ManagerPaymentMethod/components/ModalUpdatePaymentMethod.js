@@ -35,17 +35,31 @@ function ModalUpdatePaymentMethod(props) {
 		CommonApi("PUT", `/tenant/payslip-receipt/payment-method/${id}`, {
 			name: data.name,
 			status: data.status ? 1 : 2,
-		}).then((res) => {
-			toast.success("Thêm mới thành công");
-			handleUpdateType();
-			handleSetStatus();
-		});
+		})
+			.then((res) => {
+				toast.success("Thêm mới thành công");
+				handleUpdateType({});
+				handleSetStatus();
+			})
+			.catch((err) => {
+				let error = [];
+				for (let value of Object.values(err.response.data.errors)) {
+					error.push(value);
+				}
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	return (
 		<Modal
 			visible={visibleUpdateType.visible}
-			onCancel={handleUpdateType}
+			onCancel={() => handleUpdateType({})}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
@@ -81,7 +95,7 @@ function ModalUpdatePaymentMethod(props) {
 									/>
 								</div>
 
-								<FooterForm handleClick={handleUpdateType} title="Sửa" />
+								<FooterForm handleClick={() => handleUpdateType({})} title="Sửa" />
 							</Form>
 						)}
 					</Formik>
@@ -90,7 +104,7 @@ function ModalUpdatePaymentMethod(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleUpdateType}
+					onClick={() => handleUpdateType({})}
 				/>
 			</div>
 		</Modal>

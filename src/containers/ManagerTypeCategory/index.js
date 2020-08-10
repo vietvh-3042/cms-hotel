@@ -1,4 +1,4 @@
-import { Popconfirm, Table } from "antd";
+import { Popconfirm, Table, Tag } from "antd";
 import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
@@ -28,21 +28,19 @@ function ManagerTypeCategory(props) {
 	useEffect(() => {
 		setLoading(true);
 		const paramString = queryString.stringify(filters);
-		CommonApi(
-			"GET",
-			`/tenant/category/type-category?${paramString}`,
-			null
-		).then((res) => {
-			setLoading(false);
-			res.data.data.forEach((infor, index) => {
-				allData.push({
-					...infor,
-					STT: index + 1,
+		CommonApi("GET", `/tenant/category/type-category?${paramString}`, null).then(
+			(res) => {
+				setLoading(false);
+				res.data.data.forEach((infor, index) => {
+					allData.push({
+						...infor,
+						STT: index + 1,
+					});
 				});
-			});
-			setListTypeCategory(allData);
-			setPagination(res.data.meta.pagination.total);
-		});
+				setListTypeCategory(allData);
+				setPagination(res.data.meta.pagination.total);
+			}
+		);
 	}, [filters, status]);
 
 	function handleAddListTypeCategory() {
@@ -77,6 +75,23 @@ function ManagerTypeCategory(props) {
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
 		{ title: "Tên", dataIndex: "name", key: "name" },
+		{
+			title: <span className="inline-block w-full text-center">Trạng thái</span>,
+			render: (record) => {
+				if (record.status === 1)
+					return (
+						<div className="text-center">
+							<Tag color="#87d068">Có hỗ trợ</Tag>
+						</div>
+					);
+				else
+					return (
+						<div className="text-center">
+							<Tag color="#f50">Tạm dừng</Tag>
+						</div>
+					);
+			},
+		},
 		{
 			title: "Thao tác",
 			render: (record) => (

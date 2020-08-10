@@ -34,7 +34,7 @@ function ModalAddFloor(props) {
 			.required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
+	function handleSubmit(data, { resetForm }) {
 		CommonApi("POST", "/tenant/hotel-manager/floor", {
 			...data,
 			show_diagram: 2,
@@ -42,6 +42,7 @@ function ModalAddFloor(props) {
 			.then((res) => {
 				toast.success("Thêm mới thành công");
 				handleAddFloor();
+				resetForm({});
 				handleSetStatus();
 			})
 			.catch((err) => {

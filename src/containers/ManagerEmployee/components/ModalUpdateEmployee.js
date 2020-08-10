@@ -1,14 +1,13 @@
-import { DatePicker, Modal } from "antd";
-import Axios from "axios";
+import { DatePicker, Modal, Switch } from "antd";
 import FooterForm from "components/utility/footerForm";
 import { FastField, Field, Form, Formik } from "formik";
+import CommonApi from "helpers/APIS/CommonApi";
 import InputField from "helpers/CustomFields/InputField";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { endpoint } from "settings";
 import * as Yup from "yup";
 
 ModalAddEmployee.propTypes = {
@@ -30,15 +29,15 @@ function ModalAddEmployee(props) {
 		handleSetStatus,
 		listGroup,
 	} = props;
-	const user = useSelector((state) => state.Auth.user);
 
-	const initialValues = visibleUpdate.detail;
+	const initialValues = {
+		...visibleUpdate.detail,
+		gender: visibleUpdate.detail.gender === 1 ? true : false,
+	};
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
-		phone: Yup.number()
-			.typeError("Phải là số")
-			.required("Không được để trống."),
+		phone: Yup.number().typeError("Phải là số").required("Không được để trống."),
 		email: Yup.string()
 			.email("Email không đúng định dạng")
 			.required("Không được để trống."),
@@ -49,20 +48,13 @@ function ModalAddEmployee(props) {
 
 	function handleSubmit(data) {
 		const id = visibleUpdate.detail.id;
-		Axios({
-			method: "PUT",
-			url: endpoint + "/tenant/acl/employees/" + id,
-			data: data,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer" + user.meta.access_token,
-				"tenant-name": user.data.name,
-			},
+		CommonApi("PUT", `/tenant/acl/employees/${id}`, {
+			...data,
+			gender: data.gender ? 1 : 2,
 		})
 			.then((res) => {
 				toast.success("Cập nhật thành công");
-				handleUpdateEmployee();
+				handleUpdateEmployee({});
 				handleSetStatus();
 			})
 			.catch((err) => {
@@ -83,7 +75,7 @@ function ModalAddEmployee(props) {
 	return (
 		<Modal
 			visible={visibleUpdate.visible}
-			onCancel={handleUpdateEmployee}
+			onCancel={() => handleUpdateEmployee({})}
 			footer={false}
 			closable={false}
 			bodyStyle={{ padding: 0 }}
@@ -92,7 +84,7 @@ function ModalAddEmployee(props) {
 			<div className="relative">
 				<div className="modal_header_action">
 					<span className="hsp2_building-add"></span>
-					<span>Thêm nhân viên</span>
+					<span>Cập nhật nhân viên</span>
 				</div>
 				<div className="modal_content">
 					<Formik
@@ -113,26 +105,12 @@ function ModalAddEmployee(props) {
 
 									<div className="flex mb-2 items-center">
 										<div className="LabelCo">Giới tính:</div>
-										<div style={{ width: 200 }} className="flex items-center">
-											<label className="mb-0 mr-3">
-												<Field
-													type="radio"
-													name="gender"
-													value={1}
-													className="mr-1"
-												/>
-												<span>Nam</span>
-											</label>
-											<label className="mb-0">
-												<Field
-													type="radio"
-													name="gender"
-													value={2}
-													className="mr-1"
-												/>
-												<span>Nữ</span>
-											</label>
-										</div>
+										<Switch
+											defaultChecked={values.gender ? true : false}
+											checkedChildren="Nam"
+											unCheckedChildren="Nữ"
+											onChange={(checked) => setFieldValue("gender", checked)}
+										/>
 									</div>
 
 									<FastField
@@ -141,6 +119,7 @@ function ModalAddEmployee(props) {
 										label="Số điện thoại:"
 										width={200}
 									/>
+
 									<FastField
 										name="email"
 										component={InputField}
@@ -149,11 +128,7 @@ function ModalAddEmployee(props) {
 									/>
 									<div className="flex mb-2 items-center">
 										<div className="LabelCo">Nhóm quyền:</div>
-										<Field
-											as="select"
-											name="group_id"
-											style={{ width: 206, height: 30 }}
-										>
+										<Field as="select" name="group_id" style={{ width: 206, height: 30 }}>
 											{listGroup.map((value) => (
 												<option value={value.id} key={value.id}>
 													{value.name}
@@ -221,7 +196,10 @@ function ModalAddEmployee(props) {
 											}
 										/>
 									</div>
-									<FooterForm handleClick={handleUpdateEmployee} update />
+									<FooterForm
+										handleClick={() => handleUpdateEmployee({})}
+										title="Cập nhật"
+									/>
 								</Form>
 							);
 						}}
@@ -231,7 +209,7 @@ function ModalAddEmployee(props) {
 					src="/images/Button/closeModal.png"
 					alt="closeModal"
 					className="closeModal cursor-pointer"
-					onClick={handleUpdateEmployee}
+					onClick={() => handleUpdateEmployee({})}
 				/>
 			</div>
 		</Modal>

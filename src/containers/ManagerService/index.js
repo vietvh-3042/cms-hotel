@@ -1,23 +1,37 @@
-import { Table } from "antd";
+import { Table, Popconfirm, Tag } from "antd";
 import CommonApi from "helpers/APIS/CommonApi";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ModalAddService from "./components/ModalAddService";
+import ModalUpdateService from "./components/ModalUpdateService";
+import { toast } from "react-toastify";
 
 ManagerService.propTypes = {};
 
 function ManagerService(props) {
 	const allData = [];
+
 	const [loading, setLoading] = useState(false);
+
 	const [status, setStatus] = useState(false);
+
 	const [listService, setListService] = useState([]);
+
 	const [listCategory, setListCategory] = useState([]);
+
 	const [pagination, setPagination] = useState();
+
 	const [visible, setVisible] = useState(false);
+
 	const [filters, setFilter] = useState({
 		limit: 10,
 		page: 1,
+	});
+
+	const [visibleUpdate, setVisibleUpdate] = useState({
+		visible: false,
+		detail: {},
 	});
 
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
@@ -53,6 +67,13 @@ function ManagerService(props) {
 		setVisible(!visible);
 	}
 
+	function handleUpdateService(record) {
+		setVisibleUpdate({
+			visible: !visibleUpdate.visible,
+			detail: record,
+		});
+	}
+
 	function handleOnChange(pagination) {
 		setFilter({
 			...filters,
@@ -63,25 +84,71 @@ function ManagerService(props) {
 		setStatus(!status);
 	}
 
+	function format_current(price) {
+		return price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+	}
+
+	function confirm(id) {
+		CommonApi("DELETE", `/tenant/service-storage/services/${id}`, null).then(
+			(res) => {
+				toast.success("Xóa thành công");
+				handleSetStatus();
+			}
+		);
+	}
+
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
-		{ title: "Tên dịch vụ", dataIndex: "name", key: "name" },
-		{ title: "Giá bán", dataIndex: "price", key: "price" },
-		{ title: "SL.tồn Đầu kỳ(1)", dataIndex: "", key: "" },
+		{ title: "Mã dịch vụ", dataIndex: "service_code", key: "service_code" },
+		{ title: "Tên dịch vụ", dataIndex: "name", key: "name", width: "15%" },
 		{
-			title: "Đã nhập Trong kỳ(2)",
-			dataIndex: "number_bed",
-			key: "number_bed",
+			title: "Giá bán",
+			render: (record) => (
+				<b className="ml-2 bold">{format_current(record.price)}</b>
+			),
 		},
 		{
-			title: "Đã bán Trong kỳ(3)",
-			dataIndex: "number_person",
-			key: "number_person",
+			title: "Loại dịch vụ",
+			render: (record) => {
+				for (var i = 0; i < listCategory.length; i++) {
+					if (listCategory[i].id === record.category_id) {
+						return (
+							<Tag color="purple" className="mb-1 text-center w-full">
+								{listCategory[i].name}
+							</Tag>
+						);
+					}
+				}
+			},
 		},
-		{ title: "Doanh thu Trong kỳ", dataIndex: "note", key: "note" },
-		{ title: "SL. Tồn Cuối kỳ(1+2+3)", dataIndex: "note", key: "note" },
 		{ title: "Ghi chú", dataIndex: "note", key: "note" },
-		{ title: "Thao tác", dataIndex: "note", key: "note" },
+		{
+			title: "Thao tác",
+			width: "10%",
+			render: (record) => (
+				<div className=" h-full flex justify-center items-center flex-wrap">
+					<img
+						src="/images/Actions/Edit.png"
+						alt="Edit"
+						className="ml-2 mr-1  cursor-pointer"
+						onClick={() => handleUpdateService(record)}
+					/>
+					<Popconfirm
+						title="Bạn thực sự muốn xóa bản ghi này?"
+						onConfirm={() => confirm(record.id)}
+						okText="Yes"
+						cancelText="No"
+						placement="topRight"
+					>
+						<img
+							src="/images/Actions/Delete.png"
+							alt="Delete"
+							className="cursor-pointer"
+						/>
+					</Popconfirm>
+				</div>
+			),
+		},
 	];
 
 	return (
@@ -123,6 +190,12 @@ function ManagerService(props) {
 				listCategory={listCategory}
 				visible={visible}
 				handleAddListService={handleAddListService}
+				handleSetStatus={handleSetStatus}
+			/>
+			<ModalUpdateService
+				listCategory={listCategory}
+				visibleUpdate={visibleUpdate}
+				handleUpdateService={handleUpdateService}
 				handleSetStatus={handleSetStatus}
 			/>
 		</div>

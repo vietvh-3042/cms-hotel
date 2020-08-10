@@ -32,10 +32,11 @@ function ModalAddClassify(props) {
 		name: Yup.string().required("Không được để trống."),
 	});
 
-	function handleSubmit(data) {
+	function handleSubmit(data, { resetForm }) {
 		CommonApi("POST", "/tenant/hotel-manager/classify", data)
 			.then((res) => {
 				toast.success("Tạo mới thành công");
+				resetForm({});
 				handleAddClassify();
 				handleSetStatus();
 			})

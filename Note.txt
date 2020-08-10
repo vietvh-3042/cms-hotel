@@ -30,6 +30,11 @@ service:
 is_entered: được quản lý nhâp xuất kho 1 có 2 không
 
 
+1 da thanh toan
+2 chua thanh toan
+4 dua vao cong no
+8 chuyen phong
+
 
 
 fllor sửa xóa

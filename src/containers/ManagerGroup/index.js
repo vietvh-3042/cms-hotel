@@ -68,7 +68,6 @@ function ManagerPaymentMethod(props) {
 	function confirm(id) {
 		CommonApi("DELETE", `/tenant/acl/groups/${id}`).then((res) => {
 			toast.success("Xóa thành công");
-			handleUpdateType();
 			handleSetStatus();
 		});
 	}

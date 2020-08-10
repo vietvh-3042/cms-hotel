@@ -107,7 +107,7 @@ function ModalFlexibleCustom(props) {
 		}
 	}
 
-	function handleSubmit(data) {
+	function handleSubmit(data, { resetForm }) {
 		let convert = {
 			room_id: detail.id,
 			type_price_id: data.type_price_id,

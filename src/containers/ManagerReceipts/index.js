@@ -112,16 +112,7 @@ function ManagerReceipts(props) {
 			dataIndex: "date_created",
 			key: "date_created",
 		},
-		{
-			title: "Mã hóa đơn",
-			render: (record) => {
-				if (record.bills) {
-					if (record.bills.data.length > 0) {
-						return record.bills.data.map((value) => value.bill_code);
-					}
-				}
-			},
-		},
+
 		{ title: "Diễn giải phiếu thu", dataIndex: "content", key: "content" },
 		{ title: "Số tiền", dataIndex: "amount", key: "amount" },
 		{
@@ -150,12 +141,6 @@ function ManagerReceipts(props) {
 			title: "Thao tác",
 			render: (record) => (
 				<div className=" h-full flex justify-center items-center flex-wrap">
-					<img
-						src="/images/Actions/Edit.png"
-						alt="Edit"
-						className="mr-1  cursor-pointer"
-						onClick={() => handleUpdateReceipt(record)}
-					/>
 					<Popconfirm
 						title="Bạn thực sự muốn xóa bản ghi này?"
 						onConfirm={() => confirm(record.id)}

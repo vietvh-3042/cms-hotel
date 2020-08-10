@@ -17,7 +17,9 @@ import ModalFlexibleCustom from "./ModalFlexibleCustom";
 const { Panel } = Collapse;
 
 const date = new Date();
+
 const time = date.getTime();
+
 const format = "HH:mm";
 
 ModalCheckinRoom.propTypes = {
@@ -33,7 +35,12 @@ ModalCheckinRoom.defaultProps = {
 function ModalCheckinRoom(props) {
 	let allCustomer = [];
 
+	let allService = [];
+
+	const [check, setCheck] = useState(false);
+
 	const { visibleCheckinRoom, handleCheckinRoom, handleStatus } = props;
+
 	const { detail } = visibleCheckinRoom;
 
 	const hotel_ID = useSelector((state) => state.App.hotel_ID);
@@ -45,6 +52,8 @@ function ModalCheckinRoom(props) {
 	const [listCustomerDefault, setCustomerDefault] = useState([]);
 
 	const [flexibleCustom, setFlexibleCustom] = useState([]);
+
+	const datePreview = useSelector((state) => state.App.datePreview);
 
 	const [visibleCustom, setVisibleCustom] = useState({
 		visible: false,
@@ -75,6 +84,7 @@ function ModalCheckinRoom(props) {
 				setCustomerDefault(res.data.data)
 			);
 		}
+
 		getSamplePriceDefault();
 		getListPaymentMethod();
 		getCustomerDefault();
@@ -89,8 +99,8 @@ function ModalCheckinRoom(props) {
 		type_price_id: result ? result.id : "",
 		date_in: moment(date).format("DD/MM/YYYY"),
 		time_in: moment(time).format(format),
-		date_out_temp: moment(date).format("DD/MM/YYYY"),
-		time_out_temp: moment(time).format(format),
+		date_out_temp: moment(datePreview).format("DD/MM/YYYY"),
+		time_out_temp: "12:00",
 		prepayment: 100000,
 		payment_method_id:
 			listPaymentMethod.length > 0 ? listPaymentMethod[0].id : "",
@@ -145,7 +155,7 @@ function ModalCheckinRoom(props) {
 					},
 				],
 			}),
-			service: JSON.stringify({ data: [] }),
+			service: JSON.stringify({ data: allService }),
 			type_price_id: data.type_price_id,
 			flexible_prices_for_customers: JSON.stringify({
 				data: flexibleCustom,
@@ -156,9 +166,22 @@ function ModalCheckinRoom(props) {
 			.then((res) => {
 				toast.success("Đặt phòng thành công");
 				handleCheckinRoom({});
+				handleResetTable();
 				handleStatus();
 			})
-			.catch((err) => console.log(err.response));
+			.catch((err) => {
+				let error = [];
+				err.response.data.meta.message.errors.map((value) => {
+					error.push(value);
+				});
+				toast.error(
+					<React.Fragment>
+						{error.map((value, key) => (
+							<div key={key}>{value}</div>
+						))}
+					</React.Fragment>
+				);
+			});
 	}
 
 	function findSamplePriceDefaultByTypeRoom(value) {
@@ -172,6 +195,10 @@ function ModalCheckinRoom(props) {
 
 	function getCustomer(value) {
 		allCustomer = [...value];
+	}
+
+	function getService(value) {
+		allService = [...value];
 	}
 
 	function handleOpenFlexibleCustom(detail, samplePrice, setFieldValue) {
@@ -190,7 +217,11 @@ function ModalCheckinRoom(props) {
 		});
 		setFieldValue("price_check_in", value.price_day);
 		setFieldValue("type_price_id", value.type_price_id);
-		setFlexibleCustom(value);
+		setFlexibleCustom([value]);
+	}
+
+	function handleResetTable() {
+		setCheck(!check);
 	}
 
 	return (
@@ -214,11 +245,13 @@ function ModalCheckinRoom(props) {
 						onSubmit={handleSubmit}
 						enableReinitialize
 					>
-						{({ setFieldValue }) => (
+						{({ values, setFieldValue }) => (
 							<Form name="mainForm">
 								<fieldset className="mb-3" style={{ border: "1px solid #d0d0d0" }}>
 									<legend className="groupHour w-280 ml-3">
-										<span>Thông tin đăng ký - Phòng Đơn</span>
+										<span>
+											{result ? `Thông tin đăng ký - ${result.typeRoom.data.name}` : ""}
+										</span>
 									</legend>
 									<div className="flex">
 										<div className="w-6/12">
@@ -269,7 +302,7 @@ function ModalCheckinRoom(props) {
 													<div className="LabelCo">Ngày ra dự kiến:</div>
 													<DatePicker
 														name="date_out_temp"
-														defaultValue={moment(date)}
+														defaultValue={moment(datePreview)}
 														format="DD/MM/YYYY"
 														style={{ width: 125 }}
 														onChange={(date, dateString) =>
@@ -283,7 +316,7 @@ function ModalCheckinRoom(props) {
 													</div>
 													<TimePicker
 														style={{ width: 85 }}
-														defaultValue={moment(time)}
+														defaultValue={moment(values.time_out_temp, "HH:mm")}
 														format={format}
 														onChange={(time, timeString) =>
 															setFieldValue("time_out_temp", timeString)
@@ -337,10 +370,10 @@ function ModalCheckinRoom(props) {
 
 								<Collapse className="mt-3 collapseRoom" defaultActiveKey={["2"]}>
 									<Panel header="Thêm dịch vụ" key="1" className="text-xs black">
-										<CheckinService />
+										<CheckinService getService={getService} check={check} />
 									</Panel>
 									<Panel header="Thông tin khách hàng" key="2" className="text-xs black">
-										<CheckinCustomer getCustomer={getCustomer} />
+										<CheckinCustomer getCustomer={getCustomer} check={check} />
 									</Panel>
 								</Collapse>
 								<div className="mt-3">

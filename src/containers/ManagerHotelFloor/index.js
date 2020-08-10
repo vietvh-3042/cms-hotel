@@ -57,7 +57,7 @@ function ManagerHotelFloor(props) {
 	}
 
 	function confirm(id) {
-		CommonApi("DELETE", `/tenant/hotel-manager/floor-hotel/${id}`).then((res) => {
+		CommonApi("DELETE", `/tenant/hotel-manager/floor/${id}`).then((res) => {
 			toast.success("Xóa thành công");
 			handleSetStatus();
 		});

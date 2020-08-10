@@ -19,7 +19,7 @@ CheckinCustomer.defaultProps = {
 function CheckinCustomer(props) {
 	let allCustomer = [];
 
-	const { getCustomer } = props;
+	const { getCustomer, check } = props;
 	const [listCustomer, setLisCustomer] = useState([]);
 
 	const [listNational, setListNational] = useState([]);
@@ -37,6 +37,9 @@ function CheckinCustomer(props) {
 
 	const validationSchema = Yup.object().shape({
 		name: Yup.string().required("Không được để trống."),
+		identity_code: Yup.number()
+			.typeError("Phải là số")
+			.required("Không được để trống."),
 	});
 
 	function handleAddCustomer(data, { resetForm }) {
@@ -73,6 +76,10 @@ function CheckinCustomer(props) {
 		}
 		getNational();
 	}, []);
+
+	useEffect(() => {
+		setLisCustomer([]);
+	}, [check]);
 
 	const columns = [
 		{ title: "STT", dataIndex: "STT", key: "STT" },
@@ -143,6 +150,7 @@ function CheckinCustomer(props) {
 								component={InputField}
 								label="Tên khách hàng:"
 								width={190}
+								placeholder="Khách Lẻ"
 							/>
 							<FastField
 								name="address"
@@ -190,7 +198,7 @@ function CheckinCustomer(props) {
 				columns={columns}
 				bordered
 				scroll={{ x: true }}
-				className="mt-3"
+				className="mt-3 custom-table"
 			/>
 		</React.Fragment>
 	);

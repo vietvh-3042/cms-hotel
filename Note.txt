@@ -41,8 +41,5 @@ fllor sửa xóa
 khách hàng list ra
 classify sửa xóa
 
-
-Test revert
-
 ------- done ----------
 danh sách khách sạn
